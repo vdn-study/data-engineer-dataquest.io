@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="440px" height="112px" viewBox="0 0 440 112" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 44.1 (41455) - http://www.bohemiancoding.com/sketch -->
+    <title>s4_full_non_full</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="DE4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="DE4M5" transform="translate(-1773.000000, -1290.000000)">
+            <g id="s4_full_non_full" transform="translate(1773.000000, 1288.000000)">
+                <g id="BNode" transform="translate(0.000000, 38.000000)">
+                    <rect id="Rectangle-2" stroke="#000000" x="0.5" y="0.5" width="199" height="75"></rect>
+                    <g id="Keys" transform="translate(12.000000, 20.000000)">
+                        <rect id="Rectangle-3" stroke="#979797" x="0.5" y="0.5" width="175" height="35"></rect>
+                        <rect id="Rectangle-4" stroke="#979797" x="0.5" y="0.5" width="35" height="35"></rect>
+                        <rect id="Rectangle-4" stroke="#979797" x="35.5" y="0.5" width="35" height="35"></rect>
+                        <rect id="Rectangle-4" stroke="#979797" x="70.5" y="0.5" width="35" height="35"></rect>
+                        <rect id="Rectangle-4" stroke="#979797" x="105.5" y="0.5" width="35" height="35"></rect>
+                        <rect id="Rectangle-4" stroke="#979797" x="105.5" y="0.5" width="35" height="35"></rect>
+                        <text id="10" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                            <tspan x="10" y="23">10</tspan>
+                        </text>
+                        <text id="19" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                            <tspan x="44" y="23">19</tspan>
+                        </text>
+                        <text id="21" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                            <tspan x="79" y="23">21</tspan>
+                        </text>
+                        <text id="23" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                            <tspan x="113" y="23">23</tspan>
+                        </text>
+                        <text id="25" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                            <tspan x="149" y="23">25</tspan>
+                        </text>
+                    </g>
+                </g>
+                <g id="BNode" transform="translate(240.000000, 38.000000)">
+                    <rect id="Rectangle-2" stroke="#000000" x="0.5" y="0.5" width="199" height="75"></rect>
+                    <g id="Keys" transform="translate(12.000000, 20.000000)">
+                        <rect id="Rectangle-3" stroke="#979797" x="0.5" y="0.5" width="175" height="35"></rect>
+                        <rect id="Rectangle-4" stroke="#979797" x="0.5" y="0.5" width="35" height="35"></rect>
+                        <rect id="Rectangle-4" stroke="#979797" x="35.5" y="0.5" width="35" height="35"></rect>
+                        <rect id="Rectangle-4" stroke="#979797" x="70.5" y="0.5" width="35" height="35"></rect>
+                        <rect id="Rectangle-4" stroke="#979797" x="105.5" y="0.5" width="35" height="35"></rect>
+                        <rect id="Rectangle-4" stroke="#979797" x="105.5" y="0.5" width="35" height="35"></rect>
+                        <text id="10" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                            <tspan x="10" y="23">10</tspan>
+                        </text>
+                        <text id="19" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                            <tspan x="44" y="23">19</tspan>
+                        </text>
+                        <text id="21" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                            <tspan x="79" y="23">21</tspan>
+                        </text>
+                    </g>
+                </g>
+                <text id="Full-Node" font-family="HelveticaNeue, Helvetica Neue" font-size="16" font-weight="normal" fill="#000000">
+                    <tspan x="65" y="15">Full Node</tspan>
+                </text>
+                <text id="Non-full-Node" font-family="HelveticaNeue, Helvetica Neue" font-size="16" font-weight="normal" fill="#000000">
+                    <tspan x="290" y="15">Non-full Node</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

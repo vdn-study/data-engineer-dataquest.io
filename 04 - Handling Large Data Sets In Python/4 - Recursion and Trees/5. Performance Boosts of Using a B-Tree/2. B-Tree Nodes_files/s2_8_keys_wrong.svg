@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="308px" height="146px" viewBox="0 0 308 146" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 44.1 (41455) - http://www.bohemiancoding.com/sketch -->
+    <title>s2_8_keys_wrong</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="DE4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="DE4M5" transform="translate(-1015.000000, -1181.000000)">
+            <g id="s2_8_keys_wrong" transform="translate(1015.000000, 1178.000000)">
+                <rect id="Rectangle-2" stroke="#000000" x="0.5" y="37.5" width="307" height="75"></rect>
+                <g id="Keys" transform="translate(12.000000, 57.000000)">
+                    <rect id="Rectangle-3" stroke="#979797" x="0.5" y="0.5" width="280" height="35"></rect>
+                    <rect id="Rectangle-4" stroke="#979797" x="0.5" y="0.5" width="35" height="35"></rect>
+                    <rect id="Rectangle-4" stroke="#979797" x="35.5" y="0.5" width="35" height="35"></rect>
+                    <rect id="Rectangle-4" stroke="#979797" x="70.5" y="0.5" width="35" height="35"></rect>
+                    <rect id="Rectangle-4" stroke="#979797" x="105.5" y="0.5" width="35" height="35"></rect>
+                    <rect id="Rectangle-4" stroke="#979797" x="140.5" y="0.5" width="35" height="35"></rect>
+                    <rect id="Rectangle-4" stroke="#979797" x="175.5" y="0.5" width="35" height="35"></rect>
+                    <rect id="Rectangle-4" stroke="#979797" x="210.5" y="0.5" width="35" height="35"></rect>
+                    <text id="1" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                        <tspan x="14" y="23">1</tspan>
+                    </text>
+                    <text id="2" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                        <tspan x="49" y="23">2</tspan>
+                    </text>
+                    <text id="3" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                        <tspan x="84" y="23">3</tspan>
+                    </text>
+                    <text id="4" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                        <tspan x="119" y="23">4</tspan>
+                    </text>
+                    <text id="5" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                        <tspan x="153" y="23">5</tspan>
+                    </text>
+                    <text id="6" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                        <tspan x="188" y="23">6</tspan>
+                    </text>
+                    <text id="7" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                        <tspan x="223" y="23">7</tspan>
+                    </text>
+                    <text id="8" font-family="AndaleMono, Andale Mono" font-size="14" font-weight="normal" fill="#000000">
+                        <tspan x="258" y="23">8</tspan>
+                    </text>
+                </g>
+                <text id="Node-with-Degree-4-a" font-family="HelveticaNeue, Helvetica Neue" font-size="16" font-weight="normal" fill="#000000">
+                    <tspan x="41" y="15">Node with Degree 4 and 8 Keys</tspan>
+                </text>
+                <text id="Wrong" font-family="HelveticaNeue, Helvetica Neue" font-size="16" font-weight="normal" fill="#FF001F">
+                    <tspan x="129" y="145">Wrong</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

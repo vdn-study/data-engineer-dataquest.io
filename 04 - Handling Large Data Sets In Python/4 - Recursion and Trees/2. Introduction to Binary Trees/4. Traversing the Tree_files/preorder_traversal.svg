@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="283px" height="193px" viewBox="0 0 283 193" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 44.1 (41455) - http://www.bohemiancoding.com/sketch -->
+    <title>Preorder Traversal</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="DE4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="DE4M2" transform="translate(-892.000000, -147.000000)">
+            <g id="Preorder-Traversal" transform="translate(895.000000, 148.000000)">
+                <g id="Tree-Node" transform="translate(143.141026, 0.000000)">
+                    <ellipse id="Oval" stroke="#000000" cx="17.0405983" cy="17.0535714" rx="17.0405983" ry="17.0535714"></ellipse>
+                    <text id="1" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="12.2692308" y="20.2032967">1</tspan>
+                    </text>
+                </g>
+                <g id="Tree-Node-Copy" transform="translate(81.794872, 47.750000)">
+                    <ellipse id="Oval" stroke="#000000" cx="17.0405983" cy="17.0535714" rx="17.0405983" ry="17.0535714"></ellipse>
+                    <text id="2" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="12.2692308" y="20.2032967">2</tspan>
+                    </text>
+                </g>
+                <g id="Tree-Node" transform="translate(204.487179, 47.750000)">
+                    <ellipse id="Oval" stroke="#000000" cx="17.0405983" cy="17.0535714" rx="17.0405983" ry="17.0535714"></ellipse>
+                    <text id="3" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="12.2692308" y="20.2032967">3</tspan>
+                    </text>
+                </g>
+                <g id="Tree-Node-Copy-3" transform="translate(40.897436, 102.321429)">
+                    <ellipse id="Oval" stroke="#000000" cx="17.0405983" cy="17.0535714" rx="17.0405983" ry="17.0535714"></ellipse>
+                    <text id="4" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="12.2692308" y="20.2032967">4</tspan>
+                    </text>
+                </g>
+                <g id="Tree-Node-Copy-2" transform="translate(109.059829, 102.321429)">
+                    <ellipse id="Oval" stroke="#000000" cx="17.0405983" cy="17.0535714" rx="17.0405983" ry="17.0535714"></ellipse>
+                    <text id="5" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="12.2692308" y="20.2032967">5</tspan>
+                    </text>
+                </g>
+                <g id="Tree-Node-Copy-7" transform="translate(0.000000, 156.892857)">
+                    <ellipse id="Oval" stroke="#000000" cx="17.0405983" cy="17.0535714" rx="17.0405983" ry="17.0535714"></ellipse>
+                    <text id="8" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="12.2692308" y="20.2032967">8</tspan>
+                    </text>
+                </g>
+                <g id="Tree-Node-Copy-6" transform="translate(47.713675, 156.892857)">
+                    <ellipse id="Oval" stroke="#000000" cx="17.0405983" cy="17.0535714" rx="17.0405983" ry="17.0535714"></ellipse>
+                    <text id="9" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="12.2692308" y="20.2032967">9</tspan>
+                    </text>
+                </g>
+                <g id="Tree-Node-Copy-9" transform="translate(98.153846, 156.892857)">
+                    <ellipse id="Oval" stroke="#000000" cx="17.0405983" cy="17.0535714" rx="17.0405983" ry="17.0535714"></ellipse>
+                    <text id="10" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="9.17948718" y="20.2032967">10</tspan>
+                    </text>
+                </g>
+                <g id="Tree-Node-Copy-5" transform="translate(177.222222, 102.321429)">
+                    <ellipse id="Oval" stroke="#000000" cx="17.0405983" cy="17.0535714" rx="17.0405983" ry="17.0535714"></ellipse>
+                    <text id="6" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="12.2692308" y="20.2032967">6</tspan>
+                    </text>
+                </g>
+                <g id="Tree-Node-Copy-4" transform="translate(245.384615, 102.321429)">
+                    <ellipse id="Oval" stroke="#000000" cx="17.0405983" cy="17.0535714" rx="17.0405983" ry="17.0535714"></ellipse>
+                    <text id="7" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="12.2692308" y="20.2032967">7</tspan>
+                    </text>
+                </g>
+                <path d="M147.912393,29.3321429 L113.831197,53.8892857" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                <text id=".-.-.-.-.-.-.-.-." font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                    <tspan x="156.773504" y="177.8125">. . . . . . . . . </tspan>
+                </text>
+                <path d="M86.5662393,77.0821429 L66.1175214,103.003571" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                <path d="M108.378205,78.4464286 L122.010684,103.003571" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                <path d="M211.985043,78.4464286 L199.715812,101.639286" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                <path d="M233.797009,75.7178571 L254.245726,103.003571" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                <path d="M60.6645299,135.746429 L64.7542735,156.210714" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                <path d="M173.814103,27.9678571 L209.258547,52.525" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                <path d="M123.373932,137.110714 L117.92094,156.210714" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                <path d="M137.00641,133.017857 L152.002137,160.303571" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                <path d="M187.446581,135.746429 L175.17735,158.939286" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                <path d="M201.07906,134.382143 L210.621795,157.575" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                <path d="M48.3952991,134.382143 L26.5833333,160.303571" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                <path d="M136.890636,5.3860961 C124.299374,2.97958685 114.833553,4.60459315 108.493173,10.261115 C102.152793,15.9176368 98.6045439,24.9985544 97.8484258,37.5038677" id="Path-3" stroke="#CE0202"></path>
+                <path id="Path-3-decoration-1" d="M95.5057127,26.5424948 L97.8484258,37.5038677 L101.494775,26.904616" stroke="#CE0202"></path>
+                <path d="M74.96069,58.1854185 C65.486891,57.5428376 57.5798015,60.0498081 51.2394215,65.70633 C44.8990416,71.3628518 42.9859949,81.5946562 45.5002816,96.4017431" id="Path-3" stroke="#CE0202"></path>
+                <path id="Path-3-decoration-1" d="M40.7346259,86.2563734 L45.5002816,96.4017431 L46.6499535,85.2519335" stroke="#CE0202"></path>
+                <path d="M31.96069,114.185418 C22.486891,113.542838 14.5798015,116.049808 8.23942153,121.70633 C1.89904155,127.362852 -0.0140050824,137.594656 2.50028163,152.401743" id="Path-3" stroke="#CE0202"></path>
+                <path id="Path-3-decoration-1" d="M-2.26537406,142.256373 L2.50028163,152.401743 L3.64995352,141.251933" stroke="#CE0202"></path>
+            </g>
+        </g>
+    </g>
+</svg>

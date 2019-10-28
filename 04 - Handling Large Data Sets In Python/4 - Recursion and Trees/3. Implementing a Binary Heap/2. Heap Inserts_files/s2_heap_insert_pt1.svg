@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="239px" height="132px" viewBox="0 0 239 132" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 44.1 (41455) - http://www.bohemiancoding.com/sketch -->
+    <title>S2 - Insert Max Heap pt1</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="DE4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="DE4M3" transform="translate(-1177.000000, -1010.000000)">
+            <g id="S2---Insert-Max-Heap-pt1" transform="translate(1177.000000, 1009.000000)">
+                <g id="Mini-Tree" transform="translate(0.000000, 23.000000)">
+                    <g id="Tree-Node" transform="translate(0.616667, 0.000000)">
+                        <ellipse id="Oval" stroke="#000000" cx="22.8083333" cy="22.6779514" rx="22.8083333" ry="22.6779514"></ellipse>
+                        <text id="3" font-family="AndaleMono, Andale Mono" font-size="18" font-weight="normal" fill="#000000">
+                            <tspan x="16.422" y="28.3830128">3</tspan>
+                        </text>
+                    </g>
+                </g>
+                <g id="Mini-Tree" transform="translate(147.000000, 23.000000)">
+                    <g id="Tree-Node" transform="translate(0.000000, 63.498264)">
+                        <ellipse id="Oval" stroke="#000000" cx="22.8083333" cy="22.6779514" rx="22.8083333" ry="22.6779514"></ellipse>
+                        <text id="3" font-family="AndaleMono, Andale Mono" font-size="18" font-weight="normal" fill="#000000">
+                            <tspan x="16.422" y="28.3830128">3</tspan>
+                        </text>
+                    </g>
+                    <path d="M54.5,41.5 L34.5,66.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <g id="Tree-Node" transform="translate(45.616667, 0.000000)">
+                        <ellipse id="Oval" stroke="#000000" cx="22.8083333" cy="22.6779514" rx="22.8083333" ry="22.6779514"></ellipse>
+                        <text id="1" font-family="AndaleMono, Andale Mono" font-size="18" font-weight="normal" fill="#000000">
+                            <tspan x="16.422" y="28.3830128">1</tspan>
+                        </text>
+                    </g>
+                </g>
+                <text id="Add-Node(3)-to-Max-H" font-family="HelveticaNeue, Helvetica Neue" font-size="12" font-weight="normal" fill="#000000">
+                    <tspan x="48" y="11">Add Node(3) to Max-Heap</tspan>
+                </text>
+                <path d="M60.5,45.5 L177.5,45.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                <path id="Line-decoration-1" d="M166.7,48.5 L177.5,45.5 L166.7,42.5" stroke="#000000" stroke-linecap="square"></path>
+            </g>
+        </g>
+    </g>
+</svg>

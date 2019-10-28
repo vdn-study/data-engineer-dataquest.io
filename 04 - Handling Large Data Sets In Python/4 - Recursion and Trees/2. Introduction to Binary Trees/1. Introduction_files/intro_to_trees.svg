@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="361px" height="111px" viewBox="0 0 361 111" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 44.1 (41455) - http://www.bohemiancoding.com/sketch -->
+    <title>Intro Tree</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="DE4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="DE4M2" transform="translate(-85.000000, -440.000000)">
+            <g id="Intro-Tree" transform="translate(83.000000, 441.000000)">
+                <g id="Tree-Node" transform="translate(153.616667, 0.000000)">
+                    <ellipse id="Oval" stroke="#000000" cx="22.8083333" cy="22.6779514" rx="22.8083333" ry="22.6779514"></ellipse>
+                    <text id="A" font-family="AndaleMono, Andale Mono" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="16.422" y="28.3830128">A</tspan>
+                    </text>
+                </g>
+                <g id="Tree-Node-Copy" transform="translate(108.000000, 63.498264)">
+                    <ellipse id="Oval" stroke="#000000" cx="22.8083333" cy="22.6779514" rx="22.8083333" ry="22.6779514"></ellipse>
+                    <text id="B" font-family="AndaleMono, Andale Mono" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="16.422" y="28.3830128">B</tspan>
+                    </text>
+                </g>
+                <g id="Tree-Node" transform="translate(199.233333, 63.498264)">
+                    <ellipse id="Oval" stroke="#000000" cx="22.8083333" cy="22.6779514" rx="22.8083333" ry="22.6779514"></ellipse>
+                    <text id="C" font-family="AndaleMono, Andale Mono" font-size="18" font-weight="normal" fill="#000000">
+                        <tspan x="18.422" y="29.3830128">C</tspan>
+                    </text>
+                </g>
+                <text id="Left-Node" font-family="AndaleMono, Andale Mono" font-size="18" font-weight="normal" fill="#000000">
+                    <tspan x="0" y="91">Left Node</tspan>
+                </text>
+                <text id="Right-Node" font-family="AndaleMono, Andale Mono" font-size="18" font-weight="normal" fill="#000000">
+                    <tspan x="256" y="91">Right Node</tspan>
+                </text>
+                <path d="M162.5,41.5 L142.5,66.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                <path d="M189.5,42.5 L207.5,67.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+            </g>
+        </g>
+    </g>
+</svg>

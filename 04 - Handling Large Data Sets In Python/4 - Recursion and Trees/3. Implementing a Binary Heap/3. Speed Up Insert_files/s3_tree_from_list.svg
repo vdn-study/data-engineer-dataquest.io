@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="303px" height="233px" viewBox="0 0 303 233" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 44.1 (41455) - http://www.bohemiancoding.com/sketch -->
+    <title>S3 - Level Order from List</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="27.9442149" height="27.972973"></rect>
+        <rect id="path-2" x="0" y="0" width="27.9442149" height="27.972973"></rect>
+        <rect id="path-3" x="0" y="0" width="27.9442149" height="27.972973"></rect>
+        <rect id="path-4" x="0" y="0" width="27.9442149" height="27.972973"></rect>
+        <rect id="path-5" x="0" y="0" width="27.9442149" height="27.972973"></rect>
+        <rect id="path-6" x="0" y="0" width="27.9442149" height="27.972973"></rect>
+        <rect id="path-7" x="0" y="0" width="27.9442149" height="27.972973"></rect>
+        <rect id="path-8" x="0" y="0" width="27.9442149" height="27.972973"></rect>
+        <rect id="path-9" x="0" y="0" width="27.9442149" height="27.972973"></rect>
+        <rect id="path-10" x="0" y="0" width="27.9442149" height="27.972973"></rect>
+        <rect id="path-11" x="0" y="0" width="27.9442149" height="27.972973"></rect>
+    </defs>
+    <g id="DE4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="DE4M3" transform="translate(-249.000000, -1313.000000)">
+            <g id="S3---Level-Order-from-List" transform="translate(249.000000, 1312.000000)">
+                <g id="Tree" transform="translate(18.000000, 93.000000)">
+                    <g id="Tree-Node" transform="translate(105.000000, 0.000000)">
+                        <circle id="Oval" stroke="#000000" cx="12.5" cy="12.5" r="12.5"></circle>
+                        <text id="1" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="9" y="16">1</tspan>
+                        </text>
+                    </g>
+                    <g id="Tree-Node-Copy" transform="translate(60.000000, 35.000000)">
+                        <circle id="Oval" stroke="#000000" cx="12.5" cy="12.5" r="12.5"></circle>
+                        <text id="2" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="9" y="16">2</tspan>
+                        </text>
+                    </g>
+                    <g id="Tree-Node" transform="translate(150.000000, 35.000000)">
+                        <circle id="Oval" stroke="#000000" cx="12.5" cy="12.5" r="12.5"></circle>
+                        <text id="3" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="9" y="16">3</tspan>
+                        </text>
+                    </g>
+                    <g id="Tree-Node-Copy-3" transform="translate(30.000000, 75.000000)">
+                        <circle id="Oval" stroke="#000000" cx="12.5" cy="12.5" r="12.5"></circle>
+                        <text id="4" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="9" y="16">4</tspan>
+                        </text>
+                    </g>
+                    <g id="Tree-Node-Copy-2" transform="translate(80.000000, 75.000000)">
+                        <circle id="Oval" stroke="#000000" cx="12.5" cy="12.5" r="12.5"></circle>
+                        <text id="5" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="9" y="16">5</tspan>
+                        </text>
+                    </g>
+                    <g id="Tree-Node-Copy-7" transform="translate(0.000000, 115.000000)">
+                        <circle id="Oval" stroke="#000000" cx="12.5" cy="12.5" r="12.5"></circle>
+                        <text id="8" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="9" y="16">8</tspan>
+                        </text>
+                    </g>
+                    <g id="Tree-Node-Copy-6" transform="translate(35.000000, 115.000000)">
+                        <circle id="Oval" stroke="#000000" cx="12.5" cy="12.5" r="12.5"></circle>
+                        <text id="9" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="9" y="16">9</tspan>
+                        </text>
+                    </g>
+                    <g id="Tree-Node-Copy-9" transform="translate(72.000000, 115.000000)">
+                        <circle id="Oval" stroke="#000000" cx="12.5" cy="12.5" r="12.5"></circle>
+                        <text id="10" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="6" y="16">10</tspan>
+                        </text>
+                    </g>
+                    <g id="Tree-Node-Copy-5" transform="translate(130.000000, 75.000000)">
+                        <circle id="Oval" stroke="#000000" cx="12.5" cy="12.5" r="12.5"></circle>
+                        <text id="6" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="9" y="16">6</tspan>
+                        </text>
+                    </g>
+                    <g id="Tree-Node-Copy-4" transform="translate(180.000000, 75.000000)">
+                        <circle id="Oval" stroke="#000000" cx="12.5" cy="12.5" r="12.5"></circle>
+                        <text id="7" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="9" y="16">7</tspan>
+                        </text>
+                    </g>
+                    <path d="M108.5,21.5 L83.5,39.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <text id=".-.-.-.-.-.-.-.-." font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="115" y="130">. . . . . . . . . </tspan>
+                    </text>
+                    <path d="M63.5,56.5 L48.5,75.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <path d="M79.5,57.5 L89.5,75.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <path d="M155.5,57.5 L146.5,74.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <path d="M171.5,55.5 L186.5,75.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <path d="M44.5,99.5 L47.5,114.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <path d="M127.5,20.5 L153.5,38.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <path d="M90.5,100.5 L86.5,114.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <path d="M100.5,97.5 L111.5,117.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <path d="M137.5,99.5 L128.5,116.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <path d="M147.5,98.5 L154.5,115.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <path d="M35.5,98.5 L19.5,117.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <text id="2" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="260" y="50">2</tspan>
+                    </text>
+                    <text id="3" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="260" y="90">3</tspan>
+                    </text>
+                    <text id="4" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="260" y="131">4</tspan>
+                    </text>
+                    <text id="1" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                        <tspan x="260" y="10">1</tspan>
+                    </text>
+                </g>
+                <g id="List" transform="translate(0.000000, 33.000000)">
+                    <g id="Array-Cell-Copy" transform="translate(268.438017, 0.000000)">
+                        <g id="Rectangle">
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                            <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="26.9442149" height="26.972973"></rect>
+                        </g>
+                        <text id="…" font-family="CourierNewPSMT, Courier New" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="10.0599174" y="16.8324324">…</tspan>
+                        </text>
+                    </g>
+                    <g id="Array-Cell" transform="translate(241.438017, 0.000000)">
+                        <g id="Rectangle">
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-2"></use>
+                            <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="26.9442149" height="26.972973"></rect>
+                        </g>
+                        <text id="10" font-family="CourierNewPSMT, Courier New" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="7.05991736" y="16.8324324">10</tspan>
+                        </text>
+                    </g>
+                    <g id="Array-Cell" transform="translate(214.611570, 0.000000)">
+                        <g id="Rectangle">
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-3"></use>
+                            <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="26.9442149" height="26.972973"></rect>
+                        </g>
+                        <text id="9" font-family="CourierNewPSMT, Courier New" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="10.0599174" y="16.8324324">9</tspan>
+                        </text>
+                    </g>
+                    <g id="Array-Cell" transform="translate(187.785124, 0.000000)">
+                        <g id="Rectangle">
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-4"></use>
+                            <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="26.9442149" height="26.972973"></rect>
+                        </g>
+                        <text id="8" font-family="CourierNewPSMT, Courier New" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="10.0599174" y="16.8324324">8</tspan>
+                        </text>
+                    </g>
+                    <g id="Array-Cell" transform="translate(160.958678, 0.000000)">
+                        <g id="Rectangle">
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-5"></use>
+                            <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="26.9442149" height="26.972973"></rect>
+                        </g>
+                        <text id="7" font-family="CourierNewPSMT, Courier New" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="10.7066116" y="16.8324324">7</tspan>
+                        </text>
+                    </g>
+                    <g id="Array-Cell" transform="translate(134.132231, 0.000000)">
+                        <g id="Rectangle">
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-6"></use>
+                            <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="26.9442149" height="26.972973"></rect>
+                        </g>
+                        <text id="6" font-family="CourierNewPSMT, Courier New" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="8.94214876" y="16.8324324">6</tspan>
+                        </text>
+                    </g>
+                    <g id="Array-Cell" transform="translate(107.305785, 0.000000)">
+                        <g id="Rectangle">
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-7"></use>
+                            <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="26.9442149" height="26.972973"></rect>
+                        </g>
+                        <text id="5" font-family="CourierNewPSMT, Courier New" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="10.0599174" y="16.8324324">5</tspan>
+                        </text>
+                    </g>
+                    <g id="Array-Cell" transform="translate(80.479339, 0.000000)">
+                        <g id="Rectangle">
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-8"></use>
+                            <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="26.9442149" height="26.972973"></rect>
+                        </g>
+                        <text id="4" font-family="CourierNewPSMT, Courier New" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="10.0599174" y="16.8324324">4</tspan>
+                        </text>
+                    </g>
+                    <g id="Array-Cell" transform="translate(53.652893, 0.000000)">
+                        <g id="Rectangle">
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-9"></use>
+                            <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="26.9442149" height="26.972973"></rect>
+                        </g>
+                        <text id="3" font-family="CourierNewPSMT, Courier New" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="10.0599174" y="16.8324324">3</tspan>
+                        </text>
+                    </g>
+                    <g id="Array-Cell" transform="translate(26.826446, 0.000000)">
+                        <g id="Rectangle">
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-10"></use>
+                            <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="26.9442149" height="26.972973"></rect>
+                        </g>
+                        <text id="2" font-family="CourierNewPSMT, Courier New" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="10.0599174" y="16.8324324">2</tspan>
+                        </text>
+                    </g>
+                    <g id="Array-Cell">
+                        <g id="Rectangle">
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-11"></use>
+                            <rect stroke="#979797" stroke-width="1" x="0.5" y="0.5" width="26.9442149" height="26.972973"></rect>
+                        </g>
+                        <text id="1" font-family="CourierNewPSMT, Courier New" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="10.0599174" y="16.8324324">1</tspan>
+                        </text>
+                    </g>
+                </g>
+                <path d="M12.7480185,21.1978203 C13.2544059,21.5826748 13.5987441,21.9472682 13.7810436,22.2916116 C14.0139818,22.7473603 14.1304491,23.2891866 14.1304491,23.917107 L14.1304491,29.3708719 C14.1304491,29.9481535 14.2975545,30.4216186 14.6317701,30.7912814 C14.9659858,31.1609442 15.3812172,31.3710918 15.8774769,31.4217305 C16.1914371,31.4521138 16.3990528,31.5128793 16.5003303,31.6040291 C16.631991,31.725562 16.6978203,31.877476 16.6978203,32.0597754 C16.6978203,32.2522026 16.631991,32.4066485 16.5003303,32.5231176 C16.3686695,32.6395867 16.1762452,32.6978203 15.9230515,32.6978203 C15.1229595,32.6978203 14.4545381,32.4446304 13.9177675,31.9382431 C13.1986974,31.2394285 12.8391678,30.3887104 12.8391678,29.3860634 L12.8391678,23.917107 C12.8391678,23.3600809 12.6720624,22.8916796 12.3378468,22.511889 C12.0036311,22.1320985 11.5782721,21.9219509 11.0617569,21.8814399 C10.77818,21.8510567 10.5806919,21.7801635 10.4692867,21.6687583 C10.3578814,21.557353 10.3021797,21.4003753 10.3021797,21.1978203 C10.3021797,21.0053931 10.3578814,20.8534792 10.4692867,20.742074 C10.5806919,20.6306688 10.77818,20.5597756 11.0617569,20.5293923 C11.5883998,20.4888813 12.0162907,20.2787337 12.3454425,19.8989432 C12.6745943,19.5191527 12.8391678,19.0507514 12.8391678,18.4937252 L12.8391678,13.0247688 C12.8391678,12.0727605 13.1429956,11.2802762 13.7506605,10.6472919 C14.3583254,10.0143077 15.0875123,9.69782034 15.9382431,9.69782034 C16.181309,9.69782034 16.3686695,9.75858592 16.5003303,9.88011889 C16.631991,10.0016519 16.6978203,10.1535658 16.6978203,10.3358653 C16.6978203,10.5181647 16.631991,10.6700787 16.5003303,10.7916116 C16.4091805,10.8928891 16.2015648,10.9587185 15.8774769,10.9891017 C15.3710895,11.0397405 14.9533262,11.25242 14.6241744,11.6271466 C14.2950226,12.0018733 14.1304491,12.4677427 14.1304491,13.0247688 L14.1304491,18.4937252 C14.1304491,19.1317733 14.0291732,19.6457488 13.8266182,20.0356671 C13.6240633,20.4255854 13.2645336,20.8129659 12.7480185,21.1978203 Z" id="{" fill="#000000" transform="translate(13.500000, 21.197820) rotate(90.000000) translate(-13.500000, -21.197820) "></path>
+                <path d="M54.7962801,22.4764673 C55.3026675,22.8613217 55.6470057,23.2259151 55.8293052,23.5702586 C56.0622434,24.0260072 56.1787107,24.5678336 56.1787107,25.1957539 L56.1863065,41.4191335 C56.1863065,41.9964151 56.3534118,42.4698802 56.6876275,42.839543 C57.0218432,43.2092058 57.4370746,43.4193534 57.9333342,43.4699921 C58.2472944,43.5003753 58.4549101,43.5611409 58.5561876,43.6522907 C58.6878483,43.7738236 58.7536777,43.9257376 58.7536777,44.108037 C58.7536777,44.3004642 58.6878483,44.4549101 58.5561876,44.5713792 C58.4245269,44.6878483 58.2321026,44.7460819 57.9789089,44.7460819 C57.1788168,44.7460819 56.5103955,44.492892 55.9736249,43.9865047 C55.2545548,43.2876901 54.8950251,42.436972 54.8950251,41.434325 L54.8874294,25.1957539 C54.8874294,24.6387278 54.720324,24.1703265 54.3861084,23.790536 C54.0518927,23.4107454 53.6265337,23.2005978 53.1100185,23.1600868 C52.8264416,23.1297036 52.6289535,23.0588104 52.5175482,22.9474052 C52.406143,22.836 52.3504412,22.6790222 52.3504412,22.4764673 C52.3504412,22.2840401 52.406143,22.1321261 52.5175482,22.0207209 C52.6289535,21.9093157 52.8264416,21.8384225 53.1100185,21.8080393 C53.6366614,21.7675283 54.0645523,21.5573807 54.3937041,21.1775901 C54.7228559,20.7977996 54.8874294,20.3293983 54.8874294,19.7723722 L54.8950251,0.968911461 C54.8950251,0.0169031778 55.198853,-0.775581191 55.8065179,-1.40856542 C56.4141827,-2.04154965 57.1433696,-2.35803702 57.9941004,-2.35803702 C58.2371664,-2.35803702 58.4245269,-2.29727145 58.5561876,-2.17573847 C58.6878483,-2.0542055 58.7536777,-1.90229156 58.7536777,-1.71999211 C58.7536777,-1.53769265 58.6878483,-1.38577871 58.5561876,-1.26424574 C58.4650379,-1.16296826 58.2574222,-1.09713889 57.9333342,-1.06675565 C57.4269469,-1.01611691 57.0091835,-0.803437397 56.6800317,-0.428710732 C56.3508799,-0.0539840679 56.1863065,0.411885338 56.1863065,0.968911461 L56.1787107,19.7723722 C56.1787107,20.4104203 56.0774348,20.9243958 55.8748798,21.314314" id="{-copy" fill="#000000" transform="translate(55.552059, 21.194022) rotate(90.000000) translate(-55.552059, -21.194022) "></path>
+                <path d="M134.82286,21.5846024 C135.329247,21.9694568 135.673586,22.3340503 135.855885,22.6783937 C136.088823,23.1341423 136.205291,23.6759687 136.205291,24.3038891 L136.205291,69.6507993 C136.205291,70.2280809 136.372396,70.701546 136.706612,71.0712088 C137.040827,71.4408716 137.456059,71.6510192 137.952318,71.7016579 C138.266279,71.7320412 138.473894,71.7928068 138.575172,71.8839565 C138.706833,72.0054895 138.772662,72.1574034 138.772662,72.3397029 C138.772662,72.5321301 138.706833,72.6865759 138.575172,72.803045 C138.443511,72.9195141 138.251087,72.9777478 137.997893,72.9777478 C137.197801,72.9777478 136.52938,72.7245579 135.992609,72.2181705 C135.273539,71.5193559 134.914009,70.6686379 134.914009,69.6659908 L134.914009,24.3038891 C134.914009,23.7468629 134.746904,23.2784616 134.412688,22.8986711 C134.078473,22.5188806 133.653114,22.3087329 133.136598,22.268222 C132.853022,22.2378387 132.655533,22.1669455 132.544128,22.0555403 C132.432723,21.9441351 132.377021,21.7871574 132.377021,21.5846024 C132.377021,21.3921752 132.432723,21.2402613 132.544128,21.128856 C132.655533,21.0174508 132.853022,20.9465576 133.136598,20.9161744 C133.663241,20.8756634 134.091132,20.6655158 134.420284,20.2857253 C134.749436,19.9059347 134.914009,19.4375334 134.914009,18.8805073 L135.119095,-27.0500727 C135.119095,-28.002081 135.422923,-28.7945654 136.030588,-29.4275496 C136.638253,-30.0605338 137.36744,-30.3770212 138.21817,-30.3770212 C138.461236,-30.3770212 138.648597,-30.3162556 138.780258,-30.1947227 C138.911918,-30.0731897 138.977748,-29.9212758 138.977748,-29.7389763 C138.977748,-29.5566768 138.911918,-29.4047629 138.780258,-29.2832299 C138.689108,-29.1819525 138.481492,-29.1161231 138.157404,-29.0857398 C137.651017,-29.0351011 137.233254,-28.8224216 136.904102,-28.4476949 C136.57495,-28.0729683 136.410377,-27.6070989 136.410377,-27.0500727 L136.205291,18.8805073 C136.205291,19.5185554 136.104015,20.0325309 135.90146,20.4224492" id="{-copy-2" fill="#000000" transform="translate(135.677384, 21.300363) rotate(90.000000) translate(-135.677384, -21.300363) "></path>
+                <path d="M242.551084,22.1077404 C243.057471,22.4925948 243.40181,22.8571882 243.584109,23.2015317 C243.817047,23.6572803 243.933515,24.1991067 243.933515,24.827027 L243.933515,70.1739373 C243.933515,70.7512189 244.10062,71.224684 244.434836,71.5943468 C244.769051,71.9640096 245.184283,72.1741572 245.680542,72.2247959 C245.994502,72.2551792 246.202118,72.3159447 246.303396,72.4070945 C246.435056,72.5286274 246.500886,72.6805414 246.500886,72.8628408 C246.500886,73.055268 246.435056,73.2097139 246.303396,73.326183 C246.171735,73.4426521 245.979311,73.5008857 245.726117,73.5008857 C244.926025,73.5008857 244.257604,73.2476959 243.720833,72.7413085 C243.001763,72.0424939 242.642233,71.1917758 242.642233,70.1891288 L242.642233,24.827027 C242.642233,24.2700009 242.475128,23.8015996 242.140912,23.4218091 C241.806696,23.0420185 241.381337,22.8318709 240.864822,22.7913599 C240.581245,22.7609767 240.383757,22.6900835 240.272352,22.5786783 C240.160947,22.4672731 240.105245,22.3102953 240.105245,22.1077404 C240.105245,21.9153132 240.160947,21.7633992 240.272352,21.651994 C240.383757,21.5405888 240.581245,21.4696956 240.864822,21.4393124 C241.391465,21.3988014 241.819356,21.1886538 242.148508,20.8088632 C242.47766,20.4290727 242.642233,19.9606714 242.642233,19.4036453 L242.551084,-30.5299736 C242.551084,-31.4819819 243.842365,-31.0869997 243.842365,-30.5299736 L243.933515,19.4036453 C243.933515,20.0416934 243.832239,20.5556689 243.629684,20.9455872" id="{-copy-3" fill="#000000" transform="translate(243.303065, 21.197820) rotate(90.000000) translate(-243.303065, -21.197820) "></path>
+                <text id="…" font-family="CourierNewPSMT, Courier New" font-size="11" font-weight="normal" fill="#000000">
+                    <tspan x="296" y="21.5">…</tspan>
+                </text>
+                <text id="1" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                    <tspan x="3" y="11"> 1</tspan>
+                </text>
+                <text id="level-2" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                    <tspan x="34" y="10">level 2</tspan>
+                </text>
+                <text id="level-3" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                    <tspan x="109" y="10">level 3</tspan>
+                </text>
+                <text id="level-4" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                    <tspan x="219" y="10">level 4</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="294px" height="246px" viewBox="0 0 294 246" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 44.1 (41455) - http://www.bohemiancoding.com/sketch -->
+    <title>S4 - Left-Left Tree</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="DE4" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="DE4M4" transform="translate(-1699.000000, -513.000000)">
+            <g id="S4---Left-Left-Tree" transform="translate(1700.000000, 512.000000)">
+                <g id="BST">
+                    <g id="Tree-Node" transform="translate(48.000000, 212.000000)">
+                        <ellipse id="Oval" stroke="#000000" cx="16.997238" cy="17.0535714" rx="16.997238" ry="17.0535714"></ellipse>
+                        <text id="4" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="13.2354668" y="20.2032967">4</tspan>
+                        </text>
+                    </g>
+                    <g id="Tree-Node" transform="translate(0.000000, 212.000000)">
+                        <ellipse id="Oval" stroke="#000000" cx="16.997238" cy="17.0535714" rx="16.997238" ry="17.0535714"></ellipse>
+                        <text id="2" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="13.2354668" y="20.2032967">2</tspan>
+                        </text>
+                    </g>
+                    <g id="Tree-Node" transform="translate(123.681934, 141.000000)">
+                        <ellipse id="Oval" stroke="#000000" cx="16.997238" cy="17.0535714" rx="16.997238" ry="17.0535714"></ellipse>
+                        <text id="6" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="13.2354668" y="20.2032967">6</tspan>
+                        </text>
+                    </g>
+                    <path d="M41.4478372,172.5 L21.5534351,212.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <path d="M55.4987277,175.5 L63.4783715,211.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <g id="Tree-Node" transform="translate(33.910941, 141.000000)">
+                        <ellipse id="Oval" stroke="#000000" cx="16.997238" cy="17.0535714" rx="16.997238" ry="17.0535714"></ellipse>
+                        <text id="3" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="13.2354668" y="20.2032967">3</tspan>
+                        </text>
+                    </g>
+                    <g id="Tree-Node" transform="translate(258.338422, 81.000000)">
+                        <ellipse id="Oval" stroke="#000000" cx="16.997238" cy="17.0535714" rx="16.997238" ry="17.0535714"></ellipse>
+                        <text id="8" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="13.2354668" y="20.2032967">8</tspan>
+                        </text>
+                    </g>
+                    <path d="M93.259542,110.5 L61.5,144.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <path d="M116.201018,111.5 L133.157761,142.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <g id="Tree-Node" transform="translate(88.770992, 81.000000)">
+                        <ellipse id="Oval" stroke="#000000" cx="16.997238" cy="17.0535714" rx="16.997238" ry="17.0535714"></ellipse>
+                        <text id="5" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="13.2354668" y="20.2032967">5</tspan>
+                        </text>
+                    </g>
+                    <path d="M176.048346,57.5 L121.188295,90.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <path d="M206.969466,54.5 L260.832061,88.5" id="Line" stroke="#000000" stroke-linecap="square"></path>
+                    <g id="Tree-Node" transform="translate(173.554707, 31.000000)">
+                        <ellipse id="Oval" stroke="#000000" cx="16.997238" cy="17.0535714" rx="16.997238" ry="17.0535714"></ellipse>
+                        <text id="7" font-family="AndaleMono, Andale Mono" font-size="11" font-weight="normal" fill="#000000">
+                            <tspan x="13.2354668" y="20.2032967">7</tspan>
+                        </text>
+                    </g>
+                    <text id="Unbalanced-BST" font-family="HelveticaNeue, Helvetica Neue" font-size="12" font-weight="normal" fill="#000000">
+                        <tspan x="101" y="11">Unbalanced BST</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
