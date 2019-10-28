@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+<!-- saved from url=(0078)https://app.dataquest.io/m/171/quickly-analyzing-data-with-parallel-processing -->
+<html lang="en" class=" wf-merriweather-n7-active wf-merriweather-n3-active wf-industry-n3-active wf-industry-n2-active wf-ingra-n2-active wf-ingra-n4-active wf-active"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>.async-hide { opacity: 0 !important}</style><script type="text/javascript" async="" src="./1. Movie Quotes Data_files/main.2.1.182fcb38.js"></script><script type="text/javascript" async="" src="./1. Movie Quotes Data_files/loader.2.1.js"></script><script type="text/javascript" async="" src="./1. Movie Quotes Data_files/js"></script><script async="" src="./1. Movie Quotes Data_files/profitwell.js"></script><script type="text/javascript" async="" src="./1. Movie Quotes Data_files/analytics.js"></script><script src="./1. Movie Quotes Data_files/1208964489120563" async=""></script><script src="./1. Movie Quotes Data_files/identity.js" async=""></script><script type="text/javascript" async="" src="./1. Movie Quotes Data_files/fbevents.js"></script><script type="text/javascript" async="" src="./1. Movie Quotes Data_files/gtm.js"></script><script type="text/javascript" async="" src="./1. Movie Quotes Data_files/insight.min.js"></script><script type="text/javascript" async="" src="./1. Movie Quotes Data_files/qevents.js"></script><script type="text/javascript" async="" src="./1. Movie Quotes Data_files/mf5oz4we"></script><script type="text/javascript" async="" src="./1. Movie Quotes Data_files/fbds.js"></script><script type="text/javascript" async="" src="./1. Movie Quotes Data_files/recaptcha__vi.js"></script><script type="text/javascript" async="" src="./1. Movie Quotes Data_files/analytics.min.js"></script><script src="./1. Movie Quotes Data_files/nmj4kuc.js" async=""></script><script>var optimize_container_ids = {}
+  var stage_or_prod_id = window.location.host === 'app.dataquest.io' ? 'GTM-PNQ6824' : 'GTM-KFF7W4B';
+  optimize_container_ids[stage_or_prod_id] = true;
+  (function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
+  h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
+  (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
+  })(window,document.documentElement,'async-hide','dataLayer',4000,
+  optimize_container_ids);</script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="fragment" content="!"><title idle-disabled="true">Processing Data With Concurrent.futures | Dataquest</title><meta name="description" content="Learn Python and R for data science. Learn by coding and working with data in your browser. Build your portfolio with projects and become a data scientist."><script>(function(d) {
+      var config = {
+        kitId: 'nmj4kuc',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);</script><script src="./1. Movie Quotes Data_files/api.js" async="" defer="defer"></script><link rel="stylesheet" href="./1. Movie Quotes Data_files/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous"><link href="./1. Movie Quotes Data_files/css" rel="stylesheet"><link rel="stylesheet" href="./1. Movie Quotes Data_files/icon"><style>.loader {
+      z-index: 1000;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: #f9f9fb;
+    }
+    .loader .top {
+      transition: all ease 0.25;
+      padding: 0 0 0 40px;
+      background-image: linear-gradient(90deg,#30394b,#4c5361);
+      height: 90px;
+      overflow: hidden;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+          -ms-flex-align: center;
+              align-items: center;
+    }
+    .loader .message {
+      font-family: "ingra", sans-serif;
+      font-size: 14px;
+      color: white;
+      margin-left: 20px;
+    }
+
+    .rocket {
+      width: 25px;
+      height: 25px;
+      background-size: contain;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAFiQAABYkBbWid+gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAATdEVYdFRpdGxlAExvZ28tT24tTGlnaHQVgXW8AAAEuUlEQVRYhb2YXYhVVRTHf+fOOIofjVYPLmdMmgqFRAO1PBGiDyGVRkZlOEQiQaZTaYp9oX1ASEUQOKYFKWMQRIEWWjmkMFlupXTCypeUCh2XmorTZKkzc08Pe92Z03Fk7jne23pZe6+z/mv92XufvdfewciRUymVqLpBACLh+VLFzJUqkKqbDPwMHFB1t5QqbkkIqroG4FugDrgJ2KPqFpUidnAlU6zqKoAPgYfM9DkQAHdZ/yOgXiTszprjSkfwNXrJrQZmA7OAN80213wyS+YRVHX3AlvwI7ZAJNyY+L4QWAdEwH0i4WdZ8mQaQVV3PdBk5DYkyQGIhOuBD8ynyTCppTILCFgBDAd+AZ5SdUOBV4G7gQqgGXgRWASEwI2GeSJtotRTbGSOAcOAe4AvgJ3A9ITrPuA2YCawDegARomEf6XJl2WK641cG7AdmGHkImA5sBC4AEwC5phPm2Hq0ybLQvAx0022fUy0/tci4Vsi4bv47QZgsvk0JbDlIajqcsAE635seqDpszHXP00PSvhOsBjlIQjUAlXWPmT6D9PjY8lvNn0i4VtlMcpG8AbTp2OLvQXotG/7VZ0DJgN54EsA8z2diFEWgoW97LeCQSQ8hN9C8vj1OBX/w7wiErbGsL8nYhQlaffByPTQuFEkfFvVteC3lArgK5FwbwI7OBGjLAQLa6pO1VWKhF0xkq1Aa18gVVdJ79Se6MvncpJ2igt/5wDSraU6w8RjFCVpCT4Sa49NgRt3mRj9StEEVd1oYH7MlOaMnBJrz7dYRUmaEVyG38cuWH+hqruqP5D5LLbuRYuxrBwEbzW9EX/wjwCWFIFbYr7t+PIrHqukBAsnwI/AWmsvVXXXXg5g35Zadx1wMBGrNATtCBPrHgFeAvbia8LNqm5gH5iBwGbz+R542bAAYveZ0hDEV8WFtdchEl4EHgROAXcAG/rAbLBvZ4AHRMIL9G4xRd+biyJoJdMe695vtiPAPPwRN0/Vva/qBqm6KlW3MfatXiQsHHNzTO8p9qaXZg1+Y7o+NqUtwA5rLwCO4ovT+Wbbhi//C68OD5t9V7FJ0xx1W4FVwNXAXFU3GHgeuC7mc00CMxs4qOpex49mNf4s3lps0lR3ElW3Dl/SR/h1CXAO2I0flZ/MNh6//m6nt7AoYNaLhEVfntIWC8/iL+a1QBewBl9WtSf8NgOoumHASvxeOABQ4Lk0CbPc6mYAbwCPioQH499qtPHpgKj7qDzZmMCMBTYBK0XC5rIStISBSPifuq5W19wZETQDRATTjsniXf1hipFMLwsiYTRa19Qdj12A8uRqeoPme9o12jhY9J2JWchlJjhK1y7JExyexL5PY6R69rU8uXzM3eXI/1CjjalfFTITzJGfac1ZBdtFqrbjq+UTAdFOgBptrMauqRHBtP+NYEQQJG0n5fGT7VSPaad6TJs0nALopqLHL0f+EkzZCPYl43R15XDOrqqmfcVxdZnI9CVZX7cK661nrZ1j6PSI4AWAKXy34wjsHsK57vP2uBARdF0apn/JOsWbgH+A9wq2gHwrvt7b/zdDDgAcluUd+LO4E/gkS67ML6w12jigTRo6+/M7ri4IcSN+lWfOZMnzLzfFicWWhq1kAAAAAElFTkSuQmCC");
+    }
+    .loader .rocket {
+      -webkit-animation: loading_anim linear 4s;
+              animation: loading_anim linear 4s;
+      -webkit-animation-iteration-count: infinite;
+              animation-iteration-count: infinite;
+    }
+
+    .dq_text {
+      width: 140px;
+      height: 15px;
+      margin: 10px 0 10px 10px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gQ3JlYXRlZCB3aXRoIElua3NjYXBlIChodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy8pIC0tPgoKPHN2ZwogICB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iCiAgIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiCiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIKICAgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICB2ZXJzaW9uPSIxLjEiCiAgIHdpZHRoPSI0NjUuMzU5OTkiCiAgIGhlaWdodD0iNDguMzQ0NzgiCiAgIGlkPSJzdmcyIj4KICA8dGl0bGUKICAgICBpZD0idGl0bGU4Ij5Mb2dvLU9uLURhcms8L3RpdGxlPgogIDxtZXRhZGF0YQogICAgIGlkPSJtZXRhZGF0YTMxIj4KICAgIDxyZGY6UkRGPgogICAgICA8Y2M6V29yawogICAgICAgICByZGY6YWJvdXQ9IiI+CiAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+CiAgICAgICAgPGRjOnR5cGUKICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPgogICAgICAgIDxkYzp0aXRsZT5Mb2dvLU9uLURhcms8L2RjOnRpdGxlPgogICAgICA8L2NjOldvcms+CiAgICA8L3JkZjpSREY+CiAgPC9tZXRhZGF0YT4KICA8ZGVmcwogICAgIGlkPSJkZWZzNCI+CiAgICA8c3R5bGUKICAgICAgIGlkPSJzdHlsZTYiIC8+CiAgPC9kZWZzPgogIDxwYXRoCiAgICAgZD0ibSAxNywwLjY2IGMgMTQuNjYsMCAyMywxMSAyMywyMy40IDAsMTIuNCAtOC4yLDIzLjYgLTIzLDIzLjYgbCAtMTcsMCAwLC00NyAxNywwIHogbSAtMC4xMywzOS44OCBjIDkuNzUsMCAxNS4zMywtNy41MyAxNS4zMywtMTYuNDEgMCwtOC44OCAtNS42MSwtMTYuNDEgLTE1LjI2LC0xNi40MSBsIC05LjE1LDAgMCwzMi44MSA5LjA4LDAgMCwwLjAxIHoiCiAgICAgaWQ9InN2Z18xIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDY0LjU5LDM4LjExIC00LjU3LDkuNzUgLTguMiwwIDAsLTEgMjEuNzcsLTQ2LjQgMy42MywwIDIxLjY1LDQ2LjQgMCwxIC04LjE0LDAgLTQuNjQsLTkuNzUgLTIxLjUsMCB6IG0gMi41NiwtNi41OSAxNi40OCwwIC04LjIsLTE4LjgzIC04LjI4LDE4LjgzIHoiCiAgICAgaWQ9InN2Z18yIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDEwNi44NSw3LjU1IDAsLTYuOTMgMzUsMCAwLDYuOTMgLTEzLjY5LDAgMCw0MC4xNSAtNy42NywwIDAsLTQwLjE1IC0xMy42NCwwIHoiCiAgICAgaWQ9InN2Z18zIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDE2Mi41MywzOC4xMSAtNC41Nyw5Ljc1IC04LjIsMCAwLC0xIDIxLjc5LC00Ni40IDMuNjMsMCAyMS42NSw0Ni40IDAsMSAtOC4xNCwwIC00LjY0LC05Ljc1IC0yMS41MiwwIHogbSAyLjU2LC02LjU5IDE2LjUsMCAtOC4yLC0xOC44MyAtOC4zLDE4LjgzIHoiCiAgICAgaWQ9InN2Z180IgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDI1Ni41OSw0OC4xNyAtNy4xMywwIC0yLjc0LC00LjIgYSAyNC4wOCwyNC4wOCAwIDAgMSAtMTQuMzIsNC4zNyBjIC0xMi45MSwwIC0yMy42NywtOS40OCAtMjMuNjcsLTI0LjIxIDAsLTE0LjQ2IDkuODIsLTI0LjA3IDI0LC0yNC4wNyAxMi43MSwwIDIzLjk0LDguNzQgMjMuOTQsMjQuMDcgMCw2LjE5IC0xLjY4LDExLjMgLTQuODQsMTUuMjYgbCA0Ljc2LDcuNTggMCwxLjIgeiBtIC0yMy44NywtNy4xMyBjIDguODEsMCAxNi4wNywtNS41OCAxNi4wNywtMTYuOTUgMCwtMTEgLTcuMjYsLTE2Ljc0IC0xNi4xNCwtMTYuNzQgLTguODgsMCAtMTYsNiAtMTYsMTYuNzQgMC4wMSwxMC45NiA3LjI3LDE2Ljk1IDE2LjA4LDE2Ljk1IGwgLTAuMDEsMCB6IgogICAgIGlkPSJzdmdfNSIKICAgICBzdHlsZT0iZmlsbDojZmZmZmZmIiAvPgogIDxwYXRoCiAgICAgZD0ibSAyNzUuMjMsMzEuNTkgMCwtMzEuMjcgNy44LDAgMCwzMS4wNyBjIDAsNi4xOSA0LjY0LDkuNjIgMTAuNjIsOS42MiA1Ljk4LDAgMTAuNDksLTMuNDMgMTAuNDksLTkuNjIgbCAwLC0zMS4wNyA3LjczLDAgMCwzMS4yNyBjIDAsMTAuNDkgLTguMiwxNi40MSAtMTguMjIsMTYuNDEgLTEwLjAyLDAgLTE4LjQyLC01LjkyIC0xOC40MiwtMTYuNDEgeiIKICAgICBpZD0ic3ZnXzYiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KICA8cGF0aAogICAgIGQ9Im0gMzYxLjg0LDcuNDggLTIwLjc4LDAgMCwxMi40OSAxOS42NCwwIDAsNi45MyAtMTkuNjQsMCAwLDEzLjY3IDIxLjE4LDAgMCw3LjEzIC0yOS4wNSwwIDAsLTQ3LjA4IDI4LjY1LDAgMCw2Ljg2IHoiCiAgICAgaWQ9InN2Z183IgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDM4Ni41MiwzNC4wNCBjIDAuMzQsNS4zMSA2LjEyLDcuMjYgMTEuMjMsNy4yNiA1LjExLDAgMTAuODksLTEuMjEgMTAuODksLTcuMDYgMCwtNi4xOSAtNi4zOSwtNi43OSAtMTEuODQsLTcuMzMgLTguNjEsLTAuNzQgLTE3LjE1LC0zLjUgLTE3LjE1LC0xMi45MSAwLC05LjY4IDguNTQsLTE0IDE3LjY5LC0xNCA4Ljk0LDAgMTcuNDIsNCAxNy42MiwxMy42NSBsIC03LjM3LDAgYyAtMC4zNCwtNSAtNS42NSwtNi42NiAtMTAuMjksLTYuNjYgLTQuMywwIC05Ljg5LDEuNDggLTkuODksNi43OSAwLDUuMzEgNS4zMSw2IDEwLjc2LDYuNzIgOS41NSwxLjA4IDE4LjI5LDMgMTguMjksMTMuNzkgMCwxMC4zNiAtOS43NSwxNCAtMTguNTYsMTQgLTkuMjEsMC4yIC0xOC44MywtNC4zNyAtMTksLTE0LjI2IGwgNy42NywwIC0wLjA1LDAuMDEgeiIKICAgICBpZD0ic3ZnXzgiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KICA8cGF0aAogICAgIGQ9Im0gNDMwLjM2LDcuNTUgMCwtNi45MyAzNSwwIDAsNi45MyAtMTMuNjgsMCAwLDQwLjE1IC03LjY3LDAgMCwtNDAuMTUgLTEzLjY1LDAgeiIKICAgICBpZD0ic3ZnXzkiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KPC9zdmc+Cg==");
+    }
+
+    @-webkit-keyframes loading_anim {
+      0% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+      }
+      50% {
+        -webkit-transition: translateY(-50%);
+        transition: translateY(-50%);
+      }
+      75%, 100% {
+        -webkit-transform: translateY(-500%);
+                transform: translateY(-500%);
+      }
+    }
+
+    @keyframes loading_anim {
+      0% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+      }
+      50% {
+        -webkit-transition: translateY(-50%);
+        transition: translateY(-50%);
+      }
+      75%, 100% {
+        -webkit-transform: translateY(-500%);
+                transform: translateY(-500%);
+      }
+    }
+    .ant-form-explain {
+      color: red;
+    }</style><link rel="apple-touch-icon" sizes="57x57" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-180x180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Dataquest"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#fff"><meta name="application-name" content="Dataquest"><link rel="icon" type="image/png" sizes="32x32" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon-16x16.png"><link rel="shortcut icon" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon.ico"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-320x460.png"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-640x920.png"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-640x1096.png"><link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-750x1294.png"><link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1182x2208.png"><link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1242x2148.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-748x1024.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-768x1004.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1496x2048.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1536x2008.png"><style type="text/css">.tk-merriweather{font-family:"merriweather",serif;}.tk-industry{font-family:"industry",sans-serif;}.tk-ingra{font-family:"ingra",sans-serif;}</style><style type="text/css">@font-face{font-family:tk-merriweather-n7;src:url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;}@font-face{font-family:tk-merriweather-n3;src:url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:tk-industry-n3;src:url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:tk-industry-n2;src:url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:tk-ingra-n2;src:url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:tk-ingra-n4;src:url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff2"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("opentype");font-weight:400;font-style:normal;}</style><style type="text/css">@font-face{font-family:merriweather;src:url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;}@font-face{font-family:merriweather;src:url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:industry;src:url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:industry;src:url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:ingra;src:url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:ingra;src:url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff2"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("opentype");font-weight:400;font-style:normal;}</style><link href="./1. Movie Quotes Data_files/app.eb9c5672a70e0f34428c.css" rel="stylesheet"><script src="./1. Movie Quotes Data_files/logger.min.js" async=""></script><script async="" src="./1. Movie Quotes Data_files/modules-v55.js"></script><link rel="stylesheet" type="text/css" href="./1. Movie Quotes Data_files/NotificationsInMenu.09808b64bac3460ae0f5.css"><script charset="utf-8" src="./1. Movie Quotes Data_files/NotificationsInMenu.dfa67edc80a27ad52fd8.js"></script><script charset="utf-8" src="./1. Movie Quotes Data_files/vendors_TheMission.0473137e870a7ce7e36f.js"></script><link rel="stylesheet" type="text/css" href="./1. Movie Quotes Data_files/TheMission.40883b66c977c6c03337.css"><script charset="utf-8" src="./1. Movie Quotes Data_files/TheMission.7c9223c5f27a15c4257a.js"></script><script charset="utf-8" src="./1. Movie Quotes Data_files/vendors_MissionReference.51bc46f42d17cd685d03.js"></script><link rel="stylesheet" type="text/css" href="./1. Movie Quotes Data_files/MissionReference.bf41c3640eb1463e2c57.css"><script charset="utf-8" src="./1. Movie Quotes Data_files/MissionReference.5fec493ea89554ed5119.js"></script><link rel="stylesheet" type="text/css" href="./1. Movie Quotes Data_files/vendors_DqEditor.9f679c74a1a04ab5ed6f.css"><script charset="utf-8" src="./1. Movie Quotes Data_files/vendors_DqEditor.bb447024d4e2460dcbb7.js"></script><link rel="stylesheet" type="text/css" href="./1. Movie Quotes Data_files/DqEditor.3197904b9ae6d3e264d6.css"><script async="" src="./1. Movie Quotes Data_files/MathJax.js"></script><script charset="utf-8" src="./1. Movie Quotes Data_files/DqEditor.ef8e247bfd1c12e85a07.js"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><script async="" src="./1. Movie Quotes Data_files/saved_resource"></script><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style data-emotion=""></style><script charset="utf-8" src="./1. Movie Quotes Data_files/vendors_pdf_maker.80604c779b1a021415e7.js"></script><script charset="utf-8" src="./1. Movie Quotes Data_files/vendors_PercentageRing_ProfileView.06bbca7c0f5a300012d7.js"></script><script charset="utf-8" src="./1. Movie Quotes Data_files/PercentageRing.db1bd5eed129fd93853d.js"></script><link rel="canonical" href="https://www.dataquest.io/m/171/quickly-analyzing-data-with-parallel-processing" data-react-helmet="true"><meta name="twitter:site" content="@dataquestio" data-react-helmet="true"><meta name="twitter:title" content="Processing Data With Concurrent.futures | Dataquest" data-react-helmet="true"><meta name="og:title" content="Processing Data With Concurrent.futures | Dataquest" data-react-helmet="true"><meta name="og:site_name" content="Dataquest" data-react-helmet="true"><meta name="fb:app_id" content="1068949113131184" data-react-helmet="true"><meta name="twitter:card" content="summary" data-react-helmet="true"><meta name="description" content="This interactive data engineering tutorial teaches you to use Python&#39;s current.futures library to work with large data efficiently." data-react-helmet="true"><meta name="twitter:description" content="This interactive data engineering tutorial teaches you to use Python&#39;s current.futures library to work with large data efficiently." data-react-helmet="true"><meta name="og:description" content="This interactive data engineering tutorial teaches you to use Python&#39;s current.futures library to work with large data efficiently." data-react-helmet="true"><meta name="og:url" content="https://www.dataquest.io/m/171/quickly-analyzing-data-with-parallel-processing" data-react-helmet="true"><script type="application/ld+json" data-react-helmet="true">{"@context":"http://schema.org","@type":"Organization","url":"https://www.dataquest.io","logo":"https://s3.amazonaws.com/dq-email/brand/dataquest_logo.svg"}</script></head><body><div id="MathJax_Message" style="display: none;"></div><div id="root" style="height: 100%"><div class="dq-min-h-screen"><div class="CoreLayout__root"><header data-test-selector="navigation" class="dq-shadow DqHeader__root_mission"><div class="DqHeader__inner_content"><div class="DqHeader__left_side OnboardingReveal__shown"><a class="DqHeader__back" href="https://app.dataquest.io/dashboard"><span class="dqicon dqicon-left DqHeader__icon"></span><div class="DqHeader__back_text">Dashboard</div></a></div><div class="DqHeader__middle"><div class="DqHeader__mission_title">Quickly Analyzing Data With Parallel Processing</div></div><div class="DqHeader__right_side OnboardingReveal__shown"><div class="MenuDropdown__menu_dashboard_redesign"><img src="./1. Movie Quotes Data_files/vm-alert47089393eebec9aa0b46b292342712bc.svg" style="margin: 0px 12px;"></div><div title="Get Help" class="MenuDropdown__menu_dashboard_redesign"><div class="HelpScoutLauncher__body"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183);">help_outline</i></div></div><div class="MenuDropdown__menu_dashboard_redesign"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183); margin: 0px 8px;">notifications_none</i></div><div class="MenuDropdown__menu_dashboard_redesign"><div data-test-selector="user-menu" class="DqHeader__user_box"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183); margin: 0px 0px 0px 8px;">account_circle</i><i class="material-icons" style="color: rgb(146, 162, 183); font-size: 16px;">keyboard_arrow_down</i></div></div></div></div></header><div class="CoreLayout__view"><div class="MissionView__root" data-test-selector="MissionView"><div class="TheMission__root"><div class="SplitPane TheMission__split_pane vertical " style="display: flex; flex: 1 1 0%; height: 100%; position: absolute; outline: none; overflow: hidden; user-select: text; flex-direction: row; left: 0px; right: 0px;"><div class="Pane vertical Pane1  " style="flex: 0 0 auto; position: relative; outline: none; width: 50%;"><div class="TheMission__is_interactive"><div class="MissionInformation__light OnboardingReveal__shown"><div class="MissionTabs__root"><div class="OnboardingReveal__shown"><div class="MissionTabs__button_selected">Learn</div></div><div class="OnboardingReveal__shown"><div class="MissionTabs__button">Mission Reference</div></div></div><div class="MissionInformation__body"><div class="MissionLearn__light ScrollAccordion__root"><div class="ScrollAccordion__top_headers" style="width: 912px;"><div id="onboarding-tip-learn" theme="light" class="ScrollAccordion__in_header SidePanelTitle__light">Learn</div><div id="onboarding-tip-instructions" theme="light" class="ScrollAccordion__in_header SidePanelTitle__light">instructions</div></div><div class="ScrollAccordion__body"><div class="ScrollAccordion__section"><div theme="light" class="ScrollAccordion__in_text SidePanelTitle__light" style="opacity: 0;">Learn</div><iframe style="height: 100%; width: 100%; border: none; background: transparent; position: absolute; z-index: -1; top: 0px; left: 0px;" src="./1. Movie Quotes Data_files/saved_resource.html"></iframe><div id="body" class="MissionLearn__section MissionMarkup__light"><div><p>In the past few missions, we learned about I/O bound and CPU bound programs.  We also learned about threads, processes, and in which situations to use each.  In this mission, we'll bring everything together, and learn how to process a dataset using what we've learned.</p>
+<p>We'll be using a dataset of movie quotes during this mission.  The quotes are taken from the scripts of <code>1068</code> movies, and constitute <code>894014</code> lines altogether, and take up <code>56</code> megabytes of disk space.  Although we want these examples in this mission to execute quickly for learning purposes, limiting dataset size, the techniques we'll be using can be scaled up to much larger datasets easily.</p>
+<p>The movie lines are either <a target="_blank" href="https://www.imdb.com/">IMDB</a> memorable quotes, or lines surrounding memorable quotes.  The number of lines we have for each movie doesn't necessarily correspond to the length of the movie.  The dataset originally came from <a target="_blank" href="https://www.cs.cornell.edu/~cristian/Cornell_Movie-Dialogs_Corpus.html">Cornell</a>, but has been modified to be easier to work with.</p>
+<p>The dataset is <code>1068</code> different text files, one for each movie.  All of the files are stored in the folder <code>lines</code>.  Each text file contains all of the lines we have for the movie, separated by a newline character (<code>\n</code>).  Here's an example for <a target="_blank" href="http://www.imdb.com/title/tt0093779/">The Princess Bride</a>, which is an excerpt from <code>theprincessbride.txt</code>:</p>
+</div><div class="dq_theme MissionMarkup__light-code DqEditor__root"><textarea autocomplete="off" style="display: none;">Hello. My name is Inigo Montoya, you killed my father, prepare to die.
+Hello. My name is Inigo Montoya. You killed my father. Prepare to die.
+Stop saying that!</textarea><div class="CodeMirror cm-s-dq-light CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 7.5px; left: 4px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: -15px; border-right-width: 15px; min-height: 73px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 4px; top: 0px; height: 18px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation"><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">Hello</span>. <span class="cm-property">My</span> <span class="cm-variable">name</span> <span class="cm-keyword">is</span> <span class="cm-variable">Inigo</span> <span class="cm-variable">Montoya</span>, <span class="cm-variable">you</span> <span class="cm-variable">killed</span> <span class="cm-variable">my</span> <span class="cm-variable">father</span>, <span class="cm-variable">prepare</span> <span class="cm-variable">to</span> <span class="cm-variable">die</span>.</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-property">Hello</span>. <span class="cm-property">My</span> <span class="cm-variable">name</span> <span class="cm-keyword">is</span> <span class="cm-variable">Inigo</span> <span class="cm-variable">Montoya</span>. <span class="cm-property">You</span> <span class="cm-variable">killed</span> <span class="cm-variable">my</span> <span class="cm-variable">father</span>. <span class="cm-property">Prepare</span> <span class="cm-variable">to</span> <span class="cm-variable">die</span>.</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-property">Stop</span> <span class="cm-variable">saying</span> <span class="cm-variable">that</span><span class="cm-operator">!</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 15px; width: 1px; border-bottom: 0px solid transparent; top: 73px;"></div><div class="CodeMirror-gutters" style="display: none; height: 88px;"></div></div></div></div><div>
+<p>Each file also has some relatively messy artifacts, such as stray punctuation or other lines.  Here's another example, again from <code>theprincessbride.txt</code>:</p>
+</div><div class="dq_theme MissionMarkup__light-code DqEditor__root"><textarea autocomplete="off" style="display: none;">I wasn't finished -- the next thing you lose will be your left eye, followed by your right --
+ -- and then my ears, I understand. Let's get on with it
+ Wrong! Your ears you keep, and I'll tell you why --
+ -- so that every shriek of every child at seeing your hideousness will be yours to cherish -- every babe that weeps at your approach, every woman who cries out, "Dear God, what is that thing?" will echo in your perfect ears.
+ --------------------------------------------------------------------------- 119.
+ That is what "to the pain" means. It means I leave you in anguish, wallowing in freakish misery forever.</textarea><div class="CodeMirror cm-s-dq-light CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 7.5px; left: 4px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: -15px; border-right-width: 15px; min-height: 181px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 4px; top: 0px; height: 18px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation" style=""><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">I</span> <span class="cm-variable">wasn</span><span class="cm-string">'t finished -- the next thing you lose will be your left eye, followed by your right --</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> <span class="cm-operator">--</span> <span class="cm-keyword">and</span> <span class="cm-variable">then</span> <span class="cm-variable">my</span> <span class="cm-variable">ears</span>, <span class="cm-variable">I</span> <span class="cm-variable">understand</span>. <span class="cm-property">Let</span><span class="cm-string">'s get on with it</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> <span class="cm-variable cm-error">Wrong</span><span class="cm-operator">!</span> <span class="cm-variable">Your</span> <span class="cm-variable">ears</span> <span class="cm-variable">you</span> <span class="cm-variable">keep</span>, <span class="cm-keyword">and</span> <span class="cm-variable">I</span><span class="cm-string">'ll tell you why --</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> <span class="cm-operator">--</span> <span class="cm-variable">so</span> <span class="cm-variable">that</span> <span class="cm-variable">every</span> <span class="cm-variable">shriek</span> <span class="cm-variable">of</span> <span class="cm-variable">every</span> <span class="cm-variable">child</span> <span class="cm-variable">at</span> <span class="cm-variable">seeing</span> <span class="cm-variable">your</span> <span class="cm-variable">hideousness</span> <span class="cm-variable">will</span> <span class="cm-variable">be</span> <span class="cm-variable">yours</span> <span class="cm-variable">to</span> <span class="cm-variable">cherish</span> <span class="cm-operator">--</span> <span class="cm-variable">every</span> <span class="cm-variable">babe</span> <span class="cm-variable">that</span> <span class="cm-variable">weeps</span> <span class="cm-variable">at</span> <span class="cm-variable">your</span> <span class="cm-variable">approach</span>, <span class="cm-variable">every</span> <span class="cm-variable">woman</span> <span class="cm-variable">who</span> <span class="cm-variable">cries</span> <span class="cm-variable">out</span>, <span class="cm-string">"Dear God, what is that thing?"</span> <span class="cm-variable">will</span> <span class="cm-variable">echo</span> <span class="cm-keyword">in</span> <span class="cm-variable">your</span> <span class="cm-variable">perfect</span> <span class="cm-variable">ears</span>.</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> <span class="cm-operator cm-error">-</span><span class="cm-operator">--------------------------------------------------------------------------</span> <span class="cm-number">119.</span></span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> <span class="cm-variable">That</span> <span class="cm-keyword">is</span> <span class="cm-variable">what</span> <span class="cm-string">"to the pain"</span> <span class="cm-variable">means</span>. <span class="cm-property">It</span> <span class="cm-variable">means</span> <span class="cm-variable">I</span> <span class="cm-variable">leave</span> <span class="cm-variable">you</span> <span class="cm-keyword">in</span> <span class="cm-variable">anguish</span>, <span class="cm-variable">wallowing</span> <span class="cm-keyword">in</span> <span class="cm-variable">freakish</span> <span class="cm-variable">misery</span> <span class="cm-variable">forever</span>.</span></pre></div></div></div></div></div><div style="position: absolute; height: 15px; width: 1px; border-bottom: 0px solid transparent; top: 181px;"></div><div class="CodeMirror-gutters" style="display: none; height: 196px;"></div></div></div></div><div>
+<p>We'll have to figure out a way to deal with the stray punctuation as we progress through the mission.  For now, let's just load in a couple of the text files and familiarize ourselves with the structure of the data.</p></div></div></div><div class="ScrollAccordion__section"><div theme="light" class="ScrollAccordion__in_text SidePanelTitle__light" style="opacity: 0;">instructions</div><iframe style="height: 100%; width: 100%; border: none; background: transparent; position: absolute; z-index: -1; top: 0px; left: 0px;" src="./1. Movie Quotes Data_files/saved_resource(1).html"></iframe><div id="body" class="MissionLearn__instructions MissionMarkup__light"><ul>
+<li>Open the <code>lines/theprincessbride.txt</code> file, display it, and explore it.  What does the structure look like?  Do you see any stray or unexpected characters?</li>
+<li>Open the <code>lines/theroadwarrior.txt</code> file, display it, and explore it.  What's different from the other file?</li>
+<li>Explore other files (you can list files using the <a target="_blank" href="https://docs.python.org/3/library/os.html#os.listdir">os.listdir()</a> function) until you're satisified that you've found most of the strange punctuation and other stray, non-dialogue, lines.</li>
+</ul></div><div class="MissionLearn__section"><div theme="light" class="DqDropMenu__close"><div class="DqDropMenu__top" data-test-selector="GetHelpMenu"><div class="DqDropMenu__text">Get Help</div><div class="DqDropMenu__icon"><span class="dqicon dqicon-down undefined"></span></div></div><div class="DqDropMenu__options"><div class="DqDropMenu__option" data-test-selector="mission-help-get-hint">Get a hint</div><div class="DqDropMenu__option" title="[alt+a] to See the answer" data-test-selector="mission-help-show-answer">See the answer</div><div class="DqDropMenu__option">Message Us</div></div></div></div></div><div class="ScrollAccordion__section"><div theme="light" class="ScrollAccordion__in_text SidePanelTitle__light" style="opacity: 1;">The Answer</div><iframe style="height: 100%; width: 100%; border: none; background: transparent; position: absolute; z-index: -1; top: 0px; left: 0px;" src="./1. Movie Quotes Data_files/saved_resource(2).html"></iframe><div class="dq_theme MissionLearn__solution DqEditor__root"><textarea autocomplete="off" style="display: none;">with open("lines/theprincessbride.txt") as f:
+    print(f.read())
+
+with open("lines/theroadwarrior.txt") as f:
+    print(f.read())
+
+with open("lines/spiderman.txt") as f:
+    print(f.read())</textarea><div class="CodeMirror cm-s-dq-light CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 7.5px; left: 34px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 30px; margin-bottom: -15px; border-right-width: 15px; min-height: 163px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>x</pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"><div class="CodeMirror-selected" style="position: absolute; left: 4px; top: 0px; width: 810px; height: 18px;"></div><div class="CodeMirror-selected" style="position: absolute; left: 4px; top: 126px; width: 142.625px; height: 18px;"></div><div class="CodeMirror-selected" style="position: absolute; left: 4px; top: 18px; width: 810px; height: 108px;"></div></div><div class="CodeMirror-cursors" style="visibility: hidden;"></div><div class="CodeMirror-code" role="presentation" style=""><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">with</span> <span class="cm-builtin">open</span>(<span class="cm-string">"lines/theprincessbride.txt"</span>) <span class="cm-keyword">as</span> <span class="cm-variable">f</span>:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">2</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-builtin">print</span>(<span class="cm-variable">f</span>.<span class="cm-property">read</span>())</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">3</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">4</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">with</span> <span class="cm-builtin">open</span>(<span class="cm-string">"lines/theroadwarrior.txt"</span>) <span class="cm-keyword">as</span> <span class="cm-variable">f</span>:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">5</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-builtin">print</span>(<span class="cm-variable">f</span>.<span class="cm-property">read</span>())</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">6</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">7</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">with</span> <span class="cm-builtin">open</span>(<span class="cm-string">"lines/spiderman.txt"</span>) <span class="cm-keyword">as</span> <span class="cm-variable">f</span>:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">8</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-builtin">print</span>(<span class="cm-variable">f</span>.<span class="cm-property">read</span>())</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 15px; width: 1px; border-bottom: 0px solid transparent; top: 163px;"></div><div class="CodeMirror-gutters" style="height: 178px; left: 0px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div></div></div></div></div></div></div><div class="ScrollAccordion__bottom_headers" style="width: 912px;"></div></div></div></div></div></div><span class="Resizer vertical "></span><div class="Pane vertical Pane2  " style="flex: 1 1 0%; position: relative; outline: none;"><div class="TheMission__is_interactive"><div><div class="TaskPanels__root OnboardingReveal__shown"><div class="TaskPanels__dark"><div class="TaskPanels__editor_section"><div class="MissionEditorFiles__dark"><span class="meta MissionEditorFiles__file_active"><div title="[alt+t] to toggle open">script.py</div></span></div><div class="TaskPanels__editor_with_extra"><div class="dq_theme  DqEditor__root"><textarea autocomplete="off" style="display: none;">with open("lines/theprincessbride.txt") as f:
+    print(f.read())
+
+with open("lines/theroadwarrior.txt") as f:
+    print(f.read())
+
+with open("lines/spiderman.txt") as f:
+    print(f.read())</textarea><div class="CodeMirror cm-s-dq-dark CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 133.5px; left: 176.625px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 30px; margin-bottom: -15px; border-right-width: 15px; min-height: 163px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre><div class="CodeMirror-linenumber CodeMirror-gutter-elt"><div>1</div></div></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors" style="visibility: hidden;"><div class="CodeMirror-cursor" style="left: 146.625px; top: 126px; height: 18px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation" style=""><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">with</span> <span class="cm-builtin">open</span>(<span class="cm-string">"lines/theprincessbride.txt"</span>) <span class="cm-keyword">as</span> <span class="cm-variable">f</span>:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">2</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-builtin">print</span>(<span class="cm-variable">f</span>.<span class="cm-property">read</span>())</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">3</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">4</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">with</span> <span class="cm-builtin">open</span>(<span class="cm-string">"lines/theroadwarrior.txt"</span>) <span class="cm-keyword">as</span> <span class="cm-variable">f</span>:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">5</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-builtin">print</span>(<span class="cm-variable">f</span>.<span class="cm-property">read</span>())</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">6</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">7</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">with</span> <span class="cm-builtin">open</span>(<span class="cm-string">"lines/spiderman.txt"</span>) <span class="cm-keyword">as</span> <span class="cm-variable">f</span>:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">8</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-builtin">print</span>(<span class="cm-variable">f</span>.<span class="cm-property">read</span>())</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 15px; width: 1px; border-bottom: 0px solid transparent; top: 163px;"></div><div class="CodeMirror-gutters" style="height: 178px; left: 0px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div></div></div></div></div><div class="TaskPanels__extra_lines"></div></div></div><div class="TaskPanels__outputs"><div class="MissionResultFormat__dark"><div class="MissionResultFormat__title">Output</div><div class="code MissionOutput__results" id="output-0-stdout"> You feeling any better?
+ A little bit.
+ Guess what.
+ What?
+ Your grandfather's here.
+ Mom, can't you tell him that I'm sick?
+ You are sick, that's why he's here.
+ He'll pinch my cheek. I hate that.
+ Maybe he won't.
+ Hey! How's the sickie? Heh?
+ I think I'll leave you two pals.
+ I brought you a special present.
+ What is it?
+ Open it up.
+ A book?
+ That's right. When I was your age, television was called books. And this is a special book. It was the book my father used to read to me when I was sick, and I used to read it to your father. And today, I'm gonna read it to you.
+ Has it got any sports in it?
+ Are you kidding? Fencing. Fighting. Torture. Revenge. Giants. Monsters. Chases. Escapes. True love. Miracles.
+ It doesn't sound too bad. I'll try and stay awake.
+ Oh. Well, thank you very much. It's very nice of you. Your vote of confidence is overwhelming. All right. The Princess Bride, by S. Morgenstern. Chapter One. Buttercup was raised on a small farm in the country of Florin.
+ Her favorite pastimes were riding her horse and tormenting the farm boy that worked there. His name was Westley, but she never called him that. Isn't that a wonderful beginning?
+ Yeah. It's really good.
+ Nothing gave Buttercup as much pleasure as ordering Westley around.
+ --------------------------------------------------------------------------- 4.
+ Farm boy. Polish my horse's saddle. I want to see my face shining in it by morning.
+ As you wish.
+ "As you wish" was all he ever said to her.
+ Farm Boy. Fill these with water -- --please.
+ As you wish.
+ That day, she was amazed to discover that when he was saying, "As you wish," what he meant was, "I love you."
+ --------------------------------------------------------------------------- 5.
+ And even more amazing was the day she realized she truly loved him back.
+ Farm Boy, fetch me that pitcher.
+ As you wish.
+ -hold it, hold it-
+ What is this? Are you trying to trick me? -- Where's the sports? -- Is this a kissing book?
+ -- wait, just wait --
+ -- well, when does it get good?
+ Keep your shirt on. Let me read. Westley had no money for marriage. So he packed his few belongings and left the farm to seek his fortune across the sea.
+ --------------------------------------------------------------------------- 6.
+ It was a very emotional time for Buttercup --
+ I don't be-leeve this.
+ I fear I'll never see you again.
+ Of course you will.
+ But what if something happens to you?
+ Hear this now: I will come for you.
+ But how can you be sure?
+ This is true love. You think this happens every day?
+ Westley didn't reach his destination. His ship was attacked by the Dread Pirate Roberts, who never left captives alive. When Buttercup got the news that Westley was murdered --
+ -- murdered by pirates is good --
+ Buttercup, staring out the window of her room. --------------------------------------------------------------------------- 7.
+ She went into her room and shut the door. And for days, she neither slept nor ate.
+ I will never love again.
+ Five years later, the main square of Florin City was filled as never before to hear the announcement of the great Prince Humperdinck's bride-to be.
+ My people ... a month from now, our country will have its 500th anniversary. On that sundown, I shall marry a lady who was once a commoner like yourselves -- -- but perhaps you will not find her common now. Would you like to meet her?
+ --------------------------------------------------------------------------- 8.
+ My people ... the Princess Buttercup!!
+ Buttercup's emptiness consumed her. Although the law of the land gave Humperdinck the right to choose his bride, she did not love him.
+ Despite Humperdinck's reassurance that she would grow to love him, the only joy she found was in her daily ride.
+ --------------------------------------------------------------------------- 9.
+ A word, my lady?
+ We are but poor, lost circus performers. Is there a village nearby?
+ There is nothing nearby; not for miles.
+ Then there will be no one to hear you scream-
+ What is that you're ripping?
+ It's fabric from the uniform of an Army officer of Guilder.
+ Who's Guilder?
+ The country across the sea. The sworn enemy of Florin. Go!
+ Once the horse reaches the castle, the fabric will make the Prince suspect the Guilderians have abducted his love. When he finds her body dead on the Guilder frontier, his suspicions will be totally confirmed.
+ You never said anything about killing anyone.
+ I've hired you to help me start a war. That's a prestigious line of work with a long and glorious tradition.
+ I just don't think it's right, killing an innocent girl.
+ Am I going mad or did the word "think" escape your lips? You were not hired for your brains, you hippopotamic land mass.
+ I agree with Fezzik.
+ --------------------------------------------------------------------------- 11.
+ Vizzini, in a fury.
+ was in a fury --now
+ -- when I found you, you were so slobbering drunk you couldn't buy brandy -- -- and you -- friendless, brainless, helpless, hopeless -- Do you want me to send you back to where you were, unemployed in Greenland?
+ That Vizzini, he can fuss.
+ ... fuss ... fuss ... I think he likes to scream at us.
+ Probably he means no harm.
+ He's really very short on charm.
+ Oh, you've a great gift for rhyme.
+ Yes, some of the time.
+ Enough of that.
+ FEZZIK, are there rocks ahead?
+ If there are, we'll all be dead.
+ No more rhymes now, I mean it.
+ Anybody want a peanut?
+ We'll reach the Cliffs by dawn.
+ Why are you doing that?
+ Making sure nobody's following us.
+ That would be inconceivable.
+ Despite what you think, you will be caught. And when you are, the Prince will see you all hanged.
+ Of all the necks on this boat, Highness, the one you should be worrying about is your own.
+ Stop doing that. We can all relax, it's almost over-
+ You're sure nobody's following us?
+ As I told you, it would be absolutely, totally, and in all other ways, inconceivable. No one in Guilder knows what we've done. And no one in Florin could have gotten here so fast. Out of curiosity, why do you ask?
+ No reason. It's only, I just happened to look behind us, and something is there.
+ What?
+ Probably some local fisherman out for a pleasure cruise at night through eel-infested waters.
+ Go in, get after her!
+ I don't swim.
+ I only dog paddle.
+ Veer left. Left. Left!
+ Do you know what that sound is, Highness? Those are the Shrieking Eels -- if you doubt me, just wait. They always grow louder when they're about to feed on human flesh.
+ If you swim back now, I promise, no harm will come to you. I doubt you will get such an offer from the Eels.
+ She doesn't get eaten by the Eels at this time.
+ What?
+ The Eel doesn't get her. I'm explaining to you because you looked nervous.
+ Well, I wasn't nervous.
+ Well, maybe I was a little bit concerned. But that's not the same thing.
+ Because I can stop now if you want.
+ No. You could read a little bit more ... if you want.
+ "Do you know what that sound is, Highness?"
+ Those are the Shrieking Eels.
+ We're past that, Grandpa.
+ You read it already.
+ Oh. Oh my goodness, I did. I'm sorry. Beg your pardon.
+ All right, all right, let's see. Uh, she was in the water, the Eel was coming after her. She was frightened. The Eel started to charge her. And then -
+ --------------------------------------------------------------------------- 18.
+ Put her down. Just put her down.
+ I think he's getting closer.
+ He's no concern of ours. Sail on! I suppose you think you're brave, don't you?
+ Only compared to some.
+ Look! He's right on top of us. I wonder if he is using the same wind we are using.
+ Whoever he is, he's too late -- -- see? The Cliffs of Insanity.
+ Hurry up. Move the thing! Um ... that other thing. Move it! We're safe -- only FEZZIK is strong enough to go up our way -- he'll have to sail around for hours 'til he finds a harbor.
+ He's climbing the rope. And he's gaining on us.
+ Inconceivable!
+ --------------------------------------------------------------------------- 21.
+ Faster!
+ I thought I was going faster.
+ You were supposed to be this colossus. You were this great, legendary thing. And yet he gains.
+ Well, I'm carrying three people. And he's got only himself.
+ -- I do not accept excuses. I'm just going to have to find myself a new giant, that's all.
+ Don't say that, Vizzini. Please.
+ --------------------------------------------------------------------------- 22.
+ Did I make it clear that your job is at stake?
+ He has very good arms.
+ He didn't fall? Inconceivable!!
+ You keep using that word -- I do not think it means what you think it means. My God! He's climbing.
+ Whoever he is, he's obviously seen us with the Princess, and must therefore die. You, carry her. We'll head straight for the Guilder frontier. Catch up when he's dead. If he falls, fine. If not, the sword.
+ I want to duel him left-handed.
+ You know what a hurry we're in.
+ Well, it's the only way I can be satisfied. If I use my right -- tch -- over too quickly.
+ Oh, have it your way.
+ You be careful. -- people in masks cannot be trusted.
+ I'm waiting!
+ --------------------------------------------------------------------------- 25.
+ Hello there.
+ Slow going?
+ Look, I don't mean to be rude, but this is not as easy as it looks. So I'd appreciate it if you wouldn't distract me.
+ Sorry.
+ Thank you.
+ I do not suppose you could speed things up?
+ If you're in such a hurry, you could lower a rope, or a tree branch, or find something useful to do.
+ I could do that. In fact, I've got some rope up here. But I do not think that you will accept my help, since I am only waiting around to kill you.
+ That does put a damper on our relationship.
+ But I promise I will not kill you until you reach the top.
+ That's very comforting. But I'm afraid you'll just have to wait.
+ I hate waiting. I could give you my word as a Spaniard.
+ No good. I've known too many Spaniards.
+ You don't know any way you'll trust me?
+ Nothing comes to mind.
+ I swear on the soul of my father, Domingo Montoya, you will reach the top alive.
+ Throw me the rope.
+ Thank you.
+ We'll wait until you're ready.
+ Again. Thank you.
+ I do not mean to pry, but you don't by any chance happen to have six fingers on your right hand?
+ Do you always begin conversations this way?
+ My father was slaughtered by a sixfingered man. He was a great swordmaker, my father. And when the six-fingered man appeared and requested a special sword, my father took the job. He slaved a year before he was done.
+ I have never seen its equal.
+ The six-fingered man returned and demanded it, but at one-tenth his promised price. My father refused. Without a word, the six-fingered man slashed him through the heart. I loved my father, so, naturally, challenged his murderer to a duel ... I failed ...
+ --------------------------------------------------------------------------- 29.
+ the six-fingered man did leave me alive with the six-fingered sword, but he gave me these.
+ How old were you?
+ I was eleven years old. When I was strong enough, I dedicated my life to the study of fencing. So the next time we meet, I will not fail. I will go up to the sixfingered man and say, "Hello, my name is Inigo Montoya. You killed my father. Prepare to die."
+ You've done nothing but study swordplay?
+ More pursuit than study lately. You see, I cannot find him. It's been twenty years now. I am starting to lose confidence. I just work for Vizzini to pay the bills. There's not a lot of money in revenge.
+ great sword, starting
+ You are ready, then?
+ Whether I am or not, you've been more than fair.
+ You seem a decent fellow. I hate to kill you.
+ You seem a decent fellow. I hate to die.
+ Begin!
+ You're using Bonetti's defense against me, ah?
+ I thought it fitting, considering the rocky terrain --
+ Naturally, you must expect me to attack with Capo Ferro.
+ -- naturally -- --but I find Thibault cancels out Capo Ferro, don't you?
+ Unless the enemy has studied his Agrippa-
+ -- which I have.
+ You are wonderful!
+ Thank you -- I've worked hard to become so.
+ I admit it -- you are better than I am.
+ Then why are you smiling?
+ Because I know something you don't know.
+ And what is that?
+ I am not left-handed.
+ --------------------------------------------------------------------------- 33.
+ You're amazing!
+ I ought to be after twenty years.
+ There's something I ought to tell you.
+ Tell me.
+ I am not left-handed either.
+ Who are you?!
+ No one of consequence.
+ I must know.
+ Get used to disappointment.
+ Okay.
+ --------------------------------------------------------------------------- 35.
+ Kill me quickly.
+ I would as soon destroy a stained glass window as an artist like yourself. However, since I can't have you following me either --
+ Please understand, I hold you in the highest respect.
+ Inconceivable!
+ Give her to me. Catch up with us quickly.
+ What do I do?
+ Finish him, finish him. Your way.
+ Oh, good, my way. Thank you, Vizzini. Which way is my way?
+ Pick up one of those rocks, get behind the boulder, and in a few minutes, the Man in Black will come running around the bend. The minute his head is in view, hit it with the rock!
+ My way's not very sportsmanlike.
+ --------------------------------------------------------------------------- 37.
+ I did that on purpose. I don't have to miss.
+ I believe you -- So what happens now?
+ We face each other as God intended. Sportsmanlike. No tricks, no weapons, skill against skill alone.
+ You mean, you'll put down your rock and I'll put down my sword, and we'll try to kill each other like civilized people?
+ I could kill you now.
+ Frankly, I think the odds are slightly in your favor at hand fighting.
+ It's not my fault being the biggest and the strongest. I don't even exercise.
+ Look are you just fiddling around with me or what?
+ I just want you to feel you're doing well. I hate for people to die embarrassed.
+ You're quick.
+ And a good thing too.
+ Why do you wear a mask? Were you burned by acid, or something like that?
+ Oh no. It's just that they're terribly comfortable. I think everyone will be wearing them in the future.
+ I just figured out why you give me so much trouble.
+ Why is that, do you think?
+ beginning to get a
+ --------------------------------------------------------------------------- 40.
+ Why should that make such a difference?
+ Well ... ... you see, you use different moves when you're fighting half a dozen people than when you only have to be worried about one.
+ I don't envy you the headache you will have when you awake. But, in the meantime, rest well ... and dream of large women.
+ There was a mighty duel -- it ranged all over. They were both masters.
+ Who won? How did it end?
+ position where Inigo direction Vizzini and
+ Shall we track them both?
+ The loser is nothing. -- Only the Princess matters -- -- clearly this was all planned by warriors of Guilder. We must be ready for whatever lies ahead.
+ Could this be a trap?
+ I always think everything could be a trap -- Which is why I'm still alive.
+ So, it is down to you. And it is down to me.
+ If you wish her dead, by all means keep moving forward.
+ Let me explain-
+ -- there's nothing to explain. You're trying to kidnap what I've rightfully stolen.
+ Perhaps an arrangement can be reached.
+ There will be no arrangement -- -- and you're killing her!
+ But if there can be no arrangement, then we are at an impasse.
+ I'm afraid so -- I can't compete with you physically. And you're no match for my brains.
+ You're that smart?
+ Let me put it this way: have you ever heard of Plato, Aristotle, Socrates?
+ Yes.
+ Morons.
+ Really? In that case, I challenge you to a battle of wits.
+ For the Princess?
+ To the death?
+ I accept.
+ Good. Then pour the wine.
+ Inhale this, but do not touch.
+ I smell nothing.
+ What you do not smell is called iocane powder. It is odorless, tasteless, dissolves instantly in liquid, and is among the more deadlier poisons known to man.
+ Hmm.
+ All right: where is the poison? The battle of wits has begun. It ends when you decide and we both drink, and find out who is right and who is dead.
+ But it's so simple. All I have to do is divine from what I know of you. Are you the sort of man who would put the poison into his own goblet, or his enemy's?
+ Now, a clever man would put the poison into his own goblet, because he would know that only a great fool would reach for what he was given. I'm not a great fool, so I can clearly not choose the wine in front of you. But you must have known I was not a great fool; you would have counted on it, so I can clearly not choose the wine in front of me.
+ You've made your decision then7
+ Not remotely. Because iocane comes from Australia, as everyone knows. And Australia is entirely peopled with criminals. And criminals are used to having people not trust them, as you are not trusted by me. So I can clearly not choose the wine in front of you.
+ Truly, you have a dizzying intellect.
+ Wait till I get going! Where was I?
+ Australia.
+ Yes -- Australia, and you must have suspected I would have known the powder's origin, so I can clearly not choose the wine in front of me.
+ You're just stalling now.
+ You'd like to think that, wouldn't you? You've beaten my giant, which means you're exceptionally strong. So, you could have put the poison in your own goblet, trusting on your strength to save you. So I can clearly not choose the wine in front of you. But, you've also bested my Spaniard which means you must have studied. And in studying, you must have learned that man is mortal so you would have put the poison as far from yourself as possible, so I can clearly not choose the wine in front of me.
+ You're trying to trick me into giving away something -- it won't work --
+ It has worked -- you've given everything away -- I know where the poison is.
+ Then make your choice.
+ I will. And I choose --
+ -- what in the world can that be?
+ --------------------------------------------------------------------------- 47.
+ What? Where? I don't see anything.
+ Oh, well, I-I could have sworn I saw something. No matter.
+ What's so funny?
+ I'll tell you in a minute. First, let's drink -- me from my glass, and you from yours.
+ You guessed wrong.
+ You only think I guessed wrong -- -- that's what's so funny! I switched glasses when your back was turned. You fool.
+ --------------------------------------------------------------------------- 48.
+ You fell victim to one of the classic blunders. The most famous is "Never get involved in a land war in Asia." But only slightly less well known is this: "Never go in against a Sicilian when death is on the line."
+ Who are you?
+ I am no one to be trifled with, that is all you ever need know.
+ To think -- all that time it was your cup that was poisoned.
+ They were both poisoned. I spent the last few years building up an immunity to iocane powder.
+ --------------------------------------------------------------------------- 49.
+ Someone has beaten a giant! There will be great suffering in Guilder if she dies.
+ carrying the promise
+ If you'll release me ... whatever you ask for ransom ... you'll get it, I promise you...
+ And what is that worth, the promise of a woman? You're very funny, Highness.
+ I was giving you a chance. No matter where you take me ... there's no greater hunter than Prince Humperdinck. He could track a falcon on a cloudy day. He can find you
+ You think your dearest love will save you?
+ I never said he was my dearest love. And yes, he will save me. That I know.
+ You admit to me you do not love your fiance?
+ He knows I do not love him.
+ "Are not capable of love" is what you mean.
+ I have loved more deeply than a killer like yourself could ever dream.
+ That was a warning, Highness. The next time, my hand flies on its own. For where I come from, there are penalties when a woman lies.
+ Iocane. I'd bet my life on it. And there are the Princess's footprints. She is alive ... or was, an hour ago. If she is otherwise when I find her, I shall be very put out.
+ --------------------------------------------------------------------------- 51.
+ Rest, Highness.
+ I know who you are -- your cruelty reveals everything.
+ You're the Dread Pirate Roberts; admit it.
+ With pride. What can I do for you?
+ You can die slowly cut into a thousand pieces.
+ Hardly complimentary, Your Highness. Why loose your venom on me?
+ You killed my love.
+ It's possible; I kill a lot of people. Who was this love of yours? Another Prince, like this one, ugly, rich, and scabby?
+ No. A farm boy. Poor. Poor and perfect, with eyes like the sea after a storm.
+ On the high seas, your ship attacked, and the Dread Pirate Roberts never takes prisoners.
+ I can't afford to make exceptions. Once word leaks out that a pirate has gone soft, people begin to disobey you, and then it's nothing but work, work, work, all the time.
+ You mock my pain!
+ Life is pain, Highness. Anyone who says differently is selling something. I remember this farm boy of yours, I think. This would be, what, five years ago?
+ Does it bother you to hear?
+ Nothing you can say will upset me.
+ He died well, that should please you. No bribe attempts or blubbering. He simply said, "Please. Please, I need to live." It was the "please" that caught my memory.
+ --------------------------------------------------------------------------- 53.
+ I asked him what was so important for him. "True love," he replied. And then he spoke of a girl of surpassing beauty and faithfulness. I can only assume he meant you. You should bless me for destroying him before he found out what you really are.
+ And what am I?
+ Faithfulness he talked of, madam. Your enduring faithfulness. Now, tell me truly. When you found out he was gone, did you get engaged to your prince that same hour, or did you wait a whole week out of respect for the dead?
+ You mocked me once, never do it again -- I died that day!
+ You can die too, for all I care!!
+ ... as ... you ... wish...
+ Oh, my sweet Westley; what have I done?
+ Disappeared. He must have seen us closing in, which might account for his panicking in error. Unless I'm wrong, and I am never wrong, they are headed dead into the fire swamp.
+ --------------------------------------------------------------------------- 55.
+ Can you move at all?
+ Move? You're alive. If you want, I can fly.
+ I told you, "I would always come for you." Why didn't you wait for me?
+ Well ... you were dead.
+ Death cannot stop true love. All it can do is delay it for a while.
+ I will never doubt again.
+ There will never be a need.
+ Oh no. No, please.
+ What is it? What's the matter?
+ They're kissing again, do we have to hear the kissing part?
+ Someday, you may not mind so much.
+ Skip on to the Fire Swamp -- that sounded good.
+ Oh. You're sick, I'll humor you. So now, where were we here? Yeah, yeah, yeah. Ah. Oh. Okay. Westley and Buttercup raced along the ravine floor.
+ Ha. Your pig fiance is too late. A few more steps and we'll be safe in the Fire Swamp.
+ We'll never survive.
+ Nonsense -- you're only saying that because no one ever has.
+ It's not that bad. I'm not saying I'd like to build a summer home here, but the trees are actually quite lovely.
+ Well now, that was an adventure.
+ Singed a bit, were you?
+ You?
+ Well, one thing I will say. The Fire Swamp certainly does keep you on your toes.
+ This will all soon be but a happy memory because Roberts' ship "Revenge" is anchored at the far end. And I, as you know, am Roberts.
+ But how is that possible, since he's been marauding twenty years and you only left me five years ago?
+ I myself am often surprised at life's little quirks.
+ You see, what I told you before about saying "please" was true. It intrigued Roberts, as did my descriptions of your beauty.
+ Finally, Roberts decided something. He said, "All right, Westley, I've never had a valet. You can try it for tonight. I'll most likely kill you in the morning." Three years he said that. "Good night, Westley. Good work. Sleep well. I'll most likely kill you in the morning." It was a fine time for me. I was learning to fence, to fight, anything anyone would teach me. And Roberts and I eventually became friends. And then it happened.
+ What? -- go on --
+ Well, Roberts had grown so rich, he wanted to retire. So he took me to his cabin and told me his secret. "I am not the Dread Pirate Roberts," he said. "My name is Ryan. I inherited this ship from the previous Dread Pirate Roberts, just as you will inherit it from me. The man I inherited it from was not the real Dread Pirate Roberts, either.
+ --------------------------------------------------------------------------- 60.
+ His name was Cummerbund. The real Roberts has been retired fifteen years and living like a king in Patagonia." Then he explained the name was the important thing for inspiring the necessary fear. You see, no one would surrender to the Dread Pirate Westley.
+ So we sailed ashore, took on an entirely new crew and he stayed aboard for awhile as first mate, all the time calling me Roberts. Once the crew believed, he left the ship and I have been Roberts ever since. Except, now that we're together, I shall retire and hand the name over to someone else. Is everything clear to you?
+ --------------------------------------------------------------------------- 61.
+ We'll never succeed -- we may as well die here.
+ No. No. We have already succeeded.
+ I mean, what are the three terrors of the Fire Swamp? One, the flame spurts. No problem. There's a popping sound preceding each, we can avoid that. Two, the Lightning Sand. But you were clever enough to discover what that looks like, so in the future we can avoid that too.
+ Westley, what about the R.O.U.S.'s?
+ Rodents of Unusual Size? I don't think they exist...
+ Westley!
+ --------------------------------------------------------------------------- 63.
+ We did it.
+ Now, was that so terrible?
+ Surrender!
+ You mean you wish to surrender to me? Very well, I accept.
+ I give you full marks for bravery --don't make yourself a fool.
+ Ah, but how will you capture us? We know the secrets of the Fire Swamp. We can live there quite happily for some time. So, whenever you feel like dying, feel free to visit.
+ I tell you once again -- surrender!
+ It will not happen!
+ --------------------------------------------------------------------------- 65.
+ For the last time -- SURRENDER!
+ Will you promise not to hurt him?
+ What was that?
+ What was that?
+ If we surrender, and I return with you, will you promise not to hurt this man?
+ May I live a thousand years and never hunt again.
+ He is a sailor on the pirate ship "Revenge." Promise to return him to his ship.
+ I swear it will be done.
+ Once we're out of sight, take him back to Florin and throw him in the Pit of Despair.
+ I swear it will be done.
+ I thought you were dead once, and it almost destroyed me. I could not bear it if you died again, not when I could save you.
+ Come, sir. We must get you to your ship.
+ We are men of action. Lies do not become us.
+ Well spoken, sir --
+ -- what is it?
+ You have six fingers on your right hand -- someone was looking for you --
+ Where am I?
+ The Pit of Despair.
+ Don't even think -- -- don't even think about trying to escape. The chains are far too thick. And don't dream of being rescued either. The only way in is secret. And only the Prince, the Count, and I know how to get in and out.
+ Then I'm here till I die?
+ Till they kill you. Yeah.
+ Then why bother curing me?
+ The Prince and the Count always insist on everyone being healthy before they're broken.
+ So it's to be torture.
+ I can cope with torture.
+ You don't believe me?
+ You survived the Fire Swamp. You must be very brave... ... but nobody withstands The Machine.
+ She's been like that ever since the Fire Swamp. It's my father's failing health that's upsetting her.
+ Of course.
+ The King died that very night, and before the following dawn, Buttercup and Humperdinck were married.
+ And at noon, she met her subjects again. This time as their Queen.
+ My father's final words were...
+ -- hold it. Hold it, Grandpa.
+ You read that wrong. She doesn't marry Humperdinck, she marries Westley. I'm just sure of it. After all that Westley did for her, if she does not marry him, it wouldn't be fair.
+ Well, who says life is fair? Where is that written? Life isn't always fair.
+ I'm telling you you're messing up the story, now get it right!
+ Do you want me to go on with this?
+ Yes.
+ All right, then. No more interruptions. ... at noon, she met her subjects again. This time as their Queen.
+ --------------------------------------------------------------------------- 71.
+ My father's final words were "love her as I loved her, and there will be joy." I present to you your Queen. Queen Buttercup.
+ Why do you do this?
+ Because you had love in your hands, and you gave it up.
+ But they would have killed Westley if I hadn't done it.
+ Your true love lives and you marry another -- -- True love saved her in the Fire Swamp, and she treated it like garbage. And that's what she is, the Queen of Refuse! So, bow down to her if you want. Bow to her. Bow to the Queen of Slime, the Queen of Filth, the Queen of Putrescence. Boo! Boo! Rubbish! Filth! Slime! Muck! Boo! Boo!
+ It was ten days till the wedding. The King still lived, but Buttercup's nightmares were growing steadily worse.
+ See? Didn't I tell you she'd never marry that rotten Humperdinck?
+ -- yes, you're very smart. Shut-Up.
+ It comes to this: I love Westley. I always have. I know now I always will. If you tell me I must marry you in ten days, please believe I will be dead by morning.
+ I could never cause you grief; consider our wedding off. You returned this Westley to his ship?
+ Yes.
+ Then we will simply alert him. Beloved, are you certain he still wants you? After all, it was you who did the leaving in the Fire Swamp. Not to mention that pirates are not known to be men of their words.
+ My Westley will always come for me.
+ I suggest a deal. You write four copies of a letter. I'll send my four fastest ships. One in each direction. The Dread Pirate Roberts is always close to Florin this time of year. We'll run up the white flag and deliver your message. If Westley wants you, bless you both. If not ... please consider me as an alternative to suicide. Are we agreed?
+ --------------------------------------------------------------------------- 74.
+ Your Princess is really a winning creature. A trifle simple, perhaps, but her appeal is undeniable.
+ Oh, I know. The people are quite taken with her. It's odd, but when I hired Vizzini to have her murdered on our engagement day, I thought that was clever. But it's going to be so much more moving when I strangle her on our wedding night. Once Guilder is blamed, the nation will be truly outraged. They'll demand we go to war.
+ Now, where is that secret knot? It's impossible to find. Are you coming down into the Pit? Westley's got his strength back. I am starting him on The Machine tonight.
+ Tyrone, you know how much I love watching you work. But, I've got my country's five hundredth anniversary to plan, my wedding to arrange, My wife to murder, and Guilder to frame for it. I'm swamped.
+ Get some rest -- if you haven't got your health, you haven't got anything.
+ Beautiful, isn't it?
+ It took me half a lifetime to invent it. I'm sure you've discovered my deep and abiding interest in pain. At present I'm writing the definitive work on the subject. So I want you to be totally honest with me on how The Machine makes you feel.
+ This being our first try, I'll use the lowest setting.
+ --------------------------------------------------------------------------- 76.
+ As you know, the concept of the suction pump is centuries old. Well, really, that's all this is. Except that instead of sucking water, I'm sucking life. I've just sucked one year of your life away. I might one day go as high as five, but I really don't know what that would do to you. So, let's just start with what we have. What did this do to you? Tell me. And remember, this is for posterity, so be honest -- how do you feel?
+ --------------------------------------------------------------------------- 77.
+ Interesting.
+ Yellin.
+ Sire.
+ As Chief Enforcer of all Florin, I trust you with this secret: killers from Guilder are infiltrating the Thieves' Forest and plan to murder my bride on our wedding night.
+ My spy network has heard no such news.
+ Any word from Westley?
+ Too soon, my angel. Patience.
+ He will come for me.
+ Of course.
+ She will not be murdered. On the day of the wedding, I want the Thieves' Forest emptied and every inhabitant arrested.
+ Many of the thieves will resist. My regular enforcers will be inadequate.
+ Form a Brute Squad then. I want the Thieves' Forest emptied before I wed.
+ It won't be easy, Sire.
+ Try ruling the world sometime.
+ The day of the wedding arrived. The Brute Squad had their hands full carrying out Humperdinck's orders.
+ Is everybody out?
+ Almost. There's a Spaniard giving us some trouble.
+ Well, you give him some trouble. Move!
+ I am waiting for you, Vizzini. You told me to go back to the beginning. So I have. This is where I am, and this is where I'll stay. I will not be moved.
+ Ho there.
+ I do not budge. Keep your "Ho there."
+ But the Prince gave orders --
+ -- So did Vizzini -- when a job went wrong, you went back to the beginning. And this is where we got the job. So it's the beginning, and I'm staying till Vizzini comes.
+ You! Brute! Come here.
+ -- I -- am -- waiting -- for -- Vizzini --
+ You surely are a meanie.
+ Hello.
+ It's you.
+ True!
+ You don't look so good. You don't smell so good either.
+ Perhaps not. I feel fine.
+ Yeah?
+ FEZZIK and Inigo were reunited. And as FEZZIK nursed his inebriated friend back to health, he told Inigo of Vizzini's death and the existence of Count Rugen, the sixfingered man. Considering Inigo's lifelong search, he handled the news surprisingly well.
+ Fezzik took great care in reviving Inigo.
+ That's enough. That's enough! Where is this Rugen so I may kill him?
+ He's with the Prince in the Castle. But the castle gate is guarded by thirty men.
+ How many could you handle?
+ I don't think more than ten.
+ That leaves twenty for me. At my best, I could never defeat that many. I need Vizzini to plan. I have no gift for strategy.
+ But Vizzini's dead.
+ No -- not Vizzini -- I need the Man in Black --
+ -- what? --
+ -- look, he bested you with strength, your greatness. He bested me with steel. He must have outthought Vizzini, and a man who can do that can plan my castle's onslaught any day. Let's go --
+ -- where?
+ To find the Man in Black, obviously.
+ But you don't know where he is.
+ Don't bother me with trifles; after twenty years, at last, my father's soul will be at peace.
+ There will be blood tonight!!
+ --------------------------------------------------------------------------- 83.
+ Rise and report.
+ The Thieves' Forest is emptied. Thirty men guard the castle gate.
+ Double it. My Princess must be safe.
+ The gate has but one key, and I carry that.
+ Ah! My dulcet darling. Tonight we marry. Tomorrow morning, your men will escort us to Florin Channel where every ship in my armada waits to accompany us on our honeymoon.
+ Every ship but your four fastest, you mean.
+ Every ship but the four you sent.
+ Yes. Yes, of course. Naturally, not those four.
+ Your Majesties.
+ You never sent the ships. Don't bother lying. It doesn't matter. Westley will come for me anyway.
+ You're a silly girl.
+ Yes, I am a silly girl, for not having seen sooner that you were nothing but a coward with a heart full of fear.
+ I-would-not-say-such things-if- Iwere-you-
+ Why not? You can't hurt me. Westley and I are joined by the bonds of love. And you cannot track that. Not with a thousand bloodhounds. And you cannot break it. Not with a thousand swords. And when I say you are a coward, that is only because you are the slimiest weakling ever to crawl the earth.
+ --------------------------------------------------------------------------- 85.
+ You truly love each other, and so you might have been truly happy. Not one couple in a century has that chance, no matter what the storybooks say. And so I think no man in a century will suffer as greatly as you will.
+ Not to fifty!!!
+ --------------------------------------------------------------------------- 86.
+ The Man in Black?
+ His true love is marrying another tonight, so who else has cause for Ultimate Suffering? Excuse me --
+ -- pardon me, it's important --
+ -- Fezzik, please --
+ Everybody ... MOVE!!
+ Thank you.
+ Where is the Man in Black?
+ You get there from this grove, yes?
+ Fezzik, jog his memory.
+ I'm sorry, Inigo. I didn't mean to jog him so hard. Inigo?
+ Father, I have failed you for twenty years. Now our misery can end. Somewhere ... somewhere close by is a man who can help us. I cannot find him alone. I need you. I need you to guide my sword. Please.
+ Guide my sword.
+ He's dead.
+ It just is not fair.
+ -- Grandpa, Grandpa -- wait --
+ -- wait -- what did FEZZIK mean, "He's dead?" I mean he didn't mean dead.
+ Westley's only faking, right?
+ You want me to read this or not?
+ Who gets Humperdinck?
+ I don't understand.
+ Who kills Prince Humperdinck? At the end, somebody's got to do it. Is it Inigo? Who?
+ Nobody. Nobody kills him. He lives.
+ You mean he wins? Jesus, Grandpa! What did you read me this thing for?
+ You know, you've been very sick and you're taking this story very seriously. I think we better stop now.
+ No! I'm okay. I'm okay. -- sit down. All right?
+ Okay. All right, now, let's see. Where were we? Oh yes. In the Pit of Despair.
+ Well, we Montoyas have never taken defeat easily. Come along, Fezzik. Bring the body.
+ The body?
+ Have you any money?
+ I have a little.
+ I just hope it's enough to buy a miracle, that's all.
+ Go away!
+ What? What?
+ Are you the Miracle Max who worked for the King all those years?
+ The King's stinking son fired me. And thank you so much for bringing up such a painful subject. While you're at it, why don't you give me a nice paper cut and pour lemon juice on it? We're closed!
+ Beat it or I'll call the Brute Squad.
+ I'm on the Brute Squad.
+ You are the Brute Squad.
+ We need a miracle. It's very important.
+ Look, I'm retired. And besides, why would you want someone the King's stinking son fired? I might kill whoever you wanted me to miracle.
+ He's already dead.
+ He is, eh? I'll take a look. Bring him in.
+ I've seen worse.
+ Sir. Sir.
+ Hah?
+ We're really in a terrible rush.
+ Don't rush me, sonny. You rush a miracle man, you get rotten miracles. You got money?
+ Sixty-five.
+ Sheesh! I never worked for so little, except once, and that was a very noble cause.
+ This is noble, sir. His wife is crippled. His children are on the brink of starvation.
+ Are you a rotten liar.
+ I need him to help avenge my father, murdered these twenty years.
+ Your first story was better. Where's that bellows? He probably owes you money, huh? Well, I'll ask him.
+ He's dead. He can't talk.
+ Look who knows so much. Well, it just so happens that your friend here is only mostly dead. There's a big difference between mostly dead and all dead. Please open his mouth.
+ Now, mostly dead is slightly alive. Now, all dead...well, with all dead, there's usually only one thing that you can do.
+ What's that?
+ Go through his clothes and look for loose change.
+ Hey! Hello in there. Hey! What's so important? What you got here that's worth living for?
+ ... tr ... oooo .... luv...
+ True love. You heard him. You could not ask for a more noble cause than that.
+ Sonny, true love is the greatest thing in the world. Except for a nice MLT, a mutton, lettuce and tomato sandwich, where the mutton is nice and lean and the tomato is ripe. They're so perky, I love that. But that's not what he said. He distinctly said "to blave." And, as we all know, "to blave" means "to bluff." So you're probably playing cards, and he cheated
+ -- Liar -- LIAR-LI-A-A-AR --
+ -- get back, witch --
+ I'm not a witch, I'm your wife. But after what you just said, I'm not even sure I want to be that anymore.
+ You never had it so good.
+ "True love." He said, "true love," Max. My God --
+ Don't say another word, Valerie.
+ He's afraid. Ever since Prince Humperdinck fired him, his confidence is shattered.
+ Why'd you say that name -- you promised me that you would never say that name --
+ What, Humperdinck? Humperdinck. Humperdinck. Ooo-ooo, Humperdinck
+ I'm not listening.
+ A life expiring and you don't have the decency to say why you won't help --
+ Nobody's hearing nothing!
+ Humperdinck. Humperdinck! Humperdinck!
+ -- But this is Buttercup's true love -- If you heal him, he will stop Humperdinck's wedding.
+ Humperdinck. Humperdinck --
+ Shut up -- Wait. Wait. I make him better, Humperdinck suffers?
+ Humiliations galore!
+ That is a noble cause. Give me the sixty-five, I'm on the job.
+ That's a miracle pill?
+ The chocolate coating makes it go down easier. But you have to wait fifteen minutes for full potency. And you shouldn't go swimming after, for at least, what?
+ An hour.
+ Yeah, an hour.
+ A good hour. Yeah.
+ Thank you for everything.
+ Okay.
+ Bye-bye, boys.
+ Have fun storming the castle.
+ Think it'll work?
+ It would take a miracle. Bye!
+ Bye.
+ Inigo -- there's more than thirty --
+ What's the difference? We've got him. Help me here. We'll have to force feed him.
+ Has it been fifteen minutes?
+ We can't wait -- the wedding's in half an hour and we must strike in the hustle and the bustle beforehand.
+ Tilt his head back. Open his mouth.
+ How long do we have to wait before we know if the miracle works?
+ Your guess is as good as mine --
+ I'll beat you both apart. I'll take you both together.
+ Guess not very long.
+ Why won't my arms move?
+ You've been mostly dead all day.
+ We had Miracle Max make a pill to bring you back.
+ Who are you? -- Are we enemies? Why am I on this wall? -- Where's Buttercup? --
+ Let me explain -- -- No, there is too much. Let me sum up.
+ --------------------------------------------------------------------------- 99.
+ Buttercup is marrying Humperdinck in a little less than half an hour, so all we have to do is get in, break up the wedding, steal the Princess, make our escape after I kill Count Rugen.
+ That doesn't leave much time for dilly dallying.
+ You've just wiggled your finger. That's wonderful.
+ I've always been a quick healer. What are our liabilities?
+ There is but one working castle gate.
+ And it is guarded by sixty men.
+ And our assets?
+ Your brains, Fezzik's strength, my steel.
+ That's it? Impossible. If I had a month to plan, maybe I could come up with something. But this...
+ --------------------------------------------------------------------------- 100.
+ You just shook your head -- that doesn't make you happy?
+ My brains, his steel, and your strength against sixty men, and you think a little head jiggle is supposed to make me happy? I mean, if we only had a wheelbarrow, that would be something.
+ Where did we put that wheelbarrow the Albino had?
+ Over the Albino, I think.
+ Well, why didn't you list that among our assets in the first place? What I wouldn't give for a holocaust cloak.
+ There we cannot help you.
+ Will this do?
+ Where did you get that?
+ At Miracle Max's. It fit so nice, he said I could keep it.
+ All right, all right. Come on, help me up.
+ Now, I'll need a sword eventually.
+ Why? You can't even lift one.
+ True, but that's hardly common knowledge, is it? Thank you. Now, there may be problems once we're inside.
+ I'll say -- how do I find the Count? -- Once I do, how do I find you again? -- Once I find you again, how do we escape? --
+ Don't pester him, he's had a hard day.
+ Right, right, sorry.
+ Inigo.
+ What?
+ I hope we win...
+ You don't seem excited, my little muffin.
+ Should I be?
+ Brides often are, I'm told.
+ I do not marry tonight.
+ My Westley will save me.
+ Mawidge...mawidge is what bwings us togewer today...
+ Mawidge, the bwessed awwangement, that dweam wiffim a dweam...
+ Stand your ground, men. Stand your ground.
+ Stand your ground.
+ --------------------------------------------------------------------------- 104.
+ Now?
+ Not yet.
+ Now?
+ Light him.
+ ... Ven wuv, twoo wuv, wiw fowwow you fowever..
+ Stay where you are. I said stay where you are!
+ ... so tweasuwe your vruv..
+ Skip to the end.
+ Have you the wing?
+ Here comes my Westley now.
+ FEZZIK, the portcullis.
+ Your Westley is dead.
+ I killed him myself.
+ Then why is there fear behind your eyes?
+ Give us the gate key.
+ I have no gate key.
+ Fezzik, tear his arms off.
+ Oh, you mean this gate key.
+ And do you, Pwincess Buwwercwup...
+ Man and wife -- say man and wife...
+ Man and wife.
+ Escort the bride to the Honeymoon Suite -- I'll be there shortly.
+ He didn't come.
+ --------------------------------------------------------------------------- 108.
+ Kill the dark one and the giant, but leave the third for questioning.
+ Hello. My name is Inigo Montoya. You killed my father. Prepare to die.
+ Fezzik, I need you --
+ I can't leave him alone.
+ He's getting away from me, Fezzik. Please. FEZZIK!
+ I'll be right back.
+ Thank you --
+ Strange wedding.
+ Yes. A very strange wedding. Come along.
+ What was that for?
+ Because you've always been so kind to me. And I won't be seeing you again since I'm killing myself once we reach the Honeymoon Suite.
+ hearing isn't what it
+ --------------------------------------------------------------------------- 111.
+ ... Sorry, Father ... I tried ... I tried...
+ You must be that little Spanish brat I taught a lesson to all those years ago. It's simply incredible. Have you been chasing me your whole life only to fail now? I think that's the worst thing I ever heard. How marvelous.
+ There's a shortage of perfect breasts in this world. It would be a pity to damage yours.
+ Oh, Westley, darling. Westley, why won't you hold me?
+ Gently.
+ At a time like this that's all you can think to say? "Gently?"
+ Gently!!
+ Good heavens. Are you still trying to win?
+ You've got an overdeveloped sense of vengeance. It's going to get you into trouble some day.
+ Hello. My name is Inigo Montoya, you killed my father; prepare to die.
+ --------------------------------------------------------------------------- 114.
+ Hello. My name is Inigo Montoya, you killed my father, prepare to die.
+ Hello. My name is Inigo Montoya. You killed my father. Prepare to die.
+ Stop saying that!
+ --------------------------------------------------------------------------- 115.
+ No --
+ -- offer me money --
+ -- yes --
+ -- power too -- promise me that --
+ -- all that I have and more please --
+ -- offer me everything I ask for --
+ -- anything you want --
+ --------------------------------------------------------------------------- 116.
+ Oh, Westley, will you ever forgive me?
+ What hideous sin have you committed lately?
+ I got married. I didn't want to. It all happened so fast.
+ It never happened.
+ What?
+ It never happened.
+ But it did. I was there. This old man said, "Man and wife."
+ Did you say, "I do"?
+ Well, no, we sort of skipped that part.
+ Then you're not married -- if you didn't say it, you didn't do it -- wouldn't you agree, Your Highness?
+ A technicality that will shortly be remedied. But first things first. To the death.
+ No. To the pain.
+ I don't think I'm quite familiar with that phrase.
+ I'll explain. And I'll use small words so that you'll be sure to understand, you wart-hog-faced buffoon.
+ That may be the first time in my life a man has dared insult me.
+ --------------------------------------------------------------------------- 118.
+ It won't be the last. To the pain means the first thing you lose will be your feet, below the ankles, then your hands at the wrists, next your nose.
+ -- and then my tongue, I suppose. I killed you too quickly the last time, a mistake I don't mean to duplicate tonight.
+ I wasn't finished -- the next thing you lose will be your left eye, followed by your right --
+ -- and then my ears, I understand. Let's get on with it
+ Wrong! Your ears you keep, and I'll tell you why --
+ -- so that every shriek of every child at seeing your hideousness will be yours to cherish -- every babe that weeps at your approach, every woman who cries out, "Dear God, what is that thing?" will echo in your perfect ears.
+ --------------------------------------------------------------------------- 119.
+ That is what "to the pain" means. It means I leave you in anguish, wallowing in freakish misery forever.
+ I think you're bluffing --
+ It's possible, pig -- I might be bluffing -- it's conceivable, you miserable vomitous mass, that I'm only lying here because I lack the strength to stand -- then again, perhaps I have the strength after all.
+ --------------------------------------------------------------------------- 120.
+ Have a seat.
+ Tie him up. Make it as tight as you like.
+ Where's Fezzik?
+ I thought he was with you.
+ No.
+ In that case --
+ Help him.
+ Why does Westley need helping?
+ Because he has no strength --
+ --------------------------------------------------------------------------- 121.
+ I knew it! I knew you were bluffing! I knew he was bluffing.
+ Shall I dispatch him for you?
+ Thank you, but no -- whatever happens to us, I want him to live a long life alone with his cowardice.
+ Inigo! Inigo, where are you?
+ Ah, there you are. Inigo, I saw the Prince's stables, and there they were, four white horses. And I thought, there are four of us, if we ever find the lad -- hello, lad -- so I took them with me, in case we ever bumped into each other. I guess we just did.
+ FEZZIK, you did something right.
+ Don't worry -- I won't let it go to my head.
+ You know, it's very strange -- I have been in the revenge business so long, now that it's over, I don't know what to do with the rest of my life.
+ Have you ever considered piracy? You'd make a wonderful Dread Pirate Roberts.
+ They rode to freedom. And as dawn arose, Westley and Buttercup knew they were safe. A wave of love swept over them. And as they reached for each other...
+ What? What?
+ No, it's kissing again. You don't want to hear it.
+ I don't mind so much.
+ Okay.
+ Since the invention of the kiss, there have been five kisses that were rated the most passionate, the most pure. This one left them all behind. The end.
+ Now I think you ought to go to sleep.
+ Okay.
+ Okay. Okay. Okay. All right. So long.
+ Grandpa?
+ Maybe you could come over and read it again to me tomorrow.
+ As you wish...
+
+ GEORGE MILLER BRIAN HANNANT
+ The vision dims and all that remains are mememories.  They take me back - back to the place where the black pump sucked guzzolene from the earth...
+ And I remember the terrible battle we fought - the day we left that place forever...
+ But, most of all, I remember the courage of a stranger, a road warrior called Max.  To understand who he was you must go back to the last days of the old world ...
+ ...  when, for reasons long forgotten, two mighty warrior nations went to war ...
+ ...and touched off a blaze which engulfed them all.
+ ...For without fuel they were nothing.  They had built a house of straw ...
+ Sell!  Sell!  Sell!
+ "Fueling The World"
+ Stage three of the national emergency is effective immediately, citizens are warned ...
+ People stopped in the streets and listened:  for the first time they heard the sound of silence.
+ Their world crumbled ...
+ And only those mobile enough to scavenge, brutal enough to pillage would survive.
+ At last, the vermin had inherited the earth.
+ And in this maelstrom of decay, ordinary men were battered and crushed...
+ ...men like the Warrior Max...
+ who in the roar of an engine, lost everything ...
+ And became a shell of a man.  A burnt out, desolate man, a dead man, running from the demons of his past. A man who wandered far away...
+ And it was out here in this blighted place, that he learned to live again...
+ Don't hurt that snake!
+ Put him back...  gently!
+ Sounded like a big V-8 to me.  I guess I got myself some guzzolene.
+ The car's booby-trapped.  Touch those tanks and BOOM!  You'll blow yourself apart.
+ Drop the weapons...  Now back up.
+ You're quick, I'll give you that. Never seen a man beat a snake. Never.  Reflexes, that's what you've got.  Me?  I've got brains.
+ Now, where's this booby-trap?
+ A fella - a quick fella - might keep a weapon under there.
+ Then I'd have to pin his head to the panel.
+ There's one more.
+ Oh no!  You don't play me the fool.
+ Gas!  Petrol!  Guzzolene!  Listen! Hundreds...  thousands of gallons... as much as you want ...
+ Where?
+ Not far.  Ten...  maybe twenty miles.  Pumping it they are. Refining it.  Kachunk...  kachunk... kachunk...  Day and night.  A huge tanker full.
+ Balls!
+ It's there, you betcha...  I'll tell you straight though - it's not self service.  It's under guard.  Too hard for me.  But a man with your ingenuity ...  Jesus I reckon...
+ Where?
+ Kill me, and you'll never find out.
+ Well...  I never said it'd be easy.
+ Okay, there it is.  If anyone can get.  in, I know it's gonna be you. Me ...  I've gotta feed the snakes.
+ A man lives by his word, I reckon. And I've kept mine ...
+ Look!  We had a deal:  I show you the gas - You let me go.
+ The contract was I wouldn't kill you.
+ I reckon you got a bargain...  Don't you?
+ What's up!!
+ Jesus!  He's gonna kill her.
+ Hey!  What about me?!!
+ Thank you.  Thank you...
+ Let's get this straight.  I'm doing it 'cos I need fuel.
+ As much as you want.  Take me back ...  don't let me die.
+ Stay alive!  Stay alive!
+ Nathan!  Nathan!  It's Nathan.
+ Nathan!  God have mercy..  What a waste.
+ Look at your handiwork!  They didn't have a chance ...
+ You all heard me.  I warned him didn't I?  Madness, I said.
+ Pity your name wasn't pulled out the hat.
+ We can escape, take our petrol, he said.  How?  I said.  Get a prime mover, he said ...
+ ...  And there's the result! Madness I said!
+ Where did you find him?
+ Two, three miles away...  left for dead...  next to his car.  We made a deal.
+ Three other vehicles.  Did you see them?
+ Running hard to the south-west.  In heaps of trouble.  Listen:  he said if I brought him in, you'd give me gas.  There's no time...
+ There was a woman...  in the car ...
+ She's dead.
+ How?  What did they do?
+ It was quick.
+ I saw a man in trouble and I brought him in.  And now I just want to get out of here.  Give me my gas.
+ For all we know, he's one of them. Give him nothing.
+ We had a contract...
+ I don't know who you are, or what happened.  But if you had a contract, it was with him.  And it died with him.
+ Be thankful, you're still alive.
+ I gotta hand it to you.  Some machine...
+ Would've been a shame to blow it up. The last of the pursuit specials. It's history, that's what it is.  A piece of history...
+ It's OK, Dog.  Just do as they say...
+ Hold your fire.  He wants to talk... he comes in peace...  for Godsake! Hold your fire...
+ Poor mongrels ...  not one got through.
+ Greetings from the Lord Humungus The Warrior of the Wasteland!  The Ayatollah of Rock and Roller.
+ I am told you wish to take the gasolene out of the wasteland...
+ Shoot!  Shoot him!  While you've got the chance ...
+ You set out this morning to find a vehicle.  A vehicle strong enough to haul that fat tank of gas ...
+ You see!  There is no escape.  The Humungus rules the wasteland...
+ Don't give them the gas!  Blow it up!
+ I got it!  I got it!
+ There's been enough talk.  I'm going in!
+ Be still my dog of war.  I understand your pain.  We've all lost someone we love ...  But, we do it my way.  Fear is our ally. After, you can have your revenge.
+ There has been too much violence ... too much pain.  None here is without sin.  But, I have an honourable compromise.  Give me the gasoline and I'll spare your lives.  Just walk away.  I will give you safe passage in the wasteland ...  Walk away and there will be an end to the horror ...
+ You have one full day to decide!!
+ We'll never walk away.  Never!
+ Don't be a fool!  It's our only chance...
+ It's simple ...  we trade the gas for our lives.
+ No!  We've worked too hard.
+ Walk out there?  They'd slaughter us...  run us down for sport.
+ Don't listen to them!  It's bad enough the lunatics are running the asylum.  Don't let them throw away the key.
+ It'll be alright.  I'll talk to this Humungus.  He'd never hurt an asthmatic old man.
+ I'm sure they'll find a use for you.
+ I'd rather be out there, on my back alive, than in here, on my back dead.
+ He promised us safe passage.  He gave his word.
+ And let us suppose he keeps it ...
+ ...and we walk out of here with our lives.  What then?  Do we wander the wasteland - scavenging.  Wake up one morning and find we're just like them - savages.
+ Is that what you want?  I don't.  I came out here and I found that pump. I built that plant and ploughed that field.  Why?  Because we are human beings.  We must maintain our dignity.  We are not barbarians ...
+ I made one mistake - I waited too long...  thinking we could survive here.  We can't.  But, as frightened as we all are let's not forget one thing.
+ That is more than just a tank of fuel.  It's our lifeline, our passport to a place beyond the reach of men on machines.
+ No!  I don't know how we're gonna get there.  But the first step is to defend that fuel.  I won't surrender it to anyone.  I stay!  Alone if I have to...
+ Words!  Just words.  You're going to die, for a pipedream.
+ No!  We fight for a belief - I stay!
+ I really wished it had worked.  I'm sorry.
+ We stay!
+ Two days ago I saw a vehicle that'd haul that tanker.
+ You wanna get out of here.  You talk to me.
+ So that's my offer.  I deliver a prime mover and in return you give me my black car and as much gas as I can carry.  All I need right now is three Jerry cans of diesel and five gallons of petroleum.
+ Think of it as a down payment.
+ And that's the last we'll ever see of him.
+ What have we got to lose?
+ I knew it.  I knew it'd work. Lethal, those snakes.  Lethal.  Born killers.  The snake's fangs, my brains.  Lethal I tell ya ...
+ Don't think you're gonna get any of this.  Cos you're not.  It was my snake.  I found it.  I trained it. And I'm gonna eat it.
+ You mean?  All this time?  Jesus, that's dishonest!
+ How do we know that one's not a dud.
+ There's only one way to find out.
+ What sort of deals that?!  I'm running on empty!
+ You can't just dump me!  Think of us as partners.
+ It's up to you.  Fly a kite, or follow me back.  Maybe they'll throw some gas your way.
+ What sort of deal's that?!  I'm running on empty!
+ Watch your tyres!  Turn left!
+ Open the gate!
+ The gate's open!  Follow me in!
+ Don't lose it now! We need the fuel!
+ The gate!  The gate!  Move!!
+ OK!  OK!  Let's go.  We leave tonight!
+ We got a hole through the radiator - into the timing case.  Gonna take at least 24 hours.
+ You've got twelve.
+ I want you to know...  that was a very brave thing you did...
+ ...  and tell me, son, this machine of yours - it takes two ...  does it?
+ er...  possibly.
+ See!  I told ya.  I said he was leaving.
+ I don't have time for thanks.  You know what you did out there and what it means to us.  Come with us, MAX. Drive the tanker.
+ We had a contract.  I did my job, I got my car and I got my gas.  End of story.
+ It doesn't have to be - we'll make a new contract.  I can offer you a chance to rebuild your life.  I can offer you a future.
+ You gotta come.  Look!
+ SUNSHINE COAST
+ This is where we're going.  Two thousand miles away.  Bloody paradise.  Fresh water...  plenty of sunshine...  nothing to do but breed...
+ What are you looking for out there? How long do you expect to survive, scavenging day to day?  You're no different from them...
+ ...  vultures, maggots.  Don't you see? There is a better way!
+ Yeah.  I tried it once!  Now forget it, 'cos I never get involved.  I'm leaving.  I leave tonight.
+ You see!  That's the alternative! Men feeding on men.
+ I know you're afraid darlin'...  But I'll let you into a secret, sweetheart.  I'm afraid too.
+ Co on!  Go!  Just another mercenary!
+ I just want you to know that I don't agree with them.
+ I don't think you're a coward.  A bit stupid maybe - but not a coward. Where else you gonna find what we've got here?  Food...  fuel ...  clean women.
+ Men, too, if that's your inclination.  Jesus!  All we've got to do is get away from that Humungus.  With you driving the tanker, we can do it!  I know you can.  I saw you out there.  Stay with us Max.  Drive the tanker.
+ I haven't got time to explain.  Just believe me - I've got everything I want.
+ Good luck tomorrow.  I hope you make it.
+ Thanks.  Thanks a lot.
+ Get out.  Scat!  Go back.
+ You're a fine kid, but you can't come.  You've gotta learn - don't get close to people.  It can churn you up ...
+ Don't waste him.  If he's alive... I want him.
+ It's defensible.  We can refuel there.
+ But!  Only give us until sunset.  If we haven't made it by then, keep going!
+ I'll drive the tanker ...
+ Until you're clear of trouble ...
+ He's gotta be joking!
+ Look at you.
+ But I'm still the best you've got.
+ You'll need these ...
+ I sweated blood on this mother.  And no bastard's gonna make me go in no lousy bread van.
+ The tanker!  All on the tanker!
+ No!  The other way!!
+ Get back!  For Chrissakes!
+ Jump!  It's finished.  Jump!
+ Jump!
+ The Kid?!
+ Forget it!  Jump!
+ All this and no guzzolene.
+ I know where there's guzzolene.
+ We've done it!  I thought it'd be impossible.  But we've done it!!
+ What about the Kid?!
+ We've won!  Don't you see?  The fuel was with the others.  It's already at Powder River.
+ What happened to the boy?!
+ We've gotta keep going.  It's our only chance.
+ The Kid?
+ I had to leave him...  he was pinned to the rig...
+ You left him there?  With them? Alive?
+ There was nothing I could do.
+ Pappagallo led us north...  to safety - to a place in the sun... In the tenth year, nurturing his vision of a new world, he died felling timber.
+ The Captain and the Girl waged war for years...  together they raised eight children....  And as for me...
+ ...  in the fullness of time, I became the leader - the chief of the Great Northern Tribe...
+ As for the Road Warrior...  That was the last we ever saw of him.  He lives now...  Only in our memories...
+
+ 7/29/1993
+ Whoa, whoa, whoa... what's that?
+ We begin again... let's kick in that new transducer. See if we can double the power output.
+ Whoa, Doc... wait a minute...
+ Okey... dokey!
+ Hiya Peter...
+ Hiya Liz... how're you doing...?
+ How'm I doing what?
+ Peter! Peter! Wait up!
+ Would you, uh... excuse us for a minute?
+ What is it? what...
+ Did the Astro-Physics Journal really accept your paper?
+ Yeah... well... all I got's the data but they've agreed to publish it when it's finished. You know... it's my calculation on the Planetary Conjunction.
+ And its influence on the anti-force. Isn't it?
+ Yes. Look, Harry, I am busy with...
+ Yeah, you and the rest of the class. Every one is busy with Liz.
+ Peter?
+ Hiya, cupcakes...
+ Flash...!
+ And Flash is the busiest of them all...
+ Come on, Harry... we'll be late for Octavius.
+ Ock is nuts, don't you agree?
+ Ock is a genius, Harry. Crazy, Yes! But, a genius misunderstood, and unappreciated.
+ Doctor Octavius! You are late for your lecture. The students are waiting. Doctor Octavius!
+ Your friend is impossible Professor Rosomorf, I told the board we should let him go.
+ What's he doing in there, not his crazy experiment again.
+ You mean his anti-force theory... one day they'll give him the Nobel Prize for it.
+ Meanwhile he is demolishing our university. Octavius!! Open the door.
+ The anti-force experiment has now reached the limit of electronic overload safety. Therefore, Weiner, you will disconnect the overload safety device...
+ Whoa, Doc... someone's at the door...
+ World class scientific mind and they stick me in the basement with this third rate cyclotron...
+ The DIAL marked "RELATIVE GRAVITY" reads "1,000,000" but suddenly it snaps to "0.999999!"
+ Okey! Dokey!
+ What is it, Peter?
+ It's nothing.
+ Yes, gentleman can I help you?
+ Tell your boss, that his class is waiting.
+ You better tell him yourself.
+ Professor Octavius!!
+ Gentlemen, come, you must see this.
+ But, your students...
+ The imbeciles can wait... I have better things to do than teach introductory Physics Rosomorf. Undergrads are kindless adolescence.
+ You see he is impossible.
+ Thorkel you are the dummiest administrator our university has ever had. Don't go Thorkel!! Come! Look!
+ The university pays you to teach something to your students.
+ Well, do you mean nothing... or do you mean something but you won't tell me what it is?
+ I mean plain nothing.
+ Well, I guess that's about as nothing as you can get... plain nothing. A beat.
+ Liz...!
+ Ahh, it is something.
+ No... look.
+ I am going for 20 percent power!
+ NO!! Don't do that...
+ Ock! Its dangerous...
+ Ock I warn you...
+ "Fire!" "Everybody out!"
+ Keep calm, everybody keep calm. Use the front door. Everybody out the front.
+ Liz! Come on...!
+ I can't. Help me!
+ I'm coming!
+ Peter!
+ Get back, you idiots. You can't go in there!
+ Help! Help me!
+ Thanks for your help Flash.
+ No problem wimp.
+ Our hero has a real way with words.
+ Oh, why don't you grow up.
+ This man will bring a disaster upon this university.
+ The universe is made up of forces... and counter-forces. Science is the study of the forces!
+ But I... Professor Otto Octavius... have devoted my life to the study of the counter-forces! Good job, Peter.
+ Thanks, Professor.
+ I don't believe it, I simply don't...
+ Can we carry on Mr. Thorkel.
+ I don't believe... oh, all right carry on Professor.
+ Well! This week my dear students I have made a stunning breakthrough...
+ Wait a minute, wait a minute... you've got fire forms to fill out, Dr. Octavius.
+ I have no time for forms, or administrators who persist in interrupting me, Mr. Thorkel.
+ I now believe its possible that these counter forces can be... collected... the way the magnifying glass collects the sunlight... and focused into a hard beam I call... Weiner!
+ I call it, the Anti-Force!
+ This anti-force, once harnessed, is capable of undoing any natural force at which it is aimed... for instance... Gravity!
+ I'm sorry...
+ It's alright.
+ We patch in the cyclotron... The lights flicker and go dim.
+ Pay no attention to the lights... I of course steal its energy, and it looses power. We patch in the cyclotron... and we gradually apply power. The power that I am stealing...
+ And so we stand, four square against the fundamental force that orders and maintains our universe... gravity... which is holding down this goddamn ball. Rise!
+ What a crock...
+ Shut up Harry... this is very interesting.
+ Mr. Parker! Have you some... interesting observation you'd like to share with the class?
+ No sir...
+ Then shut up! And pay some attention to the experiment.
+ Rise! Rise!!!
+ Now that's what I call an experiment!
+ You are looking at a representation of two universes. Our Blue one. Our real universe... something we can touch and feel and see and draw calculations about. This is us. The Yellow universe... this is something else. Some other dimension... something... on the other side!
+ If it were possible to generate enough power behind it, the anti-force could wipe out not just gravity... but all our universal forces at the same time. In effect... it would blast a hole between this universe and the next. Each... would flow into each other. No blue universe. No yellow. End, finished, over.
+ That sounds like a scenario for the end of the world.
+ My girl, it is! It is. It would mean wiping out everything that's known... and letting in everything that's unknown.
+ Isn't that a little dangerous?
+ Don't worry yourself, true inter- dimensional penetration is still purely theoretical, but one day... Maybe very near... maybe in the 21st century...
+ Look, it's just... I don't know... when you and Flash go after each other like that...
+ He's not my type.
+ He doesn't have to be.
+ Check.
+ And besides, he's not all bad.
+ You don't get nicknamed Flash because you're a rocket scientist, Liz.
+ Give it up, Parker. You'd die for a nickname like Flash.
+ Yeah, of embarrassment.
+ Hey, Flash... I'm scalping a pair of the Midnight Madness Wrestling Match tomorrow night.
+ The Slammies??? I'd kill for that!!!
+ Would you pay $125?
+ Well, uh, I... gee... if... can I tell you tomorrow?
+ You snooze, you lose. Hiya Liz...
+ Kim, you know Peter and Harry? This is my new roommate... Kim Nickson.
+ Hellooo, Peter.
+ Hi...
+ We're going to the Student Reunion Meeting. You coming?
+ I can't... I gotta go over to the Daily Bugle. I'm trying to sell some photos.
+ Soooh, a photographer...?
+ Just an amateur. Well... nice meeting you, Kim.
+ Yeah... I bet it would be.
+ Can I be your date for the reunion ShooShoo?
+ No Jerk!
+ What did I say...
+ It's not what you said, it's how you say it, ShooShoo!
+ Damn!
+ Peter, Doc Ock wants to see you.
+ About my data I bet.
+ I don't know.
+ He knows about my work on the Planetary Conjunction, doesn't he?
+ I don't know.
+ Hello, Professor Octavius. I really admired your experiment.
+ We have a lot of interests in common, Peter. Perhaps we should put our heads together, if you know what I mean...
+ That would be... great.
+ Now you take the Planetary Conjunction. This Saturday night we will witness Saturn, Jupiter, the Moon, the Earth, the Sun... all in a row. Never seen within the memory of man, or measured for its effect. The total gravitational force must be quite exceptional. Isn't that the subject of your paper...?
+ Yes sir, I've worked out a new way to calculate the combined gravitational effect.
+ I'm a busy man, Mr. Parker. But I think I could find the time to go over it with you. Make sure it all... checks out.
+ Well... I'm sort of working with Professor Rosomorf and he suggested we kind of keep it between us. He thinks that my theory is... well, I don't know...
+ The scoundrel... I want to see that data, Peter!
+ But Professor Octavius... if I knew you were interested... sorry, I've already given it to... Professor Rosomorf, and he is after all the head of our Physics Department... and I couldn't...
+ Well, I'm certain something can be worked out. Run along, young man.
+ Just a minute... how about if I show you my discoveries... something I never showed to any other student... as a matter of fact to anybody at all.
+ Well I am really flattered, I mean I'd love to... but I...
+ Very well shall we say if you come here tonight...
+ But Professor I don't now if I should...
+ Make it eight sharp... I'll be waiting for you... Right here...
+ The same academic world that's so keen to embrace that boy's undergraduate work, ridicules my anti-force theory as quackery. I ask you, Weiner... what is our society coming to? Ha!
+ They are all a bunch of brainless assholes, that's what I say...
+ Weiner! Go get me that boy's data!
+ Cost you fifty bucks.
+ Just get it. We'll negotiate your fee when you have the data, alright Weiner?
+ Garbage! Absolute, 100% garbage!
+ Bag ladies. I hate bag ladies.
+ Yes, sir.
+ Little kids... I hate little kids. This is a daily newspaper. We need news value photographs, not artsy-fartsy shit!
+ Yes, sir.
+ Kid? You want a pro's assessment?
+ Yes, sir!
+ Your photos suck. Parker, my readers are morons. I gotta grab them by the eyes. Every time you press the button of that Nikon of yours it costs you fifty-five cents. So the next time you're about to take the plunge, ask yourself, am I taking dog bites man? Because if you are...
+ I know, I know. You want man bites dog...
+ Parker, this is the post modern 20th century. I want man eats dog! Get out!
+ Rent! Rent, more bills, rent... electricity, bills...
+ There's nothing in there worth stealing!
+ That's the understatement of the year.
+ Aunt May, you're trespassing.
+ I was just so desperately bored... I thought I'd come over and make you dinner...
+ I am old enough to... to make my own--
+ But I didn't feel like getting to know your roaches.
+ I'll introduce you.
+ Oh. And those foul chemicals in the pots...
+ I take pictures, remember?
+ Anyway, I've decided to kidnap you for dinner in Forest Hills...
+ It's Friday night...
+ Yes. Do you have a date?
+ No.
+ Then come on.
+ Professor Rosomorf, what happened here?
+ Someone tried to rob me of some paper... I suspect they were looking for that one.
+ What is it?
+ Award winning stuff. Peter Parker's data on the Planetary Conjunction. Damn lucky I hid it in my computer under another title.
+ My God, what's going on in our school? First Professor Octavius almost blows up the Physics lab... Now this. You report it in triplicate, of course.
+ Thorkel, be careful when you talk to Octavius. Remember... the man is a very fragile genius. One day he'll bring us all the Noble Prize.
+ Rosomorf, the man is a very dangerous crackpot!
+ That's him again. He's working day and night.
+ I tell you the man is very dangerous. Come on Rosomorf, let's stop him before this building will explode.
+ Shut it down, Octavius.
+ You've blown half the circuits in the Science Center.
+ Call an electrician.
+ I have called the locksmith.
+ What... what is he doing.
+ We have to shut your lab down and take a look at the lines.
+ Please, Otto, we must lock it up.
+ You're denying me access to my cyclotron?!
+ You bet.
+ Okey, dokey... just give me till tomorrow. I want to clean up my papers. Tomorrow... Ha... Tomorrow you can have this room...
+ Oh... well Thorkel... few more hours won't make a difference.
+ I hope.
+ Another brewski?
+ No, I'm fine, Uncle Ben.
+ Yah! Way to do it. Alright! You don't follow the Mets like you used to, do you, Pete?
+ No, not so much anymore.
+ Funny. When your Mom and Dad, uh, passed away... I had this idea... I wanted you to be the best baseball player that ever was. Geez, what ever happened to that?
+ Little league.
+ Yeah... Babe Ruth you wasn't.
+ It's on the table! Turn off the TV!
+ How's that girl you told us about, Peter?
+ Liz? She's great... But she has a boyfriend.
+ A boy your age should have a girlfriend.
+ Aunt May... she has a steady boyfriend.
+ Peter, any girl that's worth your attention is of course gonna have a boyfriend... But if she really gets to know what you have to offer she'll... you get my drift?
+ Look, just leave him alone, okay. When he's ready for girls he'll be a holy terror. It's in the blood. Lookit, how are you fixed for money, Pete? Maybe I can help you out a little.
+ No, I'm alright. My scholarship covers almost everything, and I sell some photos here and there. Today my physics professor asked for some of my work... he wants to study my data. They might publish my work in the science magazine... that'll bring me some money...
+ Publish your work?! You hear that May...?
+ Yeah, in fact I have to leave a little early tonight, to meet Professor Octavius... He offered me to be his assistant...
+ Whoa! Did you hear that May...?
+ Oh, Peter, you promised you'd spend the night...
+ I... I can't, Aunt May. Professor Octavius wants to discuss my new findings.
+ Peter, what you should be finding... is a nice girlfriend.
+ I'll show them... closing the cyclotron on me... Weiner!
+ Yes, Professor...
+ Where is he? It's ten past eight o'clock...
+ That must be him. He opens the door.
+ Good evening.
+ You are late. Weiner, go outside and get us something to eat. And don't steal it! Just buy it. I'll reimburse you.
+ Do you want anything Parker?
+ No thank you, I just had dinner at my aunt's...
+ Piss off, Weiner!
+ Okey, dokey, Parker... how would you like to take Weiner's place... I mean, be my assistant?
+ Well, Professor, that would be a great honor, but I'm already working with...
+ Rosomorf... that imbecile. Don't you understand, kid, that I am about to uncover the greatest discovery since Einstein came up with his theory of relativity... The "Anti-Force."
+ Wow! The theory of the Anti-force! You should go for the Noble Prize Professor...
+ Noble Shmoble, I am going for a much bigger prize kid. Okey, dokey. Let me show you, kid, what I got here.
+ Present maximum anti-force power to date is 38 percent of theoretical limit. I have patched in the variable particle-wave accelerator... I will now try to reach 50% power... And if your paper has any value... I can use it to get the power I'm missing to create the anti-force, to break through and beat any other form of power in our or any other universe, capish!
+ Sorry, Professor, I can't do it. I gave my word to Professor Rosomorf.
+ The glowing 5KG WEIGHT.
+ The POWER DIAL inches toward 50% POWER!
+ 50 percent... anti-force... 50 percent... that's all I'm missing! Parker, we can be rich together!
+ Sorry... I'd better go now.
+ You'll be sorry, Parker.
+ You! Get out of there, you creeping...
+ Noooooooooooo!
+ It's an energy storm! Okey! Dokey!
+ Professor... what happened to you? What did you do...
+ Oh my God... what happened here...
+ I better get out of here.
+ There is no danger. Please go back to your dorms. I repeat, there is no danger.
+ Spill it out, Professor! The public wants to know!
+ Who are you?
+ Jameson, Daily Bugle, Chief Editor, now what really happened here?
+ There will be a press announcement in the morning Mr. Jameson... now if you'll excuse me.
+ I have nothing to say... there will be an announcement. Now, please go home... everybody... we must clear the grounds...
+ You think they'll cancel classes?
+ They must... the whole building must be contaminated with some kind of poisonous gas.
+ How about nuclear contaminations?
+ My God... lets beat it. But nobody moves.
+ Could anyone be in there, Peter?
+ I don't know... Maybe Professor Octavius. He usually works late...
+ That nut, I bet it was all his doing...
+ Hey Parker! Peter Parker!
+ Mr. Jameson! What are you doing here? What's going on?
+ That's for them to know, and for you to find out.
+ But sir, they wouldn't tell us. You heard Thorkel... he said...
+ A press announcement tomorrow...! But we must know tonight Parker. This is your university, right...
+ Yes, but...
+ You got your camera?
+ Sure, but I can't--
+ A hundred dollars says you can?
+ Yes sir!
+ Get inside and get pictures, fifty bucks.
+ You just said a hundred.
+ Seventy, but I want blood and gore.
+ Seeya guys.
+ Where is he going?
+ To make fifty bucks.
+ Take it easy. Take it easy with him.
+ Take him away and never bring him back!
+ What was that?
+ What was what?
+ What hit me?
+ What hit you?
+ I don't know. It was so fast.
+ You're going to be fine, Otto.
+ Ow!!!
+ Hey! What are you doing here, kid?
+ I feel a little funny...
+ Yeah? Well, I ain't laughing. Get out... Just get out of here...
+ You get yourself over to the Police lines.
+ Right. Police lines.
+ Okay, scoop, whaddaya got?
+ I... got pictures of the Professor... in there... it's so strange in there... so bizarre...
+ Good job, kid. Bizarre is what we need. Pick this up in the morning. There'll be two crisp twenties tucked inside.
+ This is weird. My God, I feel so weird...
+ Very weird.
+ Very, very weird.
+ Well, what the hell!!
+ You're a kid who's going places, and I'm gonna point you the right way.
+ Max Reiss, models, strip dancers, escort girls, blue movies...
+ Oops... sorry, wrong card.
+ Max Reiss, Talent management.
+ It's a big outfit. Got a lot of departments.
+ Yeah... well... why you approach me? I'm not...
+ Oh yes you are... very talented. The three questions of show business success. One do you think you possess a unique talent?
+ Well...
+ Two... what are you gonna do with it?
+ Well... I don't know.
+ Three... how much money you got in your pocket?
+ Ten.
+ You invest half of that with me and I'll make you a star.
+ What are you talking about?
+ I'm talking about fame. I'm talking about fortune. I'm talking about the chance of a lifetime. How'd you like to be on MTV tomorrow night?
+ MTV...? Me? Really?
+ Taxi!
+ Hey!
+ Kid! Tomorrow night. Same place, same time.
+ How do you know I'll show up?
+ Because you wanna be a star... everybody does.
+ Hello? Aunt May?
+ Peter? What time is it? Are you alright?
+ Well, no, I mean yeah I'm fine, but listen... Aunti, the craziest thing happened to me tonight.
+ Does this have to do with a certain girl we talked about at dinner?
+ No, no, look, there was this radioactive experiment... I was poisoned!
+ You were what?
+ I was bitten by a bug.
+ Oh! I get it, you mean a love bug.
+ No... No... A spider...
+ Peter, did you at least talk to her?
+ Aunt May, listen to me. I got bitten on the hand... by a poisonous spider.
+ She bit you?
+ No. I was in the bathroom and...
+ Oh, you did it in the bathroom? Peter, this is craziness, why don't you use your bed? You're up all night. You're in the radioactive labs. You never take time to eat or sleep. Am I right?
+ Yes, Aunt May.
+ Did you eat something today?
+ Yes, Aunt May.
+ Okay, Peter go back to bed, and remember we love you.
+ And I love you too, Aunt May. And by the way, I got a mess of super powers today.
+ Look at these brainwave readings. The mental activity is ten times of any normal man...!
+ Equipment malfunction...?
+ Hell, yeah... his. My God... I thought I'd seen everything...
+ But this is beyond medicine. This is madness...!
+ It is so freaky...
+ Okay, lets stop yakking and get cracking. I want to go in at the upper thoracic. Then we'll work our way around. Hang in there, man.
+ The WALDO nearest the slap moves ever so slightly. The triangular CLAW rotates a quarter turn and then turns back.
+ Nurse! Number seven scalpel. Arthroscope stand by. Read out parameters in progress. Let's go in. You alright?
+ Yes... Yes, of course. Everything's online.
+ Scalpel! No... no... a larger one... the largest we have!
+ Kill the alarms!
+ He's going off the chart!
+ Mop. Mop! Sutures and clamps! Hurry up!
+ We're losing him. Defibrillate!
+ Zap him!
+ Stabilizing alpha waves...
+ You have a visitor, Doctor...
+ Octavius, I'm afraid I have bad news for you.
+ The cyclotron is damaged...
+ What used to be the cyclotron was permanently shut down this afternoon.
+ But my work!
+ Your work is a disaster! Look at yourself!
+ Myself? I don't matter. Nobody matters anymore. To enter a new dimension we must first destroy our own...
+ What are you saying?
+ Destroy life. Life is... insignificant. Bags of sleepy, sluggish flesh. What would you say?
+ Oh, my God, what are those horrible things sticking from your body?
+ Thorkel, if I told you that for one moment in time I broke all the laws! For one brief glorious moment, I broke through to the other side. I saw... I felt... I became creation.
+ What on Earth are you rambling about?
+ Destiny!!! My destiny! I see it all so clearly now. Universal destruction, yes. All I need is the power... then I can destroy this illusion you call life. It is my destiny to lead us to the light!
+ You're a madman.
+ And you are a fool. I will end the universe as you know it. And in that final moment... I'll laugh my ass off while you're kissing yours goodbye!
+ Goodbye is right, Octavius... You're fired... sacked... canned. You are history, Doctor Octavius. And I couldn't be more pleased to be the first to tell you this good news...
+ Let me down Ock... you crazy... MONSTER! Let me down!
+ Okey, dokey.
+ MTV Wrestling?!
+ That's the place. Pay the man.
+ Look, Mr. Reiss... I'm not real interested in watching a wrestling match.
+ Who said anything about watching a wrestling match? You're here to win a wrestling match!
+ Me? You must be kidding.
+ You hop around. You know, the way you did last night. Your opponent gets tired. He falls down. The ref counts to three, you win, and we pick up a thousand bucks.
+ You're really gonna love this.
+ Look, really, I don't know...
+ You don't have to know. I know enough for both of us. Change in there.
+ What is this?
+ A costume... something that fits your talent. Go put it on. I'm sure you'll like it.
+ How does it look? I feel like it's Halloween.
+ Cover your face with the mask.
+ Why?
+ Mystery, my friend. Nobody should know who you are...
+ And now, a new challenger, for the thousand dollar fight, weighing in at one hundred and fifty pounds... from parts unknown! Here is the Amazing... Mysterious... Incredible Superman...
+ No, not Superman... Spider-Man...
+ ...Spider-Man!!!!!
+ Kill the sucker, Crusher!
+ Whatsamatter, Crusher, can't you crush that bug?
+ Okay, Web Face, this is it!
+ Hey, Crusher, you need a insecticide!
+ Will you look at this Spider-Man guy! He is absolutely incredible!
+ Liz, get a load of this outfit! I wish I had it for the Halloween party... it's quite sexy.
+ Will you two shush. I'm trying to work.
+ One...!
+ Get up...! Get up...!
+ Two...!
+ Wow...
+ Ladies and Gentlemen, history is made today, we have here the first man to win a thousand dollars against the mighty Crusher.
+ Max! Am I really gonna get a thousand...
+ We are going to get a thousand--
+ Hi, who are you, kid?
+ I'm Peter Parker.
+ He is Spider-Man, and I handle him... Whenever you want a rematch call me. Next time it's gonna be ten thousand, what do you say... Crusher?
+ Oh, look, Mr. Crusher, I'm really sorry about what happened in there. Really...
+ Oh, well, I don't know what happened to me tonight... I really don't know...
+ I know... you lost. Big man you lost to the Amazing Spider-Man.
+ You know who that is?
+ Yeah... he's some clown we saw on TV last night... boy does Flash think he's hot.
+ He does...
+ I love wrestling.
+ Wrestling is all bluff. Do you really believe this little guy in a stupid Spider-Man suit beat the Crusher?
+ Hey, we better rush... visiting hours will be over soon.
+ Doctor Octavius? You have visitors. Doctor Octavius?
+ Ock is not here!
+ My God, what happened?
+ I'd better call the doctor!
+ You'd better call the police!
+ What a wreck. What a useless, wasted wreck. Okey, dokey. We rebuild you, my damaged darling. Bigger, better, hotter! A world class, super cyclotron!
+ There you are, doc... where have you been... whoa this place is messed up.
+ Whoa, doc! You look a little messed up yourself.
+ Where have you been, you imbecile?
+ I went to the wrestling...
+ Wrestling...
+ I went after the kid. You still want that Parker guy's data, don't you?
+ Well, did you get it?
+ No, I followed him... but I lost him in the crowd.
+ Lost him? You--
+ I'll find him, Maestro... I promise... soon... maybe by tomorrow.
+ So how was the wrestling?
+ Fantastic! There was this new wrestler... beat the mighty Crusher. You won't believe it... a nothing of a guy... calls himself this stupid name... the Amazing Spider-Man... would you believe it?
+ Spider-Man, huh? Well, maybe I'll just go and wrestle myself one of these days... with all my new arms... I'm sure I can beat Crusher or any other monster.
+ Will I beat him, this Crusher, will I beat him or not?
+ No... no, please... I mean yes, yes... you'll beat him easily... let me down... Please... I'll do anything for you...
+ The Parker data... get me the Parker data, you hear?!!!
+ SPIDER-MAN is clinging to the side of a WALL.
+ And one like this... And one looking real sincere.
+ What are you doing here?
+ I'm looking for Peter Parker.
+ Oh, yes... so why not use the front door?
+ Hey, I know you...
+ You do?
+ I saw you crushing the Crusher.
+ You like wrestling?
+ I love it! You are the best wrestler I have ever seen... please don't hurt me!
+ Oh, please... don't kill me. Please help me down.
+ Of course I'll help you down. I am Spider-Man... the good guy, am I not?
+ Yes... yes, you are.
+ And by the way, Peter Parker does not live here anymore...
+ And tell the Professor he can't have Peter's data. Goodbye.
+ Holy cow, whattaya building, fella, a cyclotron? Okay... lets see here. Page three. We got 30,000 feet of 50-gauge copper co-ax... twin 550 XK transformers... cadmium accelerator rails, a half dozen... a GBC relative multi-phase transducer... and one yellow thermos. That'll be $475,989.65...
+ Wrap it up...
+ What about the money... or do you pay by credit card?
+ Cash! I'll be back soon.
+ What's going on here?
+ Cash!
+ Doesn't he look amazing in that one? Look, he's flying in the air!
+ I don't care if he flies to the moon. He's just another wrestler in a silly costume. Look at this, Parker, right off the wire. This is the guy who hit that armored truck this morning. They say he has metal arms... get me a picture of this character!
+ Metal arms?
+ Four of them.
+ Ock...?!
+ The web faced weirdo... He is a joke in a Halloween costume... don't make me laugh.
+ Now get out of here and don't come back without something I can use!
+ Yes sir...
+ A mega baloney... A bug in blue tights... what next?
+ The Journal said he was a mega-smash on
+ What do you think you're doing?
+ I'm going to the Masquerade. It's Halloween tonight Doc, aren't you coming to the School Ball? Whoa, you could go without an outfit.
+ You're not going to any ball, clown. You're going to get me Peter Parker's data...
+ I was almost killed on my last try... Look at all these bruises...
+ I don't care if you come back dead. Just get it!
+ Cost you a thousand bucks, if I get it.
+ All right... boss please let go...
+ Just get it, Weiner. I'm running out of time. If you fail me again, you won't have to concern yourself with money anymore... DO YOU GET ME CLOWN?!
+ You should have worn a costume. I told you to wear a costume.
+ It's... embarrassing.
+ There's Liz...
+ Yeah...
+ ... howdy partners.
+ Hiya, Professor Rosomorf.
+ Any word on Doctor Octavius?
+ Nothing beyond what I read in the papers. I'm afraid he's not the same man we knew. You know, I've been digging through the notes on his experiments...
+ You boys must have had an extraordinary classroom experience.
+ Yes sir... oh... I'm going to be a little late with my paper on the Planetary Conjunction, sir...
+ Whenever you're ready... I'll look at it. I know it's going to be an important work... and Peter, take my hat.
+ It is a costume party.
+ Look, there's Spider-Man!
+ Not the real one, I'm sure...
+ You can never be sure... all kinds of crazy stuff can happen at a masquerade ball...
+ I bet I know who it is.
+ Hiya, Liz...
+ Hiya, Peter. Who is in the Spider-Man costume?
+ It's a very clever outfit you've got there, Flash.
+ Take a hike, asshole.
+ How did you recognize him?
+ His pretty blue eyes give him away...
+ Anyway, who'll be sitting with you at the Halloween Ball?
+ I wanna dance... Hey, Spider-Man... Shall we Flash dance?
+ Hey, I'm reading the paper, okay?
+ Take her now, it's easy...
+ Wanna dance, Schechrezaa?
+ I'm pooped.
+ I'm not...
+ Holy jumping jelly beans, willya look at these pictures of Spider-Man? Wow! Is this guy great or what?
+ Hey, Peter! These are your pictures!
+ Can't be...
+ It says here "Photos by Peter Parker."
+ There are three PHOTOS of SPIDER-MAN in the paper. PETER BLUSHES, smiling.
+ You know this guy, Parker?
+ Well, yeah... sort of...
+ Wow... I'll give you anything if you introduce us.
+ Will you grant me this dance...?
+ Hey, Flash-Man... Wanna dance...?
+ Well, why not.
+ Thank you, thank you. We have a special surprise guest tonight. The Empire State University Masquerade Ball presents... The "Slammy" winning star of MTV'S wrestling tournament... The Amazing Spider-Man!
+ Go ahead... go ahead!
+ Come on... Flash...
+ Who are you...?
+ One day you'll know...
+ You sound very familiar.
+ Sure I do... I'm your friendly neighborhood Spider-Man!
+ What a bunch of crap. Goddamn rock and roll's screwed up the whole TV.
+ Come on, May. Wake up and go to sleep.
+ Hey! Can't you go any faster?
+ What'm I in, a race?
+ I don't know... I get this tingling in my brain, like some danger is lurking just ahead. I'm worried about Aunt May and Uncle Ben...
+ Your family?
+ Well, they are kind of my parents. They raised me. I lost both of my parents in a car accident... please step on it!
+ Step on it... so now you want to kill yourself in another accident... not with me, Boychick.
+ But I'm telling you... I've got this--
+ ... tingling... I know. And I got ulcers... Everybody's got something to worry about.
+ Please... Faster... Please.
+ Okay, you asked for it.
+ What's that?
+ What? It's nothing... go back to sleep... Oh, I'll go look. Go back to sleep.
+ Hmmm...
+ Some crazy kinda town, huh? You hear about that hold-up? The guy with the six arms? Hey, I see it all on this job. What kinda outfit is that, anyway?
+ Look, I'm really in a hurry.
+ You said the magic words, we have a flat Boychick.
+ Mice...
+ Hey! You wanna hand me that lug wrench?
+ Some crazy kinda town...
+ Sporting goods...
+ All I want it the kid's computer crap!
+ Let go before I blow your brain's out.
+ Let go!
+ You let go!
+ Uncle Ben!
+ Peter...
+ Oh my God... Uncle Ben...
+ Ben gets through everything. He'll be alright. The doctors are...
+ Excuse me. You the nephew?
+ Your uncle's a brave man. Apparently, the perpetrator was after something of yours. Your uncle didn't know what it was but he stood up to him anyway. You ought to be proud of him.
+ I am... how is he...
+ Ask the Doctor.
+ How's my... how's my husband doing...?
+ Mrs. Parker, I'm sorry. We tried.
+ Crash cart! STAT!
+ Let the medics handle it. Look, if it makes you feel any better. We're gonna nail this guy. He crashed his getaway car. We got him trapped in a warehouse on Jackson.
+ She's alright. She just fainted. We'll have to check her for symptoms of shock. If you want to wait, you can get some coffee on the third floor.
+ No, I... I think I wanna go out for some fresh air.
+ That place is loaded with solvents and chemicals. If we blast our way in, it's gonna go up like a roman candle.
+ We could go in through the fifth floor wash room.
+ What's that up there? Throw a light on that!
+ He's got a partner!
+ We got an accomplice up there! And we got a clear shot. Do we have a go?
+ That's a go.
+ Say your prayers, Weiner!
+ You ain't takin' me... Spider-Man... who ever you are...
+ Hey, creep!
+ Try again.
+ This is your last chance, you two. Either you're coming out, or we're coming in!
+ Stay back! Whoa... stay back down there!
+ Stand up, you.
+ You have thirty seconds to come out!
+ You're my ticket outa here. Gimme that stupid mask!
+ Then I'll take it myself.
+ Well, look what we've caught in our web...
+ Don't hurt me, man. Please don't hurt me...
+ Hold your fire!
+ Get me out of this madhouse!
+ Okey, dokey.
+ Amperage, okay. Flux, 14. Negative variable differential... good enough.
+ Okey, dokey... now all I need is Parker's data. Where the hell is Weiner? Damn it... I can't trust anybody. Only you, my babies... only you can I trust... Okay... If I have to do everything myself... I'm going to do it. I'll be back... my babies... my new babies!
+ Hey, Peter! Are you finished with my computer yet? I got a paper too, you know...
+ Oh my God... oh, it's you, Liz... I didn't expect you... uh... give me a minute.
+ Hi, Liz. Come on in.
+ What were you doing in here?
+ Cleaning up. Come on. I'll get your computer. Where's Flash parked?
+ Flash didn't come.
+ Oh. Well... how are you going to get it home?
+ Taxi... I guess.
+ You must spend a lot of time with this Spider-Man guy... Peter! Don't you think you ought to unplug that!
+ I, uh, I'll go down to the corner... see it I can hail that taxi.
+ Peter...?
+ Doctor Octavius...! You're... You're... You're so weird!... with those... what do you call those...
+ Waldos... Did you hear about Spider-Man? That's me... the real Spider-Man... now tell me, where is that jerky friend of yours... Parker?
+ Peter?... oh... he's not here. He's gone. I don't think he'll be back for awhile.
+ You wouldn't lie to your Professor now, would you?
+ Of course not. Why would I lie about a thing like that? Really. He's... out.
+ We'll wait. OCK grabs LIZ'S HAIR with his WALDOS.
+ What are you doing... let me go! Please... take those things out of my hair!
+ My Waldos, you mean.
+ Whatever you call them... please...
+ Sit.
+ He's a nice boy. A little nerdy maybe, but nice, wouldn't you say?
+ Oh, I don't know. Maybe. He's very inexperienced.
+ You know, you're a fascinating young lady...
+ Thank you...
+ You're so refreshing. You're so...
+ Shocking...?
+ Oh, I wouldn't say shocking...
+ I would!
+ Peter...!
+ Wait here...
+ Liz?
+ Peter! Help! Peter!
+ Peter Parker has something I want... And I'm going to have something he wants.
+ Put her down, Ock.
+ I know what's happening to you, Ock. I've been through a lot of changes myself lately. You have to listen to me.
+ Who the hell are you?
+ Spider-Man.
+ Spider-Man...
+ That's a lot of crap, clown... I am Spider-Man, not you. Ask you girlfriend. Tell him!
+ I'm a good friend of Peter Parker's Ock. Just like that girl you're holding. Now let her go.
+ Let her go? What an excellent idea. If you do not deliver your friend, Mr. Spider-Man, yes. Yes, of course, I'll let her go.
+ Put me down, you mechanical mutant!
+ You jerk!
+ Tell your friend Peter next time I'll get the taxi myself...
+ Hey... you jerk... you phony Spider-Man... Prepare to meet your death, bug.
+ Actually, I'm rather fond of living... especially now...
+ Octavius. Just stop and think.
+ I am thinking, insect. I'm thinking about exterminating you!
+ Okay, if that's the way you want it... Let's see what those chrome knuckles can do, Doc...
+ Great...
+ Now I must kill you, you cretinous clown.
+ Once I dispose of you, Spider-Man, no one will be able to stop me.
+ Stop you from what...?
+ My destiny!
+ Over here, Octopus!
+ That's Professor Octopus to you Spider Jerk!
+ Give it up, Professor. You'll never catch me!
+ So long, sucker.
+ There he is!
+ It's that Spider-Man!
+ What do you think you're doing?
+ I'm rescuing you.
+ Thanks but nooooooooooo!
+ He won't get away this time!
+ Hold your fire! He's got a girl.
+ Looks like he's got a hostage.
+ Wait a minute. Where are you taking me? SPIDEY hounded by the Police, rejected by the girl.
+ I better just take you back where you belong.
+ Hold on tight.
+ Where are we?
+ Open your eyes.
+ If you're trying to impress me Spidey, I want you to know I'm not easy. Okay, I'm impressed... now put me down, Spidey... put me down.
+ I like the way you say Spidey... Nobody calls me Spidey... now we go...
+ Wow... look, this is our dormitory. I can get to my room. Hey, wait a minute... there's Flash, if I'm not mistaken.
+ Liz?
+ You know my name?
+ Liz, listen to me. There's something I have to tell you.
+ Okay, put me down and we can talk, alright?
+ Do you know who I am?
+ All I know is you're the Amazing Spider-Man... or better you're Spidey the good guy on the block... you're a weirdo in a clown spider suit.
+ And that's all you know about me? Okay, lets get your boyfriend.
+ Which one?
+ How many do you have? I meant Flash.
+ Well, Flash is not exactly my boyfriend...
+ He's not? Then who is?
+ There's someone I like, but he's too shy to notice.
+ Flash!
+ Liz!
+ You know everybody... Flash we have to call Peter!
+ Hey, they won't let up, man! They keep calling you an accomplice in that burglary murder. But that's a crock, ain't it? I'm with you, Spidey, 100%
+ Thanks.
+ By the way, what are you doing with... Liz?
+ She needed a lift.
+ Oh... okay! This calls for a beer! A lot of beer!
+ Thanks, but I have some business to take care of.
+ Well... take care of that later. Wait here. I'll get the beer.
+ How'd you know this was Flash's place?
+ Peter Parker told me all about it.
+ Peter told you all about Flash?
+ No... he told me all about you. See you later.
+ Hey, where'd he go? Hey, Spider-Man!!
+ Peter told your Hero all about me...
+ He would, wouldn't he... that jerk!
+ Octavius!!!
+ Kim! Have you seen Harry?
+ Sure, lots of times. What a brainiac...
+ Yeah... have you seen him today?
+ No, un unh.
+ Peter...!
+ Hi... have you seen Harry?
+ No. What a night, huh?
+ Yeah, that was some ride home... must have been pretty exciting.
+ It was... okay. Look, I got two tickets to Les Miserables... wanna go?
+ Sorry... I'm really busy... I mean, not tonight... see you later.
+ Hey, Peter... how did you know about last night...?
+ What about last night?
+ My exciting ride with Spider-Man...
+ Oh... Sorry... I gotta hurry... I have to find Harry... I'll see you later.
+ Peter!
+ Hey! Can I get a lift downtown?
+ Take your shoes for a walk, Dork.
+ We are new inserting Peter Parker's data on tonight's Planetary Conjunction.
+ The COMPUTER SCREEN displays Peter Parker's name and ID number and the title, "The Planetary Conjunction and it's effect on Earth Gravity."
+ Yes, yes! Go on! Go on!
+ NUMBER SEQUENCES appear on the SCREEN. Then a GRAPHIC of the EARTH moving into line with SATURN, JUPITER, the SUN and the MOON. In the corner a NUMBER rises.
+ Enormous. It's enormous. The Parker calculations add 4% gravitational force at the moment of full Planetary Conjunction. Adding this to present maximum power potential, I get...
+ I knew it. I knew it! Universal destruction! It's doable! I am putting a countdown clock on the Planetary Conjunction now!
+ Okey, dokey. Now </div></div><div class="MissionResultFormat__dark"><div class="MissionResultFormat__title">Variables</div><div id="var-0-f" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-right undefined"></span> f</div></div></div></div></div><div class="EditorActionsAndFeedback__root"><div class="EditorActionsAndFeedback__feedback" style="bottom: 100%; opacity: 1;"><div class="MissionRunFeedback__root"><div class="MissionRunFeedback__success"><span class="dqicon dqicon-pass MissionRunFeedback__pass_circle"></span><span>Nice Work!</span></div><button class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__white DqButton__borderless"><span class="DqButton__text">Next Screen</span><span class="dqicon dqicon-right DqButton__icon"></span></button><div class="MissionRunFeedback__close_spacer"><div class="OnboardingReveal__shown"><button class="MissionRunFeedback__close_button DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__no_text DqButton__white DqButton__hollow"><span class="dqicon dqicon-fail DqButton__icon"></span></button></div></div></div></div><div class="EditorActionsAndFeedback__actions"><div class="MissionCodeActions__root OnboardingReveal__shown"><button title="Run your code [shift+enter]" id="onboarding-tip-run" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark"><span class="DqButton__text">Run Code</span></button><button title="Check your code [alt+enter]" id="onboarding-tip-run" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__green DqButton__on_dark" style="margin-left: 24px;"><span class="DqButton__text">Submit Answer</span></button><div class="MissionCodeActions__rest_buttons OnboardingReveal__shown"><button title="Restore to initial code [alt+r]" class="MissionCodeActions__reset DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__no_text DqButton__white DqButton__on_dark DqButton__hollow DqButton__borderless"><span class="dqicon dqicon-recycle DqButton__icon"></span></button><div class="MissionCodeActions__spacer"></div><button title="Open Console [alt+t]" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark DqButton__hollow"><span class="DqButton__text">Open Console</span></button></div></div></div></div></div></div></div></div></div><div class="MissionFooter__root OnboardingReveal__shown"><div class="MissionFooter__title_side"><span class="dqicon dqicon-bars MissionFooter__more"></span><div class="MissionFooter__title">1. Movie Quotes Data</div></div><div class="MissionFooter__center"><button title="[alt+b] Back a Screen" class="MissionFooter__nav_button DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__disabled DqButton__on_dark DqButton__hollow"><span class="DqButton__text">back</span></button><div>1 / 11</div><button title="[alt+n] Next Screen" class="MissionFooter__nav_button DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark DqButton__hollow"><span class="DqButton__text">Next</span></button></div><div class="MissionFooter__right_side"></div></div></div></div></div></div></div></div><script crossorigin="" type="text/javascript" src="./1. Movie Quotes Data_files/polyfill.min.js"></script><script crossorigin="" type="text/javascript" src="./1. Movie Quotes Data_files/lodash.min.js"></script><script crossorigin="" type="text/javascript" src="./1. Movie Quotes Data_files/react.production.min.js"></script><script crossorigin="" type="text/javascript" src="./1. Movie Quotes Data_files/react-dom.production.min.js"></script><script type="text/javascript">!function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="3.1.0";
+  var key = window.location.host === 'app.dataquest.io' ? 'BJhKYEXejzjqXq7xQDFI6N0M5W7HBAH5' : 'yPkme4oLIogTJ7xrH3SCEDVtcSz2J5Br';
+  analytics.load(key);
+  }}();</script><script src="./1. Movie Quotes Data_files/pa-5cd96b34fed2bd0016000186.js" async=""></script><script type="text/javascript" src="./1. Movie Quotes Data_files/app.1dcb74672053eeb54bd7.js"></script><script defer="" src="./1. Movie Quotes Data_files/beacon.min.js" data-cf-beacon="{&quot;rayId&quot;:&quot;52cdf1285bd73425&quot;,&quot;version&quot;:&quot;2019.10.1&quot;,&quot;startTime&quot;:1572276533346}"></script>
+<script type="text/javascript" id="">(function(a,e,f,g,b,c,d){a.ProfitWellObject=b;a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)};a[b].l=1*new Date;c=e.createElement(f);d=e.getElementsByTagName(f)[0];c.async=1;c.src=g;d.parentNode.insertBefore(c,d)})(window,document,"script","https://dna8twue3dlxq.cloudfront.net/js/profitwell.js","profitwell");profitwell("auth_token","bd8a22377119e7044e07346a8c89a91f");profitwell("user_email","USER@EMAIL.COM");</script><script type="text/javascript" id="" charset="utf-8" src="./1. Movie Quotes Data_files/b960428aed859499a86a27f8ce0a0a6bd2ea6c87.js"></script><iframe id="intercom-frame" style="position: absolute !important; opacity: 0 !important; width: 1px !important; height: 1px !important; top: 0 !important; left: 0 !important; border: none !important; display: block !important; z-index: -1 !important;" aria-hidden="true" tabindex="-1" src="./1. Movie Quotes Data_files/saved_resource(3).html"></iframe><div id="intercom-css-container"><style data-emotion="intercom-global"></style></div><div id="intercom-container" class="intercom-namespace"><style>html.intercom-mobile-messenger-active,html.intercom-mobile-messenger-active > body,html.intercom-modal-open,#intercom-container-body{overflow:hidden !important;}html.intercom-mobile-messenger-active,html.intercom-mobile-messenger-active > body{position:static !important;}html.intercom-mobile-messenger-active > body{height:0 !important;margin:0 !important;}iframe#intercom-frame{position:absolute !important;opacity:0 !important;width:1px !important;height:1px !important;top:0 !important;left:0 !important;border:none !important;display:block !important;z-index:-1 !important;}</style><div class="intercom-app" aria-live="polite"><div id="intercom-modal-container"></div></div></div></body></html>

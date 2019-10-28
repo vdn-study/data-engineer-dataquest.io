@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<!-- saved from url=(0086)https://app.dataquest.io/m/170/overcoming-the-limitations-of-threads/9/multiprocessing -->
+<html lang="en" class=" wf-merriweather-n7-active wf-merriweather-n3-active wf-industry-n3-active wf-industry-n2-active wf-ingra-n2-active wf-ingra-n4-active wf-active"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>.async-hide { opacity: 0 !important}</style><script type="text/javascript" async="" src="./9. Multiprocessing_files/main.2.1.182fcb38.js"></script><script type="text/javascript" async="" src="./9. Multiprocessing_files/loader.2.1.js"></script><script type="text/javascript" async="" src="./9. Multiprocessing_files/js"></script><script async="" src="./9. Multiprocessing_files/profitwell.js"></script><script type="text/javascript" async="" src="./9. Multiprocessing_files/analytics.js"></script><script src="./9. Multiprocessing_files/1208964489120563" async=""></script><script src="./9. Multiprocessing_files/identity.js" async=""></script><script type="text/javascript" async="" src="./9. Multiprocessing_files/fbevents.js"></script><script type="text/javascript" async="" src="./9. Multiprocessing_files/gtm.js"></script><script type="text/javascript" async="" src="./9. Multiprocessing_files/insight.min.js"></script><script type="text/javascript" async="" src="./9. Multiprocessing_files/qevents.js"></script><script type="text/javascript" async="" src="./9. Multiprocessing_files/mf5oz4we"></script><script type="text/javascript" async="" src="./9. Multiprocessing_files/fbds.js"></script><script type="text/javascript" async="" src="./9. Multiprocessing_files/recaptcha__vi.js"></script><script type="text/javascript" async="" src="./9. Multiprocessing_files/analytics.min.js"></script><script src="./9. Multiprocessing_files/nmj4kuc.js" async=""></script><script>var optimize_container_ids = {}
+  var stage_or_prod_id = window.location.host === 'app.dataquest.io' ? 'GTM-PNQ6824' : 'GTM-KFF7W4B';
+  optimize_container_ids[stage_or_prod_id] = true;
+  (function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
+  h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
+  (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
+  })(window,document.documentElement,'async-hide','dataLayer',4000,
+  optimize_container_ids);</script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="fragment" content="!"><title idle-disabled="true">Processing Large Datasets In Parallel | Dataquest</title><meta name="description" content="Learn Python and R for data science. Learn by coding and working with data in your browser. Build your portfolio with projects and become a data scientist."><script>(function(d) {
+      var config = {
+        kitId: 'nmj4kuc',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);</script><script src="./9. Multiprocessing_files/api.js" async="" defer="defer"></script><link rel="stylesheet" href="./9. Multiprocessing_files/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous"><link href="./9. Multiprocessing_files/css" rel="stylesheet"><link rel="stylesheet" href="./9. Multiprocessing_files/icon"><style>.loader {
+      z-index: 1000;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: #f9f9fb;
+    }
+    .loader .top {
+      transition: all ease 0.25;
+      padding: 0 0 0 40px;
+      background-image: linear-gradient(90deg,#30394b,#4c5361);
+      height: 90px;
+      overflow: hidden;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+          -ms-flex-align: center;
+              align-items: center;
+    }
+    .loader .message {
+      font-family: "ingra", sans-serif;
+      font-size: 14px;
+      color: white;
+      margin-left: 20px;
+    }
+
+    .rocket {
+      width: 25px;
+      height: 25px;
+      background-size: contain;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAFiQAABYkBbWid+gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAATdEVYdFRpdGxlAExvZ28tT24tTGlnaHQVgXW8AAAEuUlEQVRYhb2YXYhVVRTHf+fOOIofjVYPLmdMmgqFRAO1PBGiDyGVRkZlOEQiQaZTaYp9oX1ASEUQOKYFKWMQRIEWWjmkMFlupXTCypeUCh2XmorTZKkzc08Pe92Z03Fk7jne23pZe6+z/mv92XufvdfewciRUymVqLpBACLh+VLFzJUqkKqbDPwMHFB1t5QqbkkIqroG4FugDrgJ2KPqFpUidnAlU6zqKoAPgYfM9DkQAHdZ/yOgXiTszprjSkfwNXrJrQZmA7OAN80213wyS+YRVHX3AlvwI7ZAJNyY+L4QWAdEwH0i4WdZ8mQaQVV3PdBk5DYkyQGIhOuBD8ynyTCppTILCFgBDAd+AZ5SdUOBV4G7gQqgGXgRWASEwI2GeSJtotRTbGSOAcOAe4AvgJ3A9ITrPuA2YCawDegARomEf6XJl2WK641cG7AdmGHkImA5sBC4AEwC5phPm2Hq0ybLQvAx0022fUy0/tci4Vsi4bv47QZgsvk0JbDlIajqcsAE635seqDpszHXP00PSvhOsBjlIQjUAlXWPmT6D9PjY8lvNn0i4VtlMcpG8AbTp2OLvQXotG/7VZ0DJgN54EsA8z2diFEWgoW97LeCQSQ8hN9C8vj1OBX/w7wiErbGsL8nYhQlaffByPTQuFEkfFvVteC3lArgK5FwbwI7OBGjLAQLa6pO1VWKhF0xkq1Aa18gVVdJ79Se6MvncpJ2igt/5wDSraU6w8RjFCVpCT4Sa49NgRt3mRj9StEEVd1oYH7MlOaMnBJrz7dYRUmaEVyG38cuWH+hqruqP5D5LLbuRYuxrBwEbzW9EX/wjwCWFIFbYr7t+PIrHqukBAsnwI/AWmsvVXXXXg5g35Zadx1wMBGrNATtCBPrHgFeAvbia8LNqm5gH5iBwGbz+R542bAAYveZ0hDEV8WFtdchEl4EHgROAXcAG/rAbLBvZ4AHRMIL9G4xRd+biyJoJdMe695vtiPAPPwRN0/Vva/qBqm6KlW3MfatXiQsHHNzTO8p9qaXZg1+Y7o+NqUtwA5rLwCO4ovT+Wbbhi//C68OD5t9V7FJ0xx1W4FVwNXAXFU3GHgeuC7mc00CMxs4qOpex49mNf4s3lps0lR3ElW3Dl/SR/h1CXAO2I0flZ/MNh6//m6nt7AoYNaLhEVfntIWC8/iL+a1QBewBl9WtSf8NgOoumHASvxeOABQ4Lk0CbPc6mYAbwCPioQH499qtPHpgKj7qDzZmMCMBTYBK0XC5rIStISBSPifuq5W19wZETQDRATTjsniXf1hipFMLwsiYTRa19Qdj12A8uRqeoPme9o12jhY9J2JWchlJjhK1y7JExyexL5PY6R69rU8uXzM3eXI/1CjjalfFTITzJGfac1ZBdtFqrbjq+UTAdFOgBptrMauqRHBtP+NYEQQJG0n5fGT7VSPaad6TJs0nALopqLHL0f+EkzZCPYl43R15XDOrqqmfcVxdZnI9CVZX7cK661nrZ1j6PSI4AWAKXy34wjsHsK57vP2uBARdF0apn/JOsWbgH+A9wq2gHwrvt7b/zdDDgAcluUd+LO4E/gkS67ML6w12jigTRo6+/M7ri4IcSN+lWfOZMnzLzfFicWWhq1kAAAAAElFTkSuQmCC");
+    }
+    .loader .rocket {
+      -webkit-animation: loading_anim linear 4s;
+              animation: loading_anim linear 4s;
+      -webkit-animation-iteration-count: infinite;
+              animation-iteration-count: infinite;
+    }
+
+    .dq_text {
+      width: 140px;
+      height: 15px;
+      margin: 10px 0 10px 10px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gQ3JlYXRlZCB3aXRoIElua3NjYXBlIChodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy8pIC0tPgoKPHN2ZwogICB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iCiAgIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiCiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIKICAgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICB2ZXJzaW9uPSIxLjEiCiAgIHdpZHRoPSI0NjUuMzU5OTkiCiAgIGhlaWdodD0iNDguMzQ0NzgiCiAgIGlkPSJzdmcyIj4KICA8dGl0bGUKICAgICBpZD0idGl0bGU4Ij5Mb2dvLU9uLURhcms8L3RpdGxlPgogIDxtZXRhZGF0YQogICAgIGlkPSJtZXRhZGF0YTMxIj4KICAgIDxyZGY6UkRGPgogICAgICA8Y2M6V29yawogICAgICAgICByZGY6YWJvdXQ9IiI+CiAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+CiAgICAgICAgPGRjOnR5cGUKICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPgogICAgICAgIDxkYzp0aXRsZT5Mb2dvLU9uLURhcms8L2RjOnRpdGxlPgogICAgICA8L2NjOldvcms+CiAgICA8L3JkZjpSREY+CiAgPC9tZXRhZGF0YT4KICA8ZGVmcwogICAgIGlkPSJkZWZzNCI+CiAgICA8c3R5bGUKICAgICAgIGlkPSJzdHlsZTYiIC8+CiAgPC9kZWZzPgogIDxwYXRoCiAgICAgZD0ibSAxNywwLjY2IGMgMTQuNjYsMCAyMywxMSAyMywyMy40IDAsMTIuNCAtOC4yLDIzLjYgLTIzLDIzLjYgbCAtMTcsMCAwLC00NyAxNywwIHogbSAtMC4xMywzOS44OCBjIDkuNzUsMCAxNS4zMywtNy41MyAxNS4zMywtMTYuNDEgMCwtOC44OCAtNS42MSwtMTYuNDEgLTE1LjI2LC0xNi40MSBsIC05LjE1LDAgMCwzMi44MSA5LjA4LDAgMCwwLjAxIHoiCiAgICAgaWQ9InN2Z18xIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDY0LjU5LDM4LjExIC00LjU3LDkuNzUgLTguMiwwIDAsLTEgMjEuNzcsLTQ2LjQgMy42MywwIDIxLjY1LDQ2LjQgMCwxIC04LjE0LDAgLTQuNjQsLTkuNzUgLTIxLjUsMCB6IG0gMi41NiwtNi41OSAxNi40OCwwIC04LjIsLTE4LjgzIC04LjI4LDE4LjgzIHoiCiAgICAgaWQ9InN2Z18yIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDEwNi44NSw3LjU1IDAsLTYuOTMgMzUsMCAwLDYuOTMgLTEzLjY5LDAgMCw0MC4xNSAtNy42NywwIDAsLTQwLjE1IC0xMy42NCwwIHoiCiAgICAgaWQ9InN2Z18zIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDE2Mi41MywzOC4xMSAtNC41Nyw5Ljc1IC04LjIsMCAwLC0xIDIxLjc5LC00Ni40IDMuNjMsMCAyMS42NSw0Ni40IDAsMSAtOC4xNCwwIC00LjY0LC05Ljc1IC0yMS41MiwwIHogbSAyLjU2LC02LjU5IDE2LjUsMCAtOC4yLC0xOC44MyAtOC4zLDE4LjgzIHoiCiAgICAgaWQ9InN2Z180IgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDI1Ni41OSw0OC4xNyAtNy4xMywwIC0yLjc0LC00LjIgYSAyNC4wOCwyNC4wOCAwIDAgMSAtMTQuMzIsNC4zNyBjIC0xMi45MSwwIC0yMy42NywtOS40OCAtMjMuNjcsLTI0LjIxIDAsLTE0LjQ2IDkuODIsLTI0LjA3IDI0LC0yNC4wNyAxMi43MSwwIDIzLjk0LDguNzQgMjMuOTQsMjQuMDcgMCw2LjE5IC0xLjY4LDExLjMgLTQuODQsMTUuMjYgbCA0Ljc2LDcuNTggMCwxLjIgeiBtIC0yMy44NywtNy4xMyBjIDguODEsMCAxNi4wNywtNS41OCAxNi4wNywtMTYuOTUgMCwtMTEgLTcuMjYsLTE2Ljc0IC0xNi4xNCwtMTYuNzQgLTguODgsMCAtMTYsNiAtMTYsMTYuNzQgMC4wMSwxMC45NiA3LjI3LDE2Ljk1IDE2LjA4LDE2Ljk1IGwgLTAuMDEsMCB6IgogICAgIGlkPSJzdmdfNSIKICAgICBzdHlsZT0iZmlsbDojZmZmZmZmIiAvPgogIDxwYXRoCiAgICAgZD0ibSAyNzUuMjMsMzEuNTkgMCwtMzEuMjcgNy44LDAgMCwzMS4wNyBjIDAsNi4xOSA0LjY0LDkuNjIgMTAuNjIsOS42MiA1Ljk4LDAgMTAuNDksLTMuNDMgMTAuNDksLTkuNjIgbCAwLC0zMS4wNyA3LjczLDAgMCwzMS4yNyBjIDAsMTAuNDkgLTguMiwxNi40MSAtMTguMjIsMTYuNDEgLTEwLjAyLDAgLTE4LjQyLC01LjkyIC0xOC40MiwtMTYuNDEgeiIKICAgICBpZD0ic3ZnXzYiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KICA8cGF0aAogICAgIGQ9Im0gMzYxLjg0LDcuNDggLTIwLjc4LDAgMCwxMi40OSAxOS42NCwwIDAsNi45MyAtMTkuNjQsMCAwLDEzLjY3IDIxLjE4LDAgMCw3LjEzIC0yOS4wNSwwIDAsLTQ3LjA4IDI4LjY1LDAgMCw2Ljg2IHoiCiAgICAgaWQ9InN2Z183IgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDM4Ni41MiwzNC4wNCBjIDAuMzQsNS4zMSA2LjEyLDcuMjYgMTEuMjMsNy4yNiA1LjExLDAgMTAuODksLTEuMjEgMTAuODksLTcuMDYgMCwtNi4xOSAtNi4zOSwtNi43OSAtMTEuODQsLTcuMzMgLTguNjEsLTAuNzQgLTE3LjE1LC0zLjUgLTE3LjE1LC0xMi45MSAwLC05LjY4IDguNTQsLTE0IDE3LjY5LC0xNCA4Ljk0LDAgMTcuNDIsNCAxNy42MiwxMy42NSBsIC03LjM3LDAgYyAtMC4zNCwtNSAtNS42NSwtNi42NiAtMTAuMjksLTYuNjYgLTQuMywwIC05Ljg5LDEuNDggLTkuODksNi43OSAwLDUuMzEgNS4zMSw2IDEwLjc2LDYuNzIgOS41NSwxLjA4IDE4LjI5LDMgMTguMjksMTMuNzkgMCwxMC4zNiAtOS43NSwxNCAtMTguNTYsMTQgLTkuMjEsMC4yIC0xOC44MywtNC4zNyAtMTksLTE0LjI2IGwgNy42NywwIC0wLjA1LDAuMDEgeiIKICAgICBpZD0ic3ZnXzgiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KICA8cGF0aAogICAgIGQ9Im0gNDMwLjM2LDcuNTUgMCwtNi45MyAzNSwwIDAsNi45MyAtMTMuNjgsMCAwLDQwLjE1IC03LjY3LDAgMCwtNDAuMTUgLTEzLjY1LDAgeiIKICAgICBpZD0ic3ZnXzkiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KPC9zdmc+Cg==");
+    }
+
+    @-webkit-keyframes loading_anim {
+      0% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+      }
+      50% {
+        -webkit-transition: translateY(-50%);
+        transition: translateY(-50%);
+      }
+      75%, 100% {
+        -webkit-transform: translateY(-500%);
+                transform: translateY(-500%);
+      }
+    }
+
+    @keyframes loading_anim {
+      0% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+      }
+      50% {
+        -webkit-transition: translateY(-50%);
+        transition: translateY(-50%);
+      }
+      75%, 100% {
+        -webkit-transform: translateY(-500%);
+                transform: translateY(-500%);
+      }
+    }
+    .ant-form-explain {
+      color: red;
+    }</style><link rel="apple-touch-icon" sizes="57x57" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-180x180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Dataquest"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#fff"><meta name="application-name" content="Dataquest"><link rel="icon" type="image/png" sizes="32x32" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon-16x16.png"><link rel="shortcut icon" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon.ico"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-320x460.png"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-640x920.png"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-640x1096.png"><link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-750x1294.png"><link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1182x2208.png"><link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1242x2148.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-748x1024.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-768x1004.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1496x2048.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1536x2008.png"><style type="text/css">.tk-merriweather{font-family:"merriweather",serif;}.tk-industry{font-family:"industry",sans-serif;}.tk-ingra{font-family:"ingra",sans-serif;}</style><style type="text/css">@font-face{font-family:tk-merriweather-n7;src:url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;}@font-face{font-family:tk-merriweather-n3;src:url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:tk-industry-n3;src:url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:tk-industry-n2;src:url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:tk-ingra-n2;src:url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:tk-ingra-n4;src:url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff2"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("opentype");font-weight:400;font-style:normal;}</style><style type="text/css">@font-face{font-family:merriweather;src:url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;}@font-face{font-family:merriweather;src:url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:industry;src:url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:industry;src:url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:ingra;src:url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:ingra;src:url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff2"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("opentype");font-weight:400;font-style:normal;}</style><link href="./9. Multiprocessing_files/app.eb9c5672a70e0f34428c.css" rel="stylesheet"><script src="./9. Multiprocessing_files/logger.min.js" async=""></script><script async="" src="./9. Multiprocessing_files/modules-v55.js"></script><link rel="stylesheet" type="text/css" href="./9. Multiprocessing_files/NotificationsInMenu.09808b64bac3460ae0f5.css"><script charset="utf-8" src="./9. Multiprocessing_files/NotificationsInMenu.dfa67edc80a27ad52fd8.js"></script><script charset="utf-8" src="./9. Multiprocessing_files/vendors_TheMission.0473137e870a7ce7e36f.js"></script><link rel="stylesheet" type="text/css" href="./9. Multiprocessing_files/TheMission.40883b66c977c6c03337.css"><script charset="utf-8" src="./9. Multiprocessing_files/TheMission.7c9223c5f27a15c4257a.js"></script><link rel="canonical" href="https://www.dataquest.io/m/170/overcoming-the-limitations-of-threads" data-react-helmet="true"><meta name="twitter:site" content="@dataquestio" data-react-helmet="true"><meta name="twitter:title" content="Processing Large Datasets In Parallel | Dataquest" data-react-helmet="true"><meta name="og:title" content="Processing Large Datasets In Parallel | Dataquest" data-react-helmet="true"><meta name="og:site_name" content="Dataquest" data-react-helmet="true"><meta name="fb:app_id" content="1068949113131184" data-react-helmet="true"><meta name="twitter:card" content="summary" data-react-helmet="true"><meta name="description" content="This interactive tutorial teaches you Python&#39;s multiprocessing library to help tune performance when processing large data sets." data-react-helmet="true"><meta name="twitter:description" content="This interactive tutorial teaches you Python&#39;s multiprocessing library to help tune performance when processing large data sets." data-react-helmet="true"><meta name="og:description" content="This interactive tutorial teaches you Python&#39;s multiprocessing library to help tune performance when processing large data sets." data-react-helmet="true"><meta name="og:url" content="https://www.dataquest.io/m/170/overcoming-the-limitations-of-threads" data-react-helmet="true"><script type="application/ld+json" data-react-helmet="true">{"@context":"http://schema.org","@type":"Organization","url":"https://www.dataquest.io","logo":"https://s3.amazonaws.com/dq-email/brand/dataquest_logo.svg"}</script><script charset="utf-8" src="./9. Multiprocessing_files/vendors_MissionReference.51bc46f42d17cd685d03.js"></script><link rel="stylesheet" type="text/css" href="./9. Multiprocessing_files/MissionReference.bf41c3640eb1463e2c57.css"><script charset="utf-8" src="./9. Multiprocessing_files/MissionReference.5fec493ea89554ed5119.js"></script><link rel="stylesheet" type="text/css" href="./9. Multiprocessing_files/vendors_DqEditor.9f679c74a1a04ab5ed6f.css"><script charset="utf-8" src="./9. Multiprocessing_files/vendors_DqEditor.bb447024d4e2460dcbb7.js"></script><link rel="stylesheet" type="text/css" href="./9. Multiprocessing_files/DqEditor.3197904b9ae6d3e264d6.css"><script async="" src="./9. Multiprocessing_files/MathJax.js"></script><script charset="utf-8" src="./9. Multiprocessing_files/DqEditor.ef8e247bfd1c12e85a07.js"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><script async="" src="./9. Multiprocessing_files/saved_resource"></script><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style data-emotion=""></style></head><body><div id="MathJax_Message" style="display: none;"></div><div id="root" style="height: 100%"><div class="dq-min-h-screen"><div class="CoreLayout__root"><header data-test-selector="navigation" class="dq-shadow DqHeader__root_mission"><div class="DqHeader__inner_content"><div class="DqHeader__left_side OnboardingReveal__shown"><a class="DqHeader__back" href="https://app.dataquest.io/dashboard"><span class="dqicon dqicon-left DqHeader__icon"></span><div class="DqHeader__back_text">Dashboard</div></a></div><div class="DqHeader__middle"><div class="DqHeader__mission_title">Overcoming The Limitations Of Threads</div></div><div class="DqHeader__right_side OnboardingReveal__shown"><div class="MenuDropdown__menu_dashboard_redesign"><img src="./9. Multiprocessing_files/vm-okba9fec3bf2205e0374a027b855856dce.svg" style="margin: 0px 12px;"></div><div title="Get Help" class="MenuDropdown__menu_dashboard_redesign"><div class="HelpScoutLauncher__body"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183);">help_outline</i></div></div><div class="MenuDropdown__menu_dashboard_redesign"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183); margin: 0px 8px;">notifications_none</i></div><div class="MenuDropdown__menu_dashboard_redesign"><div data-test-selector="user-menu" class="DqHeader__user_box"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183); margin: 0px 0px 0px 8px;">account_circle</i><i class="material-icons" style="color: rgb(146, 162, 183); font-size: 16px;">keyboard_arrow_down</i></div></div></div></div></header><div class="CoreLayout__view"><div class="MissionView__root" data-test-selector="MissionView"><div class="TheMission__root"><div class="SplitPane TheMission__split_pane vertical " style="display: flex; flex: 1 1 0%; height: 100%; position: absolute; outline: none; overflow: hidden; user-select: text; flex-direction: row; left: 0px; right: 0px;"><div class="Pane vertical Pane1  " style="flex: 0 0 auto; position: relative; outline: none; width: 50%;"><div class="TheMission__is_interactive"><div class="MissionInformation__light OnboardingReveal__shown"><div class="MissionTabs__root"><div class="OnboardingReveal__shown"><div class="MissionTabs__button_selected">Learn</div></div><div class="OnboardingReveal__shown"><div class="MissionTabs__button">Mission Reference</div></div></div><div class="MissionInformation__body"><div class="MissionLearn__light ScrollAccordion__root"><div class="ScrollAccordion__top_headers" style="width: 912px;"><div id="onboarding-tip-instructions" theme="light" class="ScrollAccordion__in_header SidePanelTitle__light">instructions</div></div><div class="ScrollAccordion__body"><div class="ScrollAccordion__section"><div theme="light" class="ScrollAccordion__in_text SidePanelTitle__light" style="opacity: 0;">instructions</div><iframe style="height: 100%; width: 100%; border: none; background: transparent; position: absolute; z-index: -1; top: 0px; left: 0px;" src="./9. Multiprocessing_files/saved_resource.html"></iframe><div id="body" class="MissionLearn__instructions MissionMarkup__light"><ul>
+<li>Swap your code from the last screen to use <code>multiprocessing</code>.</li>
+<li>Make sure to profile the code, assign the result to <code>total</code>, and print the total time it took to run.</li>
+<li>Print out <code>capital_letters</code> when you're done.  Is anything off about the result?  Do you have any theories about why?</li>
+</ul></div><div class="MissionLearn__section"><div theme="light" class="DqDropMenu__close"><div class="DqDropMenu__top" data-test-selector="GetHelpMenu"><div class="DqDropMenu__text">Get Help</div><div class="DqDropMenu__icon"><span class="dqicon dqicon-down undefined"></span></div></div><div class="DqDropMenu__options"><div class="DqDropMenu__option" data-test-selector="mission-help-get-hint">Get a hint</div><div class="DqDropMenu__option" title="[alt+a] to See the answer" data-test-selector="mission-help-show-answer">See the answer</div><div class="DqDropMenu__option">Message Us</div></div></div></div></div><div class="ScrollAccordion__section"><div theme="light" class="ScrollAccordion__in_text SidePanelTitle__light" style="opacity: 1;">The Answer</div><iframe style="height: 100%; width: 100%; border: none; background: transparent; position: absolute; z-index: -1; top: 0px; left: 0px;" src="./9. Multiprocessing_files/saved_resource(1).html"></iframe><div class="dq_theme MissionLearn__solution DqEditor__root"><textarea autocomplete="off" style="display: none;">import threading
+import multiprocessing
+
+capital_letters1 = []
+capital_letters2 = []
+start = time.time()
+def count_capital_letters(email):
+    return len([letter for letter in email if letter.isupper()])
+
+def count_capitals_in_emails(start, finish, capital_letters):
+    for email in emails["RawText"][start:finish]:
+        capital_letters.append(count_capital_letters(email))
+
+p1 = multiprocessing.Process(target=count_capitals_in_emails, args=(0, 3972, capital_letters1))
+p2 = multiprocessing.Process(target=count_capitals_in_emails, args=(3972, 7946, capital_letters2))
+p1.start()
+p2.start()
+
+for process in [p1, p2]:
+    process.join()
+    
+total = time.time() - start
+
+print(total)
+print(capital_letters1)</textarea><div class="CodeMirror cm-s-dq-light CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 439.5px; left: 206.562px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 30px; margin-bottom: -15px; border-right-width: 15px; min-height: 469px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>x</pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"><div class="CodeMirror-selected" style="position: absolute; left: 4px; top: 0px; width: 810px; height: 18px;"></div><div class="CodeMirror-selected" style="position: absolute; left: 4px; top: 432px; width: 172.562px; height: 18px;"></div><div class="CodeMirror-selected" style="position: absolute; left: 4px; top: 18px; width: 810px; height: 414px;"></div></div><div class="CodeMirror-cursors" style="visibility: hidden;"></div><div class="CodeMirror-code" role="presentation" style=""><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">import</span> <span class="cm-variable">threading</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">2</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">import</span> <span class="cm-variable">multiprocessing</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">3</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">4</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">capital_letters1</span> <span class="cm-operator">=</span> []</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">5</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">capital_letters2</span> <span class="cm-operator">=</span> []</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">6</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">start</span> <span class="cm-operator">=</span> <span class="cm-variable">time</span>.<span class="cm-property">time</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">7</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">def</span> <span class="cm-def">count_capital_letters</span>(<span class="cm-variable">email</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">8</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">return</span> <span class="cm-builtin">len</span>([<span class="cm-variable">letter</span> <span class="cm-keyword">for</span> <span class="cm-variable">letter</span> <span class="cm-keyword">in</span> <span class="cm-variable">email</span> <span class="cm-keyword">if</span> <span class="cm-variable">letter</span>.<span class="cm-property">isupper</span>()])</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">9</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">10</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">def</span> <span class="cm-def">count_capitals_in_emails</span>(<span class="cm-variable">start</span>, <span class="cm-variable">finish</span>, <span class="cm-variable">capital_letters</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">11</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">for</span> <span class="cm-variable">email</span> <span class="cm-keyword">in</span> <span class="cm-variable">emails</span>[<span class="cm-string">"RawText"</span>][<span class="cm-variable">start</span>:<span class="cm-variable">finish</span>]:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">12</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">capital_letters</span>.<span class="cm-property">append</span>(<span class="cm-variable">count_capital_letters</span>(<span class="cm-variable">email</span>))</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">13</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">14</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">p1</span> <span class="cm-operator">=</span> <span class="cm-variable">multiprocessing</span>.<span class="cm-property">Process</span>(<span class="cm-variable">target</span><span class="cm-operator">=</span><span class="cm-variable">count_capitals_in_emails</span>, <span class="cm-variable">args</span><span class="cm-operator">=</span>(<span class="cm-number">0</span>, <span class="cm-number">3972</span>, <span class="cm-variable">capital_letters1</span>))</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">15</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">p2</span> <span class="cm-operator">=</span> <span class="cm-variable">multiprocessing</span>.<span class="cm-property">Process</span>(<span class="cm-variable">target</span><span class="cm-operator">=</span><span class="cm-variable">count_capitals_in_emails</span>, <span class="cm-variable">args</span><span class="cm-operator">=</span>(<span class="cm-number">3972</span>, <span class="cm-number">7946</span>, <span class="cm-variable">capital_letters2</span>))</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">16</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">p1</span>.<span class="cm-property">start</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">17</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">p2</span>.<span class="cm-property">start</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">18</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">19</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">for</span> <span class="cm-variable">process</span> <span class="cm-keyword">in</span> [<span class="cm-variable">p1</span>, <span class="cm-variable">p2</span>]:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">20</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">process</span>.<span class="cm-property">join</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">21</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">22</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">total</span> <span class="cm-operator">=</span> <span class="cm-variable">time</span>.<span class="cm-property">time</span>() <span class="cm-operator">-</span> <span class="cm-variable">start</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">23</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">24</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-builtin">print</span>(<span class="cm-variable">total</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">25</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-builtin">print</span>(<span class="cm-variable">capital_letters1</span>)</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 15px; width: 1px; border-bottom: 0px solid transparent; top: 469px;"></div><div class="CodeMirror-gutters" style="height: 484px; left: 0px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div></div></div></div></div></div></div><div class="ScrollAccordion__bottom_headers" style="width: 912px;"></div></div></div></div></div></div><span class="Resizer vertical "></span><div class="Pane vertical Pane2  " style="flex: 1 1 0%; position: relative; outline: none;"><div class="TheMission__is_interactive"><div><div class="TaskPanels__root OnboardingReveal__shown"><div class="TaskPanels__dark"><div class="TaskPanels__editor_section"><div class="MissionEditorFiles__dark"><span class="meta MissionEditorFiles__file_active"><div title="[alt+t] to toggle open">script.py</div></span><span class="meta MissionEditorFiles__file"><div title="/dataquest/user/Emails.csv">Emails.csv</div></span></div><div class="TaskPanels__editor_with_extra"><div class="dq_theme  DqEditor__root"><textarea autocomplete="off" style="display: none;">import threading
+import multiprocessing
+
+capital_letters1 = []
+capital_letters2 = []
+start = time.time()
+def count_capital_letters(email):
+    return len([letter for letter in email if letter.isupper()])
+
+def count_capitals_in_emails(start, finish, capital_letters):
+    for email in emails["RawText"][start:finish]:
+        capital_letters.append(count_capital_letters(email))
+
+p1 = multiprocessing.Process(target=count_capitals_in_emails, args=(0, 3972, capital_letters1))
+p2 = multiprocessing.Process(target=count_capitals_in_emails, args=(3972, 7946, capital_letters2))
+p1.start()
+p2.start()
+
+for process in [p1, p2]:
+    process.join()
+    
+total = time.time() - start
+
+print(total)
+print(capital_letters1)</textarea><div class="CodeMirror cm-s-dq-dark CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 439.5px; left: 206.562px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 30px; margin-bottom: -15px; border-right-width: 15px; min-height: 469px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>x</pre><div class="CodeMirror-linenumber CodeMirror-gutter-elt"><div>25</div></div></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors" style=""><div class="CodeMirror-cursor" style="left: 176.562px; top: 432px; height: 18px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation" style=""><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">import</span> <span class="cm-variable">threading</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">2</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">import</span> <span class="cm-variable">multiprocessing</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">3</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">4</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">capital_letters1</span> <span class="cm-operator">=</span> []</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">5</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">capital_letters2</span> <span class="cm-operator">=</span> []</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">6</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">start</span> <span class="cm-operator">=</span> <span class="cm-variable">time</span>.<span class="cm-property">time</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">7</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">def</span> <span class="cm-def">count_capital_letters</span>(<span class="cm-variable">email</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">8</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">return</span> <span class="cm-builtin">len</span>([<span class="cm-variable">letter</span> <span class="cm-keyword">for</span> <span class="cm-variable">letter</span> <span class="cm-keyword">in</span> <span class="cm-variable">email</span> <span class="cm-keyword">if</span> <span class="cm-variable">letter</span>.<span class="cm-property">isupper</span>()])</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">9</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">10</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">def</span> <span class="cm-def">count_capitals_in_emails</span>(<span class="cm-variable">start</span>, <span class="cm-variable">finish</span>, <span class="cm-variable">capital_letters</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">11</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">for</span> <span class="cm-variable">email</span> <span class="cm-keyword">in</span> <span class="cm-variable">emails</span>[<span class="cm-string">"RawText"</span>][<span class="cm-variable">start</span>:<span class="cm-variable">finish</span>]:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">12</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">capital_letters</span>.<span class="cm-property">append</span>(<span class="cm-variable">count_capital_letters</span>(<span class="cm-variable">email</span>))</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">13</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">14</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">p1</span> <span class="cm-operator">=</span> <span class="cm-variable">multiprocessing</span>.<span class="cm-property">Process</span>(<span class="cm-variable">target</span><span class="cm-operator">=</span><span class="cm-variable">count_capitals_in_emails</span>, <span class="cm-variable">args</span><span class="cm-operator">=</span>(<span class="cm-number">0</span>, <span class="cm-number">3972</span>, <span class="cm-variable">capital_letters1</span>))</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">15</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">p2</span> <span class="cm-operator">=</span> <span class="cm-variable">multiprocessing</span>.<span class="cm-property">Process</span>(<span class="cm-variable">target</span><span class="cm-operator">=</span><span class="cm-variable">count_capitals_in_emails</span>, <span class="cm-variable">args</span><span class="cm-operator">=</span>(<span class="cm-number">3972</span>, <span class="cm-number">7946</span>, <span class="cm-variable">capital_letters2</span>))</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">16</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">p1</span>.<span class="cm-property">start</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">17</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">p2</span>.<span class="cm-property">start</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">18</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">19</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">for</span> <span class="cm-variable">process</span> <span class="cm-keyword">in</span> [<span class="cm-variable">p1</span>, <span class="cm-variable">p2</span>]:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">20</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">process</span>.<span class="cm-property">join</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">21</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">22</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">total</span> <span class="cm-operator">=</span> <span class="cm-variable">time</span>.<span class="cm-property">time</span>() <span class="cm-operator">-</span> <span class="cm-variable">start</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">23</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">24</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-builtin">print</span>(<span class="cm-variable">total</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">25</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-builtin">print</span>(<span class="cm-variable">capital_letters1</span>)</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 15px; width: 1px; border-bottom: 0px solid transparent; top: 469px;"></div><div class="CodeMirror-gutters" style="height: 484px; left: 0px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div></div></div></div></div><div class="TaskPanels__extra_lines"></div></div></div><div class="TaskPanels__outputs"><div class="MissionResultFormat__dark"><div class="MissionResultFormat__title">Output</div><div class="code MissionOutput__results" id="output-8-stdout">3.206955909729004
+[]
+</div></div><div class="MissionResultFormat__dark"><div class="MissionResultFormat__title">Variables</div><div id="var-8-p2" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> p2<span class="MissionVariableLine__type">Process (&lt;class 'multiprocessing.context.Process'&gt;)</span></div><div class="MissionVariableLine__value">&lt;Process(Process-2, stopped)&gt;</div></div><div id="var-8-total" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> total<span class="MissionVariableLine__type">float (&lt;class 'float'&gt;)</span></div><div class="MissionVariableLine__value">3.206955909729004</div></div><div id="var-8-capital_letters2" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> capital_letters2<span class="MissionVariableLine__type">list (&lt;class 'list'&gt;)</span></div><div class="MissionVariableLine__value">[]</div></div><div id="var-8-email" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> email<span class="MissionVariableLine__type">str (&lt;class 'str'&gt;)</span></div><div class="MissionVariableLine__value">"UNCLASSIFIED U.S. Department of State Case No. F-2014-20439 Doc No. C05778470 Date: 08/31/2015\nRELEASE IN\nFULL\nFrom: Sullivan, Jacob J &lt;SullivanJJ@state.gov&gt;\nSent: Friday, December 17, 2010 10:42 AM\nTo:\nCc: Abedin, Huma\nSubject: FW: Note for Secretary Clinton\nAttachments: President Karzaijpg\nSee below.\nFrom: Eikenberry, Karl W\nSent: Friday, December 17, 2010 10:11 AM\nTo: Mills, Cheryl D; Ruggiero, Frank 3; Sullivan, Jacob 3\nCc: Wayne, E Anthony\nSubject: Note for Secretary Clinton\nMadam Secretary,\nThe outpouring of condolences from the international community and the Afghans for Richard's passing has been\nextraordinary. We have had a steady flow of visitors from the NATO and diplomatic community and, most importantly,\nAfghans of every walk of life for several days who have come to sign the condolence book.\nToday, during my weekly meeting with President Karzai, I took along the condolence book to be signed at the\nPalace. President Karzai signed and wrote a nice tribute to Richard and graciously allowed us to bring an Embassy\nphotographer to memorialize the occasion. A photograph is attached. We will separately arrange for a copy to be\nsigned by President Karzai for Kati.\nSeparately, I would ask that you thank Mike Mullen for permitting the USO show with which he is traveling to stage an\nunprecedented performance at the U.S. Embassy today. Allowing Embassy Kabul to be the site of a USO show in\nAfghanistan was very gracious of Mike as normally USO shows are only held at military bases. We had an extraordinary\nturnout of our civilian and military team from all over Kabul gathered today to see Robin Williams and other\nentertainers. Mike remains a real champion of our civil-military cooperation and teamwork.\nRespectfully,\nKarl\nSBU\nThis email is UNCLASSIFIED.\nUNCLASSIFIED U.S. Department of State Case No. F-2014-20439 Doc No. C05778470 Date: 08/31/2015\n\x0c"</div></div><div id="var-8-process" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> process<span class="MissionVariableLine__type">Process (&lt;class 'multiprocessing.context.Process'&gt;)</span></div><div class="MissionVariableLine__value">&lt;Process(Process-2, stopped)&gt;</div></div><div id="var-8-p1" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> p1<span class="MissionVariableLine__type">Process (&lt;class 'multiprocessing.context.Process'&gt;)</span></div><div class="MissionVariableLine__value">&lt;Process(Process-1, stopped)&gt;</div></div><div id="var-8-start" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> start<span class="MissionVariableLine__type">float (&lt;class 'float'&gt;)</span></div><div class="MissionVariableLine__value">1556290000.3828754</div></div><div id="var-8-emails" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> emails<span class="MissionVariableLine__type">DataFrame (&lt;class 'pandas.core.frame.DataFrame'&gt;)</span></div><div class="MissionVariableLine__html_value"><div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Id</th>
+      <th>DocNumber</th>
+      <th>MetadataSubject</th>
+      <th>MetadataTo</th>
+      <th>MetadataFrom</th>
+      <th>SenderPersonId</th>
+      <th>MetadataDateSent</th>
+      <th>MetadataDateReleased</th>
+      <th>MetadataPdfLink</th>
+      <th>MetadataCaseNumber</th>
+      <th>...</th>
+      <th>ExtractedTo</th>
+      <th>ExtractedFrom</th>
+      <th>ExtractedCc</th>
+      <th>ExtractedDateSent</th>
+      <th>ExtractedCaseNumber</th>
+      <th>ExtractedDocNumber</th>
+      <th>ExtractedDateReleased</th>
+      <th>ExtractedReleaseInPartOrFull</th>
+      <th>ExtractedBodyText</th>
+      <th>RawText</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>C05739545</td>
+      <td>WOW</td>
+      <td>H</td>
+      <td>Sullivan, Jacob J</td>
+      <td>87.0</td>
+      <td>2012-09-12T04:00:00+00:00</td>
+      <td>2015-05-22T04:00:00+00:00</td>
+      <td>DOCUMENTS/HRC_Email_1_296/HRCH2/DOC_0C05739545...</td>
+      <td>F-2015-04841</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>Sullivan, Jacob J &lt;Sullivan11@state.gov&gt;</td>
+      <td>NaN</td>
+      <td>Wednesday, September 12, 2012 10:16 AM</td>
+      <td>F-2015-04841</td>
+      <td>C05739545</td>
+      <td>05/13/2015</td>
+      <td>RELEASE IN FULL</td>
+      <td>NaN</td>
+      <td>UNCLASSIFIED\nU.S. Department of State\nCase N...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>C05739546</td>
+      <td>H: LATEST: HOW SYRIA IS AIDING QADDAFI AND MOR...</td>
+      <td>H</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>2011-03-03T05:00:00+00:00</td>
+      <td>2015-05-22T04:00:00+00:00</td>
+      <td>DOCUMENTS/HRC_Email_1_296/HRCH1/DOC_0C05739546...</td>
+      <td>F-2015-04841</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>F-2015-04841</td>
+      <td>C05739546</td>
+      <td>05/13/2015</td>
+      <td>RELEASE IN PART</td>
+      <td>B6\nThursday, March 3, 2011 9:45 PM\nH: Latest...</td>
+      <td>UNCLASSIFIED\nU.S. Department of State\nCase N...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>C05739547</td>
+      <td>CHRIS STEVENS</td>
+      <td>;H</td>
+      <td>Mills, Cheryl D</td>
+      <td>32.0</td>
+      <td>2012-09-12T04:00:00+00:00</td>
+      <td>2015-05-22T04:00:00+00:00</td>
+      <td>DOCUMENTS/HRC_Email_1_296/HRCH2/DOC_0C05739547...</td>
+      <td>F-2015-04841</td>
+      <td>...</td>
+      <td>B6</td>
+      <td>Mills, Cheryl D &lt;MillsCD@state.gov&gt;</td>
+      <td>Abedin, Huma</td>
+      <td>Wednesday, September 12, 2012 11:52 AM</td>
+      <td>F-2015-04841</td>
+      <td>C05739547</td>
+      <td>05/14/2015</td>
+      <td>RELEASE IN PART</td>
+      <td>Thx</td>
+      <td>UNCLASSIFIED\nU.S. Department of State\nCase N...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>C05739550</td>
+      <td>CAIRO CONDEMNATION - FINAL</td>
+      <td>H</td>
+      <td>Mills, Cheryl D</td>
+      <td>32.0</td>
+      <td>2012-09-12T04:00:00+00:00</td>
+      <td>2015-05-22T04:00:00+00:00</td>
+      <td>DOCUMENTS/HRC_Email_1_296/HRCH2/DOC_0C05739550...</td>
+      <td>F-2015-04841</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>Mills, Cheryl D &lt;MillsCD@state.gov&gt;</td>
+      <td>Mitchell, Andrew B</td>
+      <td>Wednesday, September 12,2012 12:44 PM</td>
+      <td>F-2015-04841</td>
+      <td>C05739550</td>
+      <td>05/13/2015</td>
+      <td>RELEASE IN PART</td>
+      <td>NaN</td>
+      <td>UNCLASSIFIED\nU.S. Department of State\nCase N...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>C05739554</td>
+      <td>H: LATEST: HOW SYRIA IS AIDING QADDAFI AND MOR...</td>
+      <td>Abedin, Huma</td>
+      <td>H</td>
+      <td>80.0</td>
+      <td>2011-03-11T05:00:00+00:00</td>
+      <td>2015-05-22T04:00:00+00:00</td>
+      <td>DOCUMENTS/HRC_Email_1_296/HRCH1/DOC_0C05739554...</td>
+      <td>F-2015-04841</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>F-2015-04841</td>
+      <td>C05739554</td>
+      <td>05/13/2015</td>
+      <td>RELEASE IN PART</td>
+      <td>H &lt;hrod17@clintonemail.com&gt;\nFriday, March 11,...</td>
+      <td>B6\nUNCLASSIFIED\nU.S. Department of State\nCa...</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>7940</th>
+      <td>7941</td>
+      <td>C05778462</td>
+      <td>WYDEN</td>
+      <td>H</td>
+      <td>Verma, Richard R</td>
+      <td>180.0</td>
+      <td>2010-12-16T05:00:00+00:00</td>
+      <td>2015-08-31T04:00:00+00:00</td>
+      <td>DOCUMENTS/HRCEmail_August_Web/IPS-0113/DOC_0C0...</td>
+      <td>F-2014-20439</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>Verma, Richard R &lt;VermaRR@state.gov&gt;</td>
+      <td>NaN</td>
+      <td>Thursday, December 16, 2010 7:41 PM</td>
+      <td>F-2014-20439</td>
+      <td>C05778462</td>
+      <td>08/31/2015</td>
+      <td>RELEASE IN PART</td>
+      <td>NaN</td>
+      <td>UNCLASSIFIED U.S. Department of State Case No....</td>
+    </tr>
+    <tr>
+      <th>7941</th>
+      <td>7942</td>
+      <td>C05778463</td>
+      <td>SENATE</td>
+      <td>H</td>
+      <td>Verma, Richard R</td>
+      <td>180.0</td>
+      <td>2010-12-16T05:00:00+00:00</td>
+      <td>2015-08-31T04:00:00+00:00</td>
+      <td>DOCUMENTS/HRCEmail_August_Web/IPS-0113/DOC_0C0...</td>
+      <td>F-2014-20439</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>Verma, Richard R &lt;VermaRR@state.gov&gt;</td>
+      <td>Sullivan, Jacob J; Mills, Cheryl D; Abedin, Huma</td>
+      <td>Thursday, December 16, 2010 8:09 PM</td>
+      <td>F-2014-20439</td>
+      <td>C05778463</td>
+      <td>08/31/2015</td>
+      <td>RELEASE IN FULL</td>
+      <td>Big change of plans in the Senate. Senator Rei...</td>
+      <td>UNCLASSIFIED U.S. Department of State Case No....</td>
+    </tr>
+    <tr>
+      <th>7942</th>
+      <td>7943</td>
+      <td>C05778465</td>
+      <td>RICHARD (TNR)</td>
+      <td>H</td>
+      <td>Jiloty, Lauren C</td>
+      <td>116.0</td>
+      <td>2010-12-16T05:00:00+00:00</td>
+      <td>2015-08-31T04:00:00+00:00</td>
+      <td>DOCUMENTS/HRCEmail_August_Web/IPS-0113/DOC_0C0...</td>
+      <td>F-2014-20439</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>Jiloty, Lauren C &lt;JilotyLC@state.gov&gt;</td>
+      <td>NaN</td>
+      <td>Thursday, December 16, 2010 10:52 PM</td>
+      <td>F-2014-20439</td>
+      <td>C05778465</td>
+      <td>08/31/2015</td>
+      <td>RELEASE IN PART</td>
+      <td>NaN</td>
+      <td>UNCLASSIFIED U.S. Department of State Case No....</td>
+    </tr>
+    <tr>
+      <th>7943</th>
+      <td>7944</td>
+      <td>C05778466</td>
+      <td>FROM</td>
+      <td>H</td>
+      <td>PVerveer</td>
+      <td>143.0</td>
+      <td>2012-12-17T05:00:00+00:00</td>
+      <td>2015-08-31T04:00:00+00:00</td>
+      <td>DOCUMENTS/HRCEmail_August_Web/IPS-0113/DOC_0C0...</td>
+      <td>F-2014-20439</td>
+      <td>...</td>
+      <td>PVervee,</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>12/14/201</td>
+      <td>F-2014-20439</td>
+      <td>C05778466</td>
+      <td>08/31/2015</td>
+      <td>RELEASE IN PART</td>
+      <td>PVerveer B6\nFriday, December 17, 2010 12:12 A...</td>
+      <td>Hi dear Melanne and Alyse,\nHope this email re...</td>
+    </tr>
+    <tr>
+      <th>7944</th>
+      <td>7945</td>
+      <td>C05778470</td>
+      <td>NOTE FOR SECRETARY CLINTON</td>
+      <td>H</td>
+      <td>Sullivan, Jacob J</td>
+      <td>87.0</td>
+      <td>2010-12-17T05:00:00+00:00</td>
+      <td>2015-08-31T04:00:00+00:00</td>
+      <td>DOCUMENTS/HRCEmail_August_Web/IPS-0113/DOC_0C0...</td>
+      <td>F-2014-20439</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>Sullivan, Jacob J &lt;SullivanJJ@state.gov&gt;</td>
+      <td>Abedin, Huma</td>
+      <td>Friday, December 17, 2010 10:42 AM</td>
+      <td>F-2014-20439</td>
+      <td>C05778470</td>
+      <td>08/31/2015</td>
+      <td>RELEASE IN FULL</td>
+      <td>See below.</td>
+      <td>UNCLASSIFIED U.S. Department of State Case No....</td>
+    </tr>
+  </tbody>
+</table>
+<p>7945 rows × 22 columns</p>
+</div></div></div><div id="var-8-capital_letters1" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> capital_letters1<span class="MissionVariableLine__type">list (&lt;class 'list'&gt;)</span></div><div class="MissionVariableLine__value">[]</div></div><div id="var-8-capital_letters" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> capital_letters<span class="MissionVariableLine__type">list (&lt;class 'list'&gt;)</span></div><div class="MissionVariableLine__value">[312,
+ 1092,
+ 329,
+ 723,
+ 1372,
+ 333,
+ 721,
+ 1375,
+ 1032,
+ 1677,
+ 510,
+ 1673,
+ 326,
+ 989,
+ 420,
+ 303,
+ 337,
+ 331,
+ 325,
+ 360,
+ 1689,
+ 323,
+ 1093,
+ 1100,
+ 724,
+ 1475,
+ 341,
+ 729,
+ 1021,
+ 400,
+ 345,
+ 1401,
+ 1081,
+ 632,
+ 349,
+ 805,
+ 1150,
+ 1386,
+ 1386,
+ 296,
+ 379,
+ 322,
+ 8637,
+ 393,
+ 724,
+ 683,
+ 823,
+ 396,
+ 1073,
+ 343,
+ 1095,
+ 308,
+ 1124,
+ 2144,
+ 297,
+ 1132,
+ 330,
+ 1565,
+ 393,
+ 335,
+ 371,
+ 994,
+ 344,
+ 810,
+ 727,
+ 765,
+ 788,
+ 1040,
+ 331,
+ 2465,
+ 2743,
+ 704,
+ 755,
+ 2746,
+ 331,
+ 1306,
+ 1420,
+ 1425,
+ 382,
+ 1085,
+ 1293,
+ 295,
+ 1102,
+ 676,
+ 416,
+ 2839,
+ 3593,
+ 308,
+ 3617,
+ 330,
+ 349,
+ 378,
+ 1185,
+ 379,
+ 408,
+ 395,
+ 1216,
+ 11797,
+ 1241,
+ 396,
+ 295,
+ 413,
+ 582,
+ 1527,
+ 396,
+ 318,
+ 4123,
+ 375,
+ 4422,
+ 1551,
+ 1122,
+ 1566,
+ 1559,
+ 2298,
+ 359,
+ 376,
+ 3810,
+ 375,
+ 1568,
+ 373,
+ 664,
+ 1563,
+ 312,
+ 681,
+ 832,
+ 1065,
+ 1777,
+ 699,
+ 336,
+ 349,
+ 1630,
+ 1091,
+ 1121,
+ 721,
+ 2635,
+ 1121,
+ 1143,
+ 320,
+ 748,
+ 2657,
+ 293,
+ 1410,
+ 2691,
+ 1384,
+ 313,
+ 325,
+ 1165,
+ 1391,
+ 1469,
+ 692,
+ 421,
+ 312,
+ 394,
+ 359,
+ 359,
+ 424,
+ 1149,
+ 691,
+ 1027,
+ 734,
+ 1389,
+ 848,
+ 1297,
+ 1795,
+ 1126,
+ 2286,
+ 726,
+ 766,
+ 289,
+ 365,
+ 993,
+ 292,
+ 351,
+ 316,
+ 1035,
+ 3959,
+ 1560,
+ 1580,
+ 1579,
+ 1096,
+ 817,
+ 3971,
+ 291,
+ 702,
+ 1564,
+ 318,
+ 338,
+ 549,
+ 405,
+ 1103,
+ 799,
+ 405,
+ 347,
+ 1548,
+ 309,
+ 343,
+ 454,
+ 356,
+ 1554,
+ 432,
+ 797,
+ 460,
+ 1291,
+ 864,
+ 1075,
+ 585,
+ 994,
+ 1081,
+ 1104,
+ 1127,
+ 430,
+ 856,
+ 1197,
+ 390,
+ 8627,
+ 1210,
+ 783,
+ 375,
+ 629,
+ 797,
+ 337,
+ 1084,
+ 411,
+ 342,
+ 1106,
+ 1755,
+ 1137,
+ 1494,
+ 1085,
+ 405,
+ 865,
+ 343,
+ 388,
+ 1339,
+ 885,
+ 694,
+ 687,
+ 1699,
+ 1061,
+ 741,
+ 1493,
+ 321,
+ 730,
+ 694,
+ 303,
+ 332,
+ 334,
+ 334,
+ 356,
+ 363,
+ 390,
+ 2532,
+ 384,
+ 809,
+ 711,
+ 1754,
+ 737,
+ 1983,
+ 781,
+ 1040,
+ 678,
+ 1092,
+ 1110,
+ 1493,
+ 801,
+ 1406,
+ 1714,
+ 824,
+ 1778,
+ 875,
+ 373,
+ 2117,
+ 700,
+ 725,
+ 783,
+ 2125,
+ 1877,
+ 1175,
+ 1198,
+ 2259,
+ 1166,
+ 1165,
+ 296,
+ 334,
+ 288,
+ 329,
+ 345,
+ 326,
+ 753,
+ 2112,
+ 289,
+ 293,
+ 365,
+ 336,
+ 306,
+ 296,
+ 139,
+ 219,
+ 486,
+ 252,
+ 126,
+ 76,
+ 99,
+ 173,
+ 79,
+ 82,
+ 78,
+ 89,
+ 122,
+ 88,
+ 79,
+ 119,
+ 73,
+ 86,
+ 202,
+ 132,
+ 432,
+ 79,
+ 219,
+ 220,
+ 120,
+ 135,
+ 221,
+ 239,
+ 123,
+ 86,
+ 80,
+ 410,
+ 79,
+ 127,
+ 76,
+ 89,
+ 94,
+ 139,
+ 89,
+ 98,
+ 128,
+ 102,
+ 97,
+ 78,
+ 181,
+ 218,
+ 142,
+ 106,
+ 121,
+ 87,
+ 225,
+ 88,
+ 86,
+ 261,
+ 74,
+ 143,
+ 88,
+ 149,
+ 148,
+ 92,
+ 75,
+ 93,
+ 145,
+ 127,
+ 127,
+ 121,
+ 176,
+ 73,
+ 108,
+ 250,
+ 331,
+ 111,
+ 104,
+ 75,
+ 75,
+ 430,
+ 75,
+ 209,
+ 86,
+ 86,
+ 76,
+ 88,
+ 125,
+ 81,
+ 206,
+ 119,
+ 217,
+ 88,
+ 127,
+ 73,
+ 89,
+ 122,
+ 122,
+ 306,
+ 251,
+ 79,
+ 141,
+ 272,
+ 95,
+ 273,
+ 70,
+ 99,
+ 636,
+ 181,
+ 132,
+ 104,
+ 91,
+ 134,
+ 72,
+ 125,
+ 400,
+ 87,
+ 95,
+ 427,
+ 95,
+ 125,
+ 84,
+ 92,
+ 126,
+ 72,
+ 93,
+ 94,
+ 85,
+ 74,
+ 207,
+ 91,
+ 109,
+ 117,
+ 117,
+ 199,
+ 410,
+ 71,
+ 112,
+ 218,
+ 118,
+ 119,
+ 117,
+ 100,
+ 96,
+ 138,
+ 132,
+ 72,
+ 102,
+ 76,
+ 80,
+ 111,
+ 176,
+ 84,
+ 133,
+ 189,
+ 225,
+ 263,
+ 327,
+ 74,
+ 77,
+ 79,
+ 73,
+ 87,
+ 121,
+ 121,
+ 126,
+ 123,
+ 684,
+ 222,
+ 393,
+ 193,
+ 88,
+ 297,
+ 465,
+ 91,
+ 77,
+ 79,
+ 128,
+ 119,
+ 89,
+ 215,
+ 135,
+ 105,
+ 114,
+ 77,
+ 144,
+ 72,
+ 62,
+ 226,
+ 101,
+ 120,
+ 79,
+ 82,
+ 101,
+ 72,
+ 89,
+ 199,
+ 199,
+ 86,
+ 160,
+ 105,
+ 73,
+ 87,
+ 87,
+ 87,
+ 75,
+ 78,
+ 103,
+ 94,
+ 75,
+ 316,
+ 85,
+ 115,
+ 78,
+ 72,
+ 74,
+ 85,
+ 341,
+ 76,
+ 102,
+ 467,
+ 553,
+ 90,
+ 72,
+ 92,
+ 97,
+ 88,
+ 131,
+ 169,
+ 250,
+ 92,
+ 72,
+ 132,
+ 476,
+ 481,
+ 574,
+ 621,
+ 108,
+ 103,
+ 163,
+ 160,
+ 90,
+ 87,
+ 91,
+ 87,
+ 92,
+ 126,
+ 247,
+ 198,
+ 242,
+ 96,
+ 94,
+ 95,
+ 162,
+ 155,
+ 141,
+ 138,
+ 116,
+ 76,
+ 1420,
+ 413,
+ 118,
+ 87,
+ 95,
+ 132,
+ 249,
+ 84,
+ 76,
+ 445,
+ 511,
+ 77,
+ 125,
+ 118,
+ 93,
+ 75,
+ 137,
+ 93,
+ 416,
+ 79,
+ 75,
+ 100,
+ 132,
+ 70,
+ 112,
+ 83,
+ 70,
+ 112,
+ 74,
+ 115,
+ 158,
+ 154,
+ 99,
+ 237,
+ 92,
+ 129,
+ 232,
+ 636,
+ 227,
+ 74,
+ 901,
+ 237,
+ 73,
+ 211,
+ 139,
+ 145,
+ 95,
+ 86,
+ 87,
+ 89,
+ 92,
+ 130,
+ 83,
+ 92,
+ 130,
+ 80,
+ 120,
+ 91,
+ 119,
+ 227,
+ 122,
+ 90,
+ 89,
+ 294,
+ 95,
+ 76,
+ 122,
+ 118,
+ 90,
+ 91,
+ 78,
+ 210,
+ 120,
+ 124,
+ 104,
+ 92,
+ 74,
+ 109,
+ 89,
+ 78,
+ 91,
+ 78,
+ 205,
+ 119,
+ 120,
+ 102,
+ 92,
+ 74,
+ 111,
+ 89,
+ 155,
+ 77,
+ 92,
+ 89,
+ 121,
+ 221,
+ 76,
+ 130,
+ 168,
+ 61,
+ 112,
+ 263,
+ 74,
+ 70,
+ 110,
+ 122,
+ 193,
+ 204,
+ 201,
+ 239,
+ 277,
+ 282,
+ 358,
+ 325,
+ 1245,
+ 230,
+ 76,
+ 99,
+ 194,
+ 397,
+ 87,
+ 342,
+ 77,
+ 105,
+ 76,
+ 424,
+ 73,
+ 111,
+ 113,
+ 86,
+ 564,
+ 91,
+ 76,
+ 89,
+ 74,
+ 73,
+ 90,
+ 92,
+ 128,
+ 207,
+ 203,
+ 238,
+ 244,
+ 268,
+ 77,
+ 129,
+ 176,
+ 135,
+ 458,
+ 504,
+ 98,
+ 132,
+ 79,
+ 133,
+ 93,
+ 104,
+ 147,
+ 249,
+ 90,
+ 81,
+ 85,
+ 121,
+ 73,
+ 218,
+ 82,
+ 132,
+ 297,
+ 265,
+ 182,
+ 88,
+ 78,
+ 75,
+ 78,
+ 123,
+ 403,
+ 158,
+ 90,
+ 78,
+ 80,
+ 1181,
+ 401,
+ 99,
+ 290,
+ 118,
+ 89,
+ 802,
+ 178,
+ 167,
+ 383,
+ 98,
+ 174,
+ 243,
+ 85,
+ 1547,
+ 130,
+ 201,
+ 214,
+ 90,
+ 88,
+ 125,
+ 87,
+ 89,
+ 74,
+ 90,
+ 127,
+ 225,
+ 262,
+ 79,
+ 84,
+ 121,
+ 91,
+ 80,
+ 110,
+ 104,
+ 153,
+ 432,
+ 104,
+ 115,
+ 1909,
+ 75,
+ 177,
+ 425,
+ 111,
+ 75,
+ 74,
+ 108,
+ 224,
+ 253,
+ 353,
+ 85,
+ 120,
+ 308,
+ 77,
+ 104,
+ 186,
+ 129,
+ 94,
+ 75,
+ 200,
+ 318,
+ 121,
+ 200,
+ 111,
+ 659,
+ 94,
+ 70,
+ 237,
+ 236,
+ 247,
+ 127,
+ 73,
+ 202,
+ 76,
+ 76,
+ 120,
+ 137,
+ 252,
+ 87,
+ 133,
+ 78,
+ 142,
+ 122,
+ 85,
+ 115,
+ 326,
+ 115,
+ 155,
+ 321,
+ 118,
+ 120,
+ 150,
+ 82,
+ 398,
+ 559,
+ 212,
+ 102,
+ 188,
+ 231,
+ 772,
+ 872,
+ 912,
+ 85,
+ 123,
+ 311,
+ 316,
+ 98,
+ 75,
+ 75,
+ 81,
+ 128,
+ 73,
+ 90,
+ 89,
+ 136,
+ 78,
+ 72,
+ 86,
+ 70,
+ 261,
+ 259,
+ 83,
+ 96,
+ 111,
+ 137,
+ 125,
+ 111,
+ 69,
+ 73,
+ 72,
+ 229,
+ 74,
+ 115,
+ 313,
+ 251,
+ 76,
+ 74,
+ 77,
+ 126,
+ 80,
+ 81,
+ 77,
+ 123,
+ 83,
+ 88,
+ 145,
+ 97,
+ 74,
+ 136,
+ 202,
+ 78,
+ 646,
+ 315,
+ 648,
+ 355,
+ 103,
+ 78,
+ 180,
+ 88,
+ 89,
+ 90,
+ 195,
+ 708,
+ 79,
+ 409,
+ 88,
+ 86,
+ 75,
+ 131,
+ 137,
+ 93,
+ 85,
+ 81,
+ 71,
+ 94,
+ 82,
+ 118,
+ 680,
+ 87,
+ 228,
+ 73,
+ 73,
+ 122,
+ 243,
+ 217,
+ 113,
+ 280,
+ 233,
+ 325,
+ 370,
+ 384,
+ 387,
+ 92,
+ 82,
+ 73,
+ 198,
+ 135,
+ 77,
+ 167,
+ 87,
+ 367,
+ 204,
+ 87,
+ 82,
+ 479,
+ 87,
+ 72,
+ 106,
+ 74,
+ 76,
+ 84,
+ 75,
+ 81,
+ 93,
+ 243,
+ 71,
+ 245,
+ 124,
+ 72,
+ 112,
+ 79,
+ 69,
+ 76,
+ 342,
+ 336,
+ 81,
+ 72,
+ 111,
+ 83,
+ 229,
+ 97,
+ 285,
+ 105,
+ 81,
+ 503,
+ 547,
+ 515,
+ 456,
+ 339,
+ 1027,
+ 111,
+ 116,
+ 76,
+ 74,
+ 92,
+ 100,
+ 279,
+ 97,
+ 124,
+ 382,
+ 344,
+ 72,
+ 441,
+ 157,
+ 102,
+ 100,
+ 111,
+ 147,
+ 107,
+ 106,
+ 156,
+ 165,
+ 123,
+ 115,
+ 111,
+ 633,
+ 127,
+ 792,
+ 70,
+ 74,
+ 99,
+ ...]</div></div></div></div></div><div class="EditorActionsAndFeedback__root"><div class="EditorActionsAndFeedback__feedback" style="bottom: 100%; opacity: 1;"><div class="MissionRunFeedback__root"><div class="MissionRunFeedback__success"><span class="dqicon dqicon-pass MissionRunFeedback__pass_circle"></span><span>Nice Work!</span></div><button class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__white DqButton__borderless"><span class="DqButton__text">Next Screen</span><span class="dqicon dqicon-right DqButton__icon"></span></button><div class="MissionRunFeedback__close_spacer"><div class="OnboardingReveal__shown"><button class="MissionRunFeedback__close_button DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__no_text DqButton__white DqButton__hollow"><span class="dqicon dqicon-fail DqButton__icon"></span></button></div></div></div></div><div class="EditorActionsAndFeedback__actions"><div class="MissionCodeActions__root OnboardingReveal__shown"><button title="Run your code [shift+enter]" id="onboarding-tip-run" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark"><span class="DqButton__text">Run Code</span></button><button title="Check your code [alt+enter]" id="onboarding-tip-run" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__green DqButton__on_dark" style="margin-left: 24px;"><span class="DqButton__text">Submit Answer</span></button><div class="MissionCodeActions__rest_buttons OnboardingReveal__shown"><button title="Restore to initial code [alt+r]" class="MissionCodeActions__reset DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__no_text DqButton__white DqButton__on_dark DqButton__hollow DqButton__borderless"><span class="dqicon dqicon-recycle DqButton__icon"></span></button><div class="MissionCodeActions__spacer"></div><button title="Open Console [alt+t]" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark DqButton__hollow"><span class="DqButton__text">Open Console</span></button></div></div></div></div></div></div></div></div></div><div class="MissionFooter__root OnboardingReveal__shown"><div class="MissionFooter__title_side"><span class="dqicon dqicon-bars MissionFooter__more"></span><div class="MissionFooter__title">9. Multiprocessing</div></div><div class="MissionFooter__center"><button title="[alt+b] Back a Screen" class="MissionFooter__nav_button DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark DqButton__hollow"><span class="DqButton__text">back</span></button><div>9 / 18</div><button title="[alt+n] Next Screen" class="MissionFooter__nav_button DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark DqButton__hollow"><span class="DqButton__text">Next</span></button></div><div class="MissionFooter__right_side"></div></div></div></div></div></div></div></div><script crossorigin="" type="text/javascript" src="./9. Multiprocessing_files/polyfill.min.js"></script><script crossorigin="" type="text/javascript" src="./9. Multiprocessing_files/lodash.min.js"></script><script crossorigin="" type="text/javascript" src="./9. Multiprocessing_files/react.production.min.js"></script><script crossorigin="" type="text/javascript" src="./9. Multiprocessing_files/react-dom.production.min.js"></script><script type="text/javascript">!function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="3.1.0";
+  var key = window.location.host === 'app.dataquest.io' ? 'BJhKYEXejzjqXq7xQDFI6N0M5W7HBAH5' : 'yPkme4oLIogTJ7xrH3SCEDVtcSz2J5Br';
+  analytics.load(key);
+  }}();</script><script src="./9. Multiprocessing_files/pa-5cd96b34fed2bd0016000186.js" async=""></script><script type="text/javascript" src="./9. Multiprocessing_files/app.1dcb74672053eeb54bd7.js"></script><script defer="" src="./9. Multiprocessing_files/beacon.min.js" data-cf-beacon="{&quot;rayId&quot;:&quot;52cdf1285bd73425&quot;,&quot;version&quot;:&quot;2019.10.1&quot;,&quot;startTime&quot;:1572276533346}"></script>
+<script type="text/javascript" id="">(function(a,e,f,g,b,c,d){a.ProfitWellObject=b;a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)};a[b].l=1*new Date;c=e.createElement(f);d=e.getElementsByTagName(f)[0];c.async=1;c.src=g;d.parentNode.insertBefore(c,d)})(window,document,"script","https://dna8twue3dlxq.cloudfront.net/js/profitwell.js","profitwell");profitwell("auth_token","bd8a22377119e7044e07346a8c89a91f");profitwell("user_email","USER@EMAIL.COM");</script><script type="text/javascript" id="" charset="utf-8" src="./9. Multiprocessing_files/b960428aed859499a86a27f8ce0a0a6bd2ea6c87.js"></script><iframe id="intercom-frame" style="position: absolute !important; opacity: 0 !important; width: 1px !important; height: 1px !important; top: 0 !important; left: 0 !important; border: none !important; display: block !important; z-index: -1 !important;" aria-hidden="true" tabindex="-1" src="./9. Multiprocessing_files/saved_resource(2).html"></iframe><div id="intercom-css-container"><style data-emotion="intercom-global"></style></div><div id="intercom-container" class="intercom-namespace"><style>html.intercom-mobile-messenger-active,html.intercom-mobile-messenger-active > body,html.intercom-modal-open,#intercom-container-body{overflow:hidden !important;}html.intercom-mobile-messenger-active,html.intercom-mobile-messenger-active > body{position:static !important;}html.intercom-mobile-messenger-active > body{height:0 !important;margin:0 !important;}iframe#intercom-frame{position:absolute !important;opacity:0 !important;width:1px !important;height:1px !important;top:0 !important;left:0 !important;border:none !important;display:block !important;z-index:-1 !important;}</style><div class="intercom-app" aria-live="polite"><div id="intercom-modal-container"></div></div></div></body></html>

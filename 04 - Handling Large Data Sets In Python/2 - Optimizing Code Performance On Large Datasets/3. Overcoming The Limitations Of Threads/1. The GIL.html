@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)https://app.dataquest.io/m/170/overcoming-the-limitations-of-threads -->
+<html lang="en" class=" wf-merriweather-n7-active wf-merriweather-n3-active wf-industry-n3-active wf-industry-n2-active wf-ingra-n2-active wf-ingra-n4-active wf-active"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>.async-hide { opacity: 0 !important}</style><script type="text/javascript" async="" src="./1. The GIL_files/js"></script><script async="" src="./1. The GIL_files/profitwell.js"></script><script type="text/javascript" async="" src="./1. The GIL_files/analytics.js"></script><script src="./1. The GIL_files/1208964489120563" async=""></script><script src="./1. The GIL_files/identity.js" async=""></script><script type="text/javascript" async="" src="./1. The GIL_files/fbevents.js"></script><script type="text/javascript" async="" src="./1. The GIL_files/gtm.js"></script><script type="text/javascript" async="" src="./1. The GIL_files/insight.min.js"></script><script type="text/javascript" async="" src="./1. The GIL_files/qevents.js"></script><script type="text/javascript" async="" src="./1. The GIL_files/mf5oz4we"></script><script type="text/javascript" async="" src="./1. The GIL_files/fbds.js"></script><script type="text/javascript" async="" src="./1. The GIL_files/analytics.min.js"></script><script type="text/javascript" async="" src="./1. The GIL_files/recaptcha__vi.js"></script><script src="./1. The GIL_files/nmj4kuc.js" async=""></script><script>var optimize_container_ids = {}
+  var stage_or_prod_id = window.location.host === 'app.dataquest.io' ? 'GTM-PNQ6824' : 'GTM-KFF7W4B';
+  optimize_container_ids[stage_or_prod_id] = true;
+  (function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
+  h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
+  (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
+  })(window,document.documentElement,'async-hide','dataLayer',4000,
+  optimize_container_ids);</script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="fragment" content="!"><title idle-disabled="true">Processing Large Datasets In Parallel | Dataquest</title><meta name="description" content="Learn Python and R for data science. Learn by coding and working with data in your browser. Build your portfolio with projects and become a data scientist."><script>(function(d) {
+      var config = {
+        kitId: 'nmj4kuc',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);</script><script src="./1. The GIL_files/api.js" async="" defer="defer"></script><link rel="stylesheet" href="./1. The GIL_files/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous"><link href="./1. The GIL_files/css" rel="stylesheet"><link rel="stylesheet" href="./1. The GIL_files/icon"><style>.loader {
+      z-index: 1000;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: #f9f9fb;
+    }
+    .loader .top {
+      transition: all ease 0.25;
+      padding: 0 0 0 40px;
+      background-image: linear-gradient(90deg,#30394b,#4c5361);
+      height: 90px;
+      overflow: hidden;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+          -ms-flex-align: center;
+              align-items: center;
+    }
+    .loader .message {
+      font-family: "ingra", sans-serif;
+      font-size: 14px;
+      color: white;
+      margin-left: 20px;
+    }
+
+    .rocket {
+      width: 25px;
+      height: 25px;
+      background-size: contain;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAFiQAABYkBbWid+gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAATdEVYdFRpdGxlAExvZ28tT24tTGlnaHQVgXW8AAAEuUlEQVRYhb2YXYhVVRTHf+fOOIofjVYPLmdMmgqFRAO1PBGiDyGVRkZlOEQiQaZTaYp9oX1ASEUQOKYFKWMQRIEWWjmkMFlupXTCypeUCh2XmorTZKkzc08Pe92Z03Fk7jne23pZe6+z/mv92XufvdfewciRUymVqLpBACLh+VLFzJUqkKqbDPwMHFB1t5QqbkkIqroG4FugDrgJ2KPqFpUidnAlU6zqKoAPgYfM9DkQAHdZ/yOgXiTszprjSkfwNXrJrQZmA7OAN80213wyS+YRVHX3AlvwI7ZAJNyY+L4QWAdEwH0i4WdZ8mQaQVV3PdBk5DYkyQGIhOuBD8ynyTCppTILCFgBDAd+AZ5SdUOBV4G7gQqgGXgRWASEwI2GeSJtotRTbGSOAcOAe4AvgJ3A9ITrPuA2YCawDegARomEf6XJl2WK641cG7AdmGHkImA5sBC4AEwC5phPm2Hq0ybLQvAx0022fUy0/tci4Vsi4bv47QZgsvk0JbDlIajqcsAE635seqDpszHXP00PSvhOsBjlIQjUAlXWPmT6D9PjY8lvNn0i4VtlMcpG8AbTp2OLvQXotG/7VZ0DJgN54EsA8z2diFEWgoW97LeCQSQ8hN9C8vj1OBX/w7wiErbGsL8nYhQlaffByPTQuFEkfFvVteC3lArgK5FwbwI7OBGjLAQLa6pO1VWKhF0xkq1Aa18gVVdJ79Se6MvncpJ2igt/5wDSraU6w8RjFCVpCT4Sa49NgRt3mRj9StEEVd1oYH7MlOaMnBJrz7dYRUmaEVyG38cuWH+hqruqP5D5LLbuRYuxrBwEbzW9EX/wjwCWFIFbYr7t+PIrHqukBAsnwI/AWmsvVXXXXg5g35Zadx1wMBGrNATtCBPrHgFeAvbia8LNqm5gH5iBwGbz+R542bAAYveZ0hDEV8WFtdchEl4EHgROAXcAG/rAbLBvZ4AHRMIL9G4xRd+biyJoJdMe695vtiPAPPwRN0/Vva/qBqm6KlW3MfatXiQsHHNzTO8p9qaXZg1+Y7o+NqUtwA5rLwCO4ovT+Wbbhi//C68OD5t9V7FJ0xx1W4FVwNXAXFU3GHgeuC7mc00CMxs4qOpex49mNf4s3lps0lR3ElW3Dl/SR/h1CXAO2I0flZ/MNh6//m6nt7AoYNaLhEVfntIWC8/iL+a1QBewBl9WtSf8NgOoumHASvxeOABQ4Lk0CbPc6mYAbwCPioQH499qtPHpgKj7qDzZmMCMBTYBK0XC5rIStISBSPifuq5W19wZETQDRATTjsniXf1hipFMLwsiYTRa19Qdj12A8uRqeoPme9o12jhY9J2JWchlJjhK1y7JExyexL5PY6R69rU8uXzM3eXI/1CjjalfFTITzJGfac1ZBdtFqrbjq+UTAdFOgBptrMauqRHBtP+NYEQQJG0n5fGT7VSPaad6TJs0nALopqLHL0f+EkzZCPYl43R15XDOrqqmfcVxdZnI9CVZX7cK661nrZ1j6PSI4AWAKXy34wjsHsK57vP2uBARdF0apn/JOsWbgH+A9wq2gHwrvt7b/zdDDgAcluUd+LO4E/gkS67ML6w12jigTRo6+/M7ri4IcSN+lWfOZMnzLzfFicWWhq1kAAAAAElFTkSuQmCC");
+    }
+    .loader .rocket {
+      -webkit-animation: loading_anim linear 4s;
+              animation: loading_anim linear 4s;
+      -webkit-animation-iteration-count: infinite;
+              animation-iteration-count: infinite;
+    }
+
+    .dq_text {
+      width: 140px;
+      height: 15px;
+      margin: 10px 0 10px 10px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gQ3JlYXRlZCB3aXRoIElua3NjYXBlIChodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy8pIC0tPgoKPHN2ZwogICB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iCiAgIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiCiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIKICAgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICB2ZXJzaW9uPSIxLjEiCiAgIHdpZHRoPSI0NjUuMzU5OTkiCiAgIGhlaWdodD0iNDguMzQ0NzgiCiAgIGlkPSJzdmcyIj4KICA8dGl0bGUKICAgICBpZD0idGl0bGU4Ij5Mb2dvLU9uLURhcms8L3RpdGxlPgogIDxtZXRhZGF0YQogICAgIGlkPSJtZXRhZGF0YTMxIj4KICAgIDxyZGY6UkRGPgogICAgICA8Y2M6V29yawogICAgICAgICByZGY6YWJvdXQ9IiI+CiAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+CiAgICAgICAgPGRjOnR5cGUKICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPgogICAgICAgIDxkYzp0aXRsZT5Mb2dvLU9uLURhcms8L2RjOnRpdGxlPgogICAgICA8L2NjOldvcms+CiAgICA8L3JkZjpSREY+CiAgPC9tZXRhZGF0YT4KICA8ZGVmcwogICAgIGlkPSJkZWZzNCI+CiAgICA8c3R5bGUKICAgICAgIGlkPSJzdHlsZTYiIC8+CiAgPC9kZWZzPgogIDxwYXRoCiAgICAgZD0ibSAxNywwLjY2IGMgMTQuNjYsMCAyMywxMSAyMywyMy40IDAsMTIuNCAtOC4yLDIzLjYgLTIzLDIzLjYgbCAtMTcsMCAwLC00NyAxNywwIHogbSAtMC4xMywzOS44OCBjIDkuNzUsMCAxNS4zMywtNy41MyAxNS4zMywtMTYuNDEgMCwtOC44OCAtNS42MSwtMTYuNDEgLTE1LjI2LC0xNi40MSBsIC05LjE1LDAgMCwzMi44MSA5LjA4LDAgMCwwLjAxIHoiCiAgICAgaWQ9InN2Z18xIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDY0LjU5LDM4LjExIC00LjU3LDkuNzUgLTguMiwwIDAsLTEgMjEuNzcsLTQ2LjQgMy42MywwIDIxLjY1LDQ2LjQgMCwxIC04LjE0LDAgLTQuNjQsLTkuNzUgLTIxLjUsMCB6IG0gMi41NiwtNi41OSAxNi40OCwwIC04LjIsLTE4LjgzIC04LjI4LDE4LjgzIHoiCiAgICAgaWQ9InN2Z18yIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDEwNi44NSw3LjU1IDAsLTYuOTMgMzUsMCAwLDYuOTMgLTEzLjY5LDAgMCw0MC4xNSAtNy42NywwIDAsLTQwLjE1IC0xMy42NCwwIHoiCiAgICAgaWQ9InN2Z18zIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDE2Mi41MywzOC4xMSAtNC41Nyw5Ljc1IC04LjIsMCAwLC0xIDIxLjc5LC00Ni40IDMuNjMsMCAyMS42NSw0Ni40IDAsMSAtOC4xNCwwIC00LjY0LC05Ljc1IC0yMS41MiwwIHogbSAyLjU2LC02LjU5IDE2LjUsMCAtOC4yLC0xOC44MyAtOC4zLDE4LjgzIHoiCiAgICAgaWQ9InN2Z180IgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDI1Ni41OSw0OC4xNyAtNy4xMywwIC0yLjc0LC00LjIgYSAyNC4wOCwyNC4wOCAwIDAgMSAtMTQuMzIsNC4zNyBjIC0xMi45MSwwIC0yMy42NywtOS40OCAtMjMuNjcsLTI0LjIxIDAsLTE0LjQ2IDkuODIsLTI0LjA3IDI0LC0yNC4wNyAxMi43MSwwIDIzLjk0LDguNzQgMjMuOTQsMjQuMDcgMCw2LjE5IC0xLjY4LDExLjMgLTQuODQsMTUuMjYgbCA0Ljc2LDcuNTggMCwxLjIgeiBtIC0yMy44NywtNy4xMyBjIDguODEsMCAxNi4wNywtNS41OCAxNi4wNywtMTYuOTUgMCwtMTEgLTcuMjYsLTE2Ljc0IC0xNi4xNCwtMTYuNzQgLTguODgsMCAtMTYsNiAtMTYsMTYuNzQgMC4wMSwxMC45NiA3LjI3LDE2Ljk1IDE2LjA4LDE2Ljk1IGwgLTAuMDEsMCB6IgogICAgIGlkPSJzdmdfNSIKICAgICBzdHlsZT0iZmlsbDojZmZmZmZmIiAvPgogIDxwYXRoCiAgICAgZD0ibSAyNzUuMjMsMzEuNTkgMCwtMzEuMjcgNy44LDAgMCwzMS4wNyBjIDAsNi4xOSA0LjY0LDkuNjIgMTAuNjIsOS42MiA1Ljk4LDAgMTAuNDksLTMuNDMgMTAuNDksLTkuNjIgbCAwLC0zMS4wNyA3LjczLDAgMCwzMS4yNyBjIDAsMTAuNDkgLTguMiwxNi40MSAtMTguMjIsMTYuNDEgLTEwLjAyLDAgLTE4LjQyLC01LjkyIC0xOC40MiwtMTYuNDEgeiIKICAgICBpZD0ic3ZnXzYiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KICA8cGF0aAogICAgIGQ9Im0gMzYxLjg0LDcuNDggLTIwLjc4LDAgMCwxMi40OSAxOS42NCwwIDAsNi45MyAtMTkuNjQsMCAwLDEzLjY3IDIxLjE4LDAgMCw3LjEzIC0yOS4wNSwwIDAsLTQ3LjA4IDI4LjY1LDAgMCw2Ljg2IHoiCiAgICAgaWQ9InN2Z183IgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDM4Ni41MiwzNC4wNCBjIDAuMzQsNS4zMSA2LjEyLDcuMjYgMTEuMjMsNy4yNiA1LjExLDAgMTAuODksLTEuMjEgMTAuODksLTcuMDYgMCwtNi4xOSAtNi4zOSwtNi43OSAtMTEuODQsLTcuMzMgLTguNjEsLTAuNzQgLTE3LjE1LC0zLjUgLTE3LjE1LC0xMi45MSAwLC05LjY4IDguNTQsLTE0IDE3LjY5LC0xNCA4Ljk0LDAgMTcuNDIsNCAxNy42MiwxMy42NSBsIC03LjM3LDAgYyAtMC4zNCwtNSAtNS42NSwtNi42NiAtMTAuMjksLTYuNjYgLTQuMywwIC05Ljg5LDEuNDggLTkuODksNi43OSAwLDUuMzEgNS4zMSw2IDEwLjc2LDYuNzIgOS41NSwxLjA4IDE4LjI5LDMgMTguMjksMTMuNzkgMCwxMC4zNiAtOS43NSwxNCAtMTguNTYsMTQgLTkuMjEsMC4yIC0xOC44MywtNC4zNyAtMTksLTE0LjI2IGwgNy42NywwIC0wLjA1LDAuMDEgeiIKICAgICBpZD0ic3ZnXzgiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KICA8cGF0aAogICAgIGQ9Im0gNDMwLjM2LDcuNTUgMCwtNi45MyAzNSwwIDAsNi45MyAtMTMuNjgsMCAwLDQwLjE1IC03LjY3LDAgMCwtNDAuMTUgLTEzLjY1LDAgeiIKICAgICBpZD0ic3ZnXzkiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KPC9zdmc+Cg==");
+    }
+
+    @-webkit-keyframes loading_anim {
+      0% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+      }
+      50% {
+        -webkit-transition: translateY(-50%);
+        transition: translateY(-50%);
+      }
+      75%, 100% {
+        -webkit-transform: translateY(-500%);
+                transform: translateY(-500%);
+      }
+    }
+
+    @keyframes loading_anim {
+      0% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+      }
+      50% {
+        -webkit-transition: translateY(-50%);
+        transition: translateY(-50%);
+      }
+      75%, 100% {
+        -webkit-transform: translateY(-500%);
+                transform: translateY(-500%);
+      }
+    }
+    .ant-form-explain {
+      color: red;
+    }</style><link rel="apple-touch-icon" sizes="57x57" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-180x180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Dataquest"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#fff"><meta name="application-name" content="Dataquest"><link rel="icon" type="image/png" sizes="32x32" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon-16x16.png"><link rel="shortcut icon" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon.ico"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-320x460.png"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-640x920.png"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-640x1096.png"><link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-750x1294.png"><link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1182x2208.png"><link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1242x2148.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-748x1024.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-768x1004.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1496x2048.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1536x2008.png"><style type="text/css">.tk-merriweather{font-family:"merriweather",serif;}.tk-industry{font-family:"industry",sans-serif;}.tk-ingra{font-family:"ingra",sans-serif;}</style><style type="text/css">@font-face{font-family:tk-merriweather-n7;src:url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;}@font-face{font-family:tk-merriweather-n3;src:url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:tk-industry-n3;src:url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:tk-industry-n2;src:url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:tk-ingra-n2;src:url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:tk-ingra-n4;src:url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff2"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("opentype");font-weight:400;font-style:normal;}</style><style type="text/css">@font-face{font-family:merriweather;src:url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;}@font-face{font-family:merriweather;src:url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:industry;src:url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:industry;src:url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:ingra;src:url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:ingra;src:url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff2"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("opentype");font-weight:400;font-style:normal;}</style><link href="./1. The GIL_files/app.eb9c5672a70e0f34428c.css" rel="stylesheet"><script src="./1. The GIL_files/logger.min.js" async=""></script><script async="" src="./1. The GIL_files/modules-v55.js"></script><link rel="stylesheet" type="text/css" href="./1. The GIL_files/NotificationsInMenu.09808b64bac3460ae0f5.css"><script charset="utf-8" src="./1. The GIL_files/NotificationsInMenu.dfa67edc80a27ad52fd8.js"></script><script charset="utf-8" src="./1. The GIL_files/vendors_TheMission.0473137e870a7ce7e36f.js"></script><link rel="stylesheet" type="text/css" href="./1. The GIL_files/TheMission.40883b66c977c6c03337.css"><script charset="utf-8" src="./1. The GIL_files/TheMission.7c9223c5f27a15c4257a.js"></script><link rel="canonical" href="https://www.dataquest.io/m/170/overcoming-the-limitations-of-threads" data-react-helmet="true"><meta name="twitter:site" content="@dataquestio" data-react-helmet="true"><meta name="twitter:title" content="Processing Large Datasets In Parallel | Dataquest" data-react-helmet="true"><meta name="og:title" content="Processing Large Datasets In Parallel | Dataquest" data-react-helmet="true"><meta name="og:site_name" content="Dataquest" data-react-helmet="true"><meta name="fb:app_id" content="1068949113131184" data-react-helmet="true"><meta name="twitter:card" content="summary" data-react-helmet="true"><meta name="description" content="This interactive tutorial teaches you Python&#39;s multiprocessing library to help tune performance when processing large data sets." data-react-helmet="true"><meta name="twitter:description" content="This interactive tutorial teaches you Python&#39;s multiprocessing library to help tune performance when processing large data sets." data-react-helmet="true"><meta name="og:description" content="This interactive tutorial teaches you Python&#39;s multiprocessing library to help tune performance when processing large data sets." data-react-helmet="true"><meta name="og:url" content="https://www.dataquest.io/m/170/overcoming-the-limitations-of-threads" data-react-helmet="true"><script type="application/ld+json" data-react-helmet="true">{"@context":"http://schema.org","@type":"Organization","url":"https://www.dataquest.io","logo":"https://s3.amazonaws.com/dq-email/brand/dataquest_logo.svg"}</script><script charset="utf-8" src="./1. The GIL_files/vendors_MissionReference.51bc46f42d17cd685d03.js"></script><link rel="stylesheet" type="text/css" href="./1. The GIL_files/MissionReference.bf41c3640eb1463e2c57.css"><script charset="utf-8" src="./1. The GIL_files/MissionReference.5fec493ea89554ed5119.js"></script><link rel="stylesheet" type="text/css" href="./1. The GIL_files/vendors_DqEditor.9f679c74a1a04ab5ed6f.css"><script charset="utf-8" src="./1. The GIL_files/vendors_DqEditor.bb447024d4e2460dcbb7.js"></script><link rel="stylesheet" type="text/css" href="./1. The GIL_files/DqEditor.3197904b9ae6d3e264d6.css"><script async="" src="./1. The GIL_files/MathJax.js"></script><script charset="utf-8" src="./1. The GIL_files/DqEditor.ef8e247bfd1c12e85a07.js"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head><body><div id="MathJax_Message" style="display: none;"></div><div id="root" style="height: 100%"><div class="dq-min-h-screen"><div class="CoreLayout__root"><header data-test-selector="navigation" class="dq-shadow DqHeader__root_mission"><div class="DqHeader__inner_content"><div class="DqHeader__left_side OnboardingReveal__shown"><a class="DqHeader__back" href="https://app.dataquest.io/dashboard"><span class="dqicon dqicon-left DqHeader__icon"></span><div class="DqHeader__back_text">Dashboard</div></a></div><div class="DqHeader__middle"><div class="DqHeader__mission_title">Overcoming The Limitations Of Threads</div></div><div class="DqHeader__right_side OnboardingReveal__shown"><div class="MenuDropdown__menu_dashboard_redesign"><img src="./1. The GIL_files/vm-okba9fec3bf2205e0374a027b855856dce.svg" style="margin: 0px 12px;"></div><div title="Get Help" class="MenuDropdown__menu_dashboard_redesign"><div class="HelpScoutLauncher__body"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183);">help_outline</i></div></div><div class="MenuDropdown__menu_dashboard_redesign"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183); margin: 0px 8px;">notifications_none</i></div><div class="MenuDropdown__menu_dashboard_redesign"><div data-test-selector="user-menu" class="DqHeader__user_box"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183); margin: 0px 0px 0px 8px;">account_circle</i><i class="material-icons" style="color: rgb(146, 162, 183); font-size: 16px;">keyboard_arrow_down</i></div></div></div></div></header><div class="CoreLayout__view"><div class="MissionView__root" data-test-selector="MissionView"><div class="TheMission__root"><div class="SplitPane TheMission__split_pane vertical " style="display: flex; flex: 1 1 0%; height: 100%; position: absolute; outline: none; overflow: hidden; user-select: text; flex-direction: row; left: 0px; right: 0px;"><div class="Pane vertical Pane1  " style="flex: 0 0 auto; position: relative; outline: none; width: 50%;"><div class="TheMission__is_interactive"><div class="MissionInformation__light OnboardingReveal__shown"><div class="MissionTabs__root"><div class="OnboardingReveal__shown"><div class="MissionTabs__button_selected">Learn</div></div><div class="OnboardingReveal__shown"><div class="MissionTabs__button">Mission Reference</div></div></div><div class="MissionInformation__body"><div class="MissionLearn__light ScrollAccordion__root"><div class="ScrollAccordion__top_headers" style="width: 912px;"></div><div class="ScrollAccordion__body"><div class="ScrollAccordion__section"><div theme="light" class="ScrollAccordion__in_text SidePanelTitle__light" id="onboarding-tip-learn" style="opacity: 1;">Learn</div><iframe style="height: 100%; width: 100%; border: none; background: transparent; position: absolute; z-index: -1; top: 0px; left: 0px;" src="./1. The GIL_files/saved_resource.html"></iframe><div id="body" class="MissionLearn__section MissionMarkup__light"><div><p>In the last mission, we learned about I/O bounds, threads, and locks.  We went through a few exercises where we turned code into its threaded equivalent to see if we gained any speed.  Unfortunately, even when we ran multiple threads, we didn't see the performance gains we intuitively expected.  For example, <code>2</code> threads didn't make the program twice as fast.</p>
+<p>There are two main reasons for this:</p>
+<ul>
+<li>The <a target="_blank" href="https://wiki.python.org/moin/GlobalInterpreterLock">Global Interpreter Lock</a>, or GIL, in <a target="_blank" href="https://en.wikipedia.org/wiki/CPython">CPython</a>.</li>
+<li>The number of cores in the underlying processor.</li>
+</ul>
+<p>In the last mission, we learned about the idea of thread safety -- how if two threads write to the same resource at the same time, they can cause conflicts.  We saw an example of this when multiple threads wrote to the system standard output at the same time.  This caused issues with output appearing out of order, or newlines not showing up after a string.</p>
+<p><a target="_blank" href="https://en.wikipedia.org/wiki/CPython">CPython</a>, the most commonly used <a target="_blank" href="http://docs.python-guide.org/en/latest/starting/which-python/">Python interpreter</a>, does not do memory management in a thread safe way.  This means that CPython needs to prevent multiple threads from executing Python code at the same time.  Although you can initialize multiple threads and execute code using them, the GIL only allows one of those threads at a time to execute Python code, via a locking mechanism.  </p>
+<p>This makes threads perform poorly when parallelizing CPU-bound tasks, since only one thread can execute at a time.  However, the GIL is released in certain situations, including when doing I/O operations such as waiting for network activity or reading a file.  This makes threads more performant in I/O bound situations.</p>
+<p>We can demonstrate this by reading a file with two different threads, and seeing how long it takes.  If they take less than twice the time it took to run the code with a single thread, then you know you're seeing some benefit.  The larger the file, the greater the benefit you'll see from multiple threads, since the GIL will be released for longer, as the file data is transferred.</p></div></div></div><div class="ScrollAccordion__section"><div theme="light" class="ScrollAccordion__in_text SidePanelTitle__light" style="opacity: 0;">instructions</div><iframe style="height: 100%; width: 100%; border: none; background: transparent; position: absolute; z-index: -1; top: 0px; left: 0px;" src="./1. The GIL_files/saved_resource(1).html"></iframe><div id="body" class="MissionLearn__instructions MissionMarkup__light"><ul>
+<li>Write a function that opens and reads the file <code>Emails.csv</code>.</li>
+<li>Run the function <code>100</code> times and time it each time.<ul>
+<li>Assign the times to the list <code>times</code>.</li>
+</ul>
+</li>
+<li>Create two threads that both call the function and run them <code>100</code> times.<ul>
+<li>Assign the times to the list <code>threaded_times</code>.</li>
+</ul>
+</li>
+<li>Find the median of <code>times</code> and <code>threaded_times</code>.</li>
+<li>What do the results tell you?  Were they what you expected?</li>
+</ul></div><div class="MissionLearn__section"><div theme="light" class="DqDropMenu__close"><div class="DqDropMenu__top" data-test-selector="GetHelpMenu"><div class="DqDropMenu__text">Get Help</div><div class="DqDropMenu__icon"><span class="dqicon dqicon-down undefined"></span></div></div><div class="DqDropMenu__options"><div class="DqDropMenu__option" data-test-selector="mission-help-get-hint">Get a hint</div><div class="DqDropMenu__option" title="[alt+a] to See the answer" data-test-selector="mission-help-show-answer">See the answer</div><div class="DqDropMenu__option">Message Us</div></div></div></div></div></div><div class="ScrollAccordion__bottom_headers" style="width: 912px;"><div id="onboarding-tip-instructions" theme="light" class="ScrollAccordion__in_header SidePanelTitle__light">instructions</div></div></div></div></div></div></div><span class="Resizer vertical "></span><div class="Pane vertical Pane2  " style="flex: 1 1 0%; position: relative; outline: none;"><div class="TheMission__is_interactive"><div><div class="TaskPanels__root OnboardingReveal__shown"><div class="TaskPanels__dark"><div class="TaskPanels__editor_section"><div class="MissionEditorFiles__dark"><span class="meta MissionEditorFiles__file_active"><div title="[alt+t] to toggle open">script.py</div></span><span class="meta MissionEditorFiles__file"><div title="/dataquest/user/Emails.csv">Emails.csv</div></span></div><div class="TaskPanels__editor_with_extra"><div class="dq_theme  DqEditor__root"><textarea autocomplete="off" style="display: none;">import threading
+import time
+import statistics
+def read_data():
+    with open("Emails.csv") as f:
+        data = f.read()
+        
+times = []
+for i in range(100):
+    start = time.time()
+    read_data()
+    end = time.time()
+    times.append(end - start)
+
+threaded_times = []
+for i in range(100):
+    start = time.time()
+
+    t1 = threading.Thread(target=read_data)
+    t2 = threading.Thread(target=read_data)
+    t1.start()
+    t2.start()
+
+    for thread in [t1, t2]:
+        thread.join()
+
+    end = time.time()
+    threaded_times.append(end - start)
+
+print(statistics.median(times))
+print(statistics.median(threaded_times))</textarea><div class="CodeMirror cm-s-dq-dark CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 547.5px; left: 334.125px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 30px; margin-bottom: -15px; border-right-width: 15px; min-height: 577px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><span><span>​</span>x</span></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors" style=""><div class="CodeMirror-cursor" style="left: 304.125px; top: 540px; height: 18px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation" style=""><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">import</span> <span class="cm-variable">threading</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">2</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">import</span> <span class="cm-variable">time</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">3</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">import</span> <span class="cm-variable">statistics</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">4</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">def</span> <span class="cm-def">read_data</span>():</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">5</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">with</span> <span class="cm-builtin">open</span>(<span class="cm-string">"Emails.csv"</span>) <span class="cm-keyword">as</span> <span class="cm-variable">f</span>:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">6</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">data</span> <span class="cm-operator">=</span> <span class="cm-variable">f</span>.<span class="cm-property">read</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">7</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">8</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">times</span> <span class="cm-operator">=</span> []</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">9</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">for</span> <span class="cm-variable">i</span> <span class="cm-keyword">in</span> <span class="cm-builtin">range</span>(<span class="cm-number">100</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">10</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">start</span> <span class="cm-operator">=</span> <span class="cm-variable">time</span>.<span class="cm-property">time</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">11</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">read_data</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">12</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">end</span> <span class="cm-operator">=</span> <span class="cm-variable">time</span>.<span class="cm-property">time</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">13</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">times</span>.<span class="cm-property">append</span>(<span class="cm-variable">end</span> <span class="cm-operator">-</span> <span class="cm-variable">start</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">14</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">15</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">threaded_times</span> <span class="cm-operator">=</span> []</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">16</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">for</span> <span class="cm-variable">i</span> <span class="cm-keyword">in</span> <span class="cm-builtin">range</span>(<span class="cm-number">100</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">17</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">start</span> <span class="cm-operator">=</span> <span class="cm-variable">time</span>.<span class="cm-property">time</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">18</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">19</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">t1</span> <span class="cm-operator">=</span> <span class="cm-variable">threading</span>.<span class="cm-property">Thread</span>(<span class="cm-variable">target</span><span class="cm-operator">=</span><span class="cm-variable">read_data</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">20</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">t2</span> <span class="cm-operator">=</span> <span class="cm-variable">threading</span>.<span class="cm-property">Thread</span>(<span class="cm-variable">target</span><span class="cm-operator">=</span><span class="cm-variable">read_data</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">21</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">t1</span>.<span class="cm-property">start</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">22</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">t2</span>.<span class="cm-property">start</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">23</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">24</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">for</span> <span class="cm-variable">thread</span> <span class="cm-keyword">in</span> [<span class="cm-variable">t1</span>, <span class="cm-variable">t2</span>]:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">25</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">thread</span>.<span class="cm-property">join</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">26</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">27</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">end</span> <span class="cm-operator">=</span> <span class="cm-variable">time</span>.<span class="cm-property">time</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">28</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">threaded_times</span>.<span class="cm-property">append</span>(<span class="cm-variable">end</span> <span class="cm-operator">-</span> <span class="cm-variable">start</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">29</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">30</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-builtin">print</span>(<span class="cm-variable">statistics</span>.<span class="cm-property">median</span>(<span class="cm-variable">times</span>))</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">31</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-builtin">print</span>(<span class="cm-variable">statistics</span>.<span class="cm-property">median</span>(<span class="cm-variable">threaded_times</span>))</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 15px; width: 1px; border-bottom: 0px solid transparent; top: 577px;"></div><div class="CodeMirror-gutters" style="height: 592px; left: 0px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div></div></div></div></div><div class="TaskPanels__extra_lines"></div></div></div><div class="TaskPanels__outputs"><div class="MissionResultFormat__dark"><div class="MissionResultFormat__title">Output</div><div class="code MissionOutput__results" id="output-0-stdout">0.10166740417480469
+0.21659576892852783
+</div></div><div class="MissionResultFormat__dark"><div class="MissionResultFormat__title">Variables</div><div id="var-0-i" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-right undefined"></span> i</div></div><div id="var-0-times" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> times<span class="MissionVariableLine__type">list (&lt;class 'list'&gt;)</span></div><div class="MissionVariableLine__value">[0.06733942031860352,
+ 0.09403848648071289,
+ 0.09328985214233398,
+ 0.09331369400024414,
+ 0.0889272689819336,
+ 0.040642499923706055,
+ 0.09363150596618652,
+ 0.09311962127685547,
+ 0.09583377838134766,
+ 0.09305548667907715,
+ 0.08962345123291016,
+ 0.04050874710083008,
+ 0.09311819076538086,
+ 0.09324860572814941,
+ 0.09631919860839844,
+ 0.09828495979309082,
+ 0.09883785247802734,
+ 0.09266400337219238,
+ 0.09709572792053223,
+ 0.10670685768127441,
+ 0.1005868911743164,
+ 0.10708951950073242,
+ 0.1011655330657959,
+ 0.10714530944824219,
+ 0.10192394256591797,
+ 0.10309648513793945,
+ 0.15924715995788574,
+ 0.10181689262390137,
+ 0.10135126113891602,
+ 0.10108256340026855,
+ 0.10075783729553223,
+ 0.10120606422424316,
+ 0.10629963874816895,
+ 0.10067462921142578,
+ 0.10091519355773926,
+ 0.10073614120483398,
+ 0.10107541084289551,
+ 0.10711359977722168,
+ 0.10694026947021484,
+ 0.10119795799255371,
+ 0.10673403739929199,
+ 0.10258936882019043,
+ 0.10229325294494629,
+ 0.10211014747619629,
+ 0.15489578247070312,
+ 0.10725188255310059,
+ 0.10988330841064453,
+ 0.10148406028747559,
+ 0.1070408821105957,
+ 0.10082030296325684,
+ 0.1007680892944336,
+ 0.10168981552124023,
+ 0.10729193687438965,
+ 0.10712170600891113,
+ 0.10256481170654297,
+ 0.15567898750305176,
+ 0.10150003433227539,
+ 0.10094594955444336,
+ 0.10688233375549316,
+ 0.11099481582641602,
+ 0.10335159301757812,
+ 0.10152268409729004,
+ 0.1010749340057373,
+ 0.1071007251739502,
+ 0.10460448265075684,
+ 0.10277938842773438,
+ 0.10275745391845703,
+ 0.10222768783569336,
+ 0.15450525283813477,
+ 0.09859299659729004,
+ 0.10186767578125,
+ 0.10164499282836914,
+ 0.10129880905151367,
+ 0.10134053230285645,
+ 0.10138750076293945,
+ 0.10721349716186523,
+ 0.10152983665466309,
+ 0.10124707221984863,
+ 0.10368204116821289,
+ 0.10335636138916016,
+ 0.1028289794921875,
+ 0.10135030746459961,
+ 0.10078740119934082,
+ 0.10281062126159668,
+ 0.1074681282043457,
+ 0.1069788932800293,
+ 0.15560293197631836,
+ 0.10094976425170898,
+ 0.10659527778625488,
+ 0.10734367370605469,
+ 0.10762357711791992,
+ 0.10111880302429199,
+ 0.10437297821044922,
+ 0.09709692001342773,
+ 0.10204434394836426,
+ 0.10151171684265137,
+ 0.1080160140991211,
+ 0.10286116600036621,
+ 0.10295748710632324,
+ 0.15491175651550293]</div></div><div id="var-0-start" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> start<span class="MissionVariableLine__type">float (&lt;class 'float'&gt;)</span></div><div class="MissionVariableLine__value">1556289930.8252559</div></div><div id="var-0-thread" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> thread<span class="MissionVariableLine__type">Thread (&lt;class 'threading.Thread'&gt;)</span></div><div class="MissionVariableLine__value">&lt;Thread(Thread-202, stopped 139907032852224)&gt;</div></div><div id="var-0-end" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> end<span class="MissionVariableLine__type">float (&lt;class 'float'&gt;)</span></div><div class="MissionVariableLine__value">1556289931.0868666</div></div><div id="var-0-t1" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> t1<span class="MissionVariableLine__type">Thread (&lt;class 'threading.Thread'&gt;)</span></div><div class="MissionVariableLine__value">&lt;Thread(Thread-201, stopped 139906949052160)&gt;</div></div><div id="var-0-threaded_times" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> threaded_times<span class="MissionVariableLine__type">list (&lt;class 'list'&gt;)</span></div><div class="MissionVariableLine__value">[0.2163524627685547,
+ 0.21274089813232422,
+ 0.21340656280517578,
+ 0.2691361904144287,
+ 0.21526288986206055,
+ 0.26843953132629395,
+ 0.20012950897216797,
+ 0.2097606658935547,
+ 0.19846630096435547,
+ 0.20920586585998535,
+ 0.21606230735778809,
+ 0.21041250228881836,
+ 0.25731849670410156,
+ 0.14365625381469727,
+ 0.26416707038879395,
+ 0.21781229972839355,
+ 0.21606135368347168,
+ 0.2682819366455078,
+ 0.2205660343170166,
+ 0.20883512496948242,
+ 0.26454663276672363,
+ 0.21121907234191895,
+ 0.21653079986572266,
+ 0.21091485023498535,
+ 0.26732420921325684,
+ 0.21489167213439941,
+ 0.21230387687683105,
+ 0.2654263973236084,
+ 0.2063443660736084,
+ 0.20609068870544434,
+ 0.21553659439086914,
+ 0.21244001388549805,
+ 0.2585597038269043,
+ 0.21251463890075684,
+ 0.21345210075378418,
+ 0.20872855186462402,
+ 0.27051854133605957,
+ 0.21320629119873047,
+ 0.2112884521484375,
+ 0.215101957321167,
+ 0.2687830924987793,
+ 0.2095811367034912,
+ 0.2110142707824707,
+ 0.2689790725708008,
+ 0.21078181266784668,
+ 0.214888334274292,
+ 0.2061328887939453,
+ 0.2646901607513428,
+ 0.21096563339233398,
+ 0.2048323154449463,
+ 0.21449708938598633,
+ 0.21323108673095703,
+ 0.25481271743774414,
+ 0.2107400894165039,
+ 0.21702241897583008,
+ 0.21538090705871582,
+ 0.27017664909362793,
+ 0.216660737991333,
+ 0.2102956771850586,
+ 0.2609400749206543,
+ 0.19760656356811523,
+ 0.20850729942321777,
+ 0.2241835594177246,
+ 0.21269726753234863,
+ 0.2746613025665283,
+ 0.22372198104858398,
+ 0.2684450149536133,
+ 0.22191858291625977,
+ 0.270021915435791,
+ 0.22731781005859375,
+ 0.27190160751342773,
+ 0.22311139106750488,
+ 0.21884799003601074,
+ 0.273282527923584,
+ 0.225081205368042,
+ 0.2749359607696533,
+ 0.2244722843170166,
+ 0.2702450752258301,
+ 0.2258613109588623,
+ 0.27945995330810547,
+ 0.21901655197143555,
+ 0.2722809314727783,
+ 0.22184181213378906,
+ 0.27642250061035156,
+ 0.21945643424987793,
+ 0.2730085849761963,
+ 0.221055269241333,
+ 0.30062294006347656,
+ 0.2886006832122803,
+ 0.21621942520141602,
+ 0.21128368377685547,
+ 0.26190996170043945,
+ 0.2107715606689453,
+ 0.21234846115112305,
+ 0.2200181484222412,
+ 0.26869916915893555,
+ 0.2115640640258789,
+ 0.2065882682800293,
+ 0.21646428108215332,
+ 0.261610746383667]</div></div><div id="var-0-t2" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> t2<span class="MissionVariableLine__type">Thread (&lt;class 'threading.Thread'&gt;)</span></div><div class="MissionVariableLine__value">&lt;Thread(Thread-202, stopped 139907032852224)&gt;</div></div><div id="var-0-range" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> range<span class="MissionVariableLine__type">type (&lt;class 'type'&gt;)</span></div><div class="MissionVariableLine__value">range</div></div></div></div></div><div class="EditorActionsAndFeedback__root"><div class="EditorActionsAndFeedback__feedback" style="bottom: 100%; opacity: 1;"><div class="MissionRunFeedback__root"><div class="MissionRunFeedback__success"><span class="dqicon dqicon-pass MissionRunFeedback__pass_circle"></span><span>Nice Work!</span></div><button class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__white DqButton__borderless"><span class="DqButton__text">Next Screen</span><span class="dqicon dqicon-right DqButton__icon"></span></button><div class="MissionRunFeedback__close_spacer"><div class="OnboardingReveal__shown"><button class="MissionRunFeedback__close_button DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__no_text DqButton__white DqButton__hollow"><span class="dqicon dqicon-fail DqButton__icon"></span></button></div></div></div></div><div class="EditorActionsAndFeedback__actions"><div class="MissionCodeActions__root OnboardingReveal__shown"><button title="Run your code [shift+enter]" id="onboarding-tip-run" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark"><span class="DqButton__text">Run Code</span></button><button title="Check your code [alt+enter]" id="onboarding-tip-run" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__green DqButton__on_dark" style="margin-left: 24px;"><span class="DqButton__text">Submit Answer</span></button><div class="MissionCodeActions__rest_buttons OnboardingReveal__shown"><button title="Restore to initial code [alt+r]" class="MissionCodeActions__reset DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__no_text DqButton__white DqButton__on_dark DqButton__hollow DqButton__borderless"><span class="dqicon dqicon-recycle DqButton__icon"></span></button><div class="MissionCodeActions__spacer"></div><button title="Open Console [alt+t]" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark DqButton__hollow"><span class="DqButton__text">Open Console</span></button></div></div></div></div></div></div></div></div></div><div class="MissionFooter__root OnboardingReveal__shown"><div class="MissionFooter__title_side"><span class="dqicon dqicon-bars MissionFooter__more"></span><div class="MissionFooter__title">1. The GIL</div></div><div class="MissionFooter__center"><button title="[alt+b] Back a Screen" class="MissionFooter__nav_button DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__disabled DqButton__on_dark DqButton__hollow"><span class="DqButton__text">back</span></button><div>1 / 18</div><button title="[alt+n] Next Screen" class="MissionFooter__nav_button DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark DqButton__hollow"><span class="DqButton__text">Next</span></button></div><div class="MissionFooter__right_side"></div></div></div></div></div></div></div></div><script crossorigin="" type="text/javascript" src="./1. The GIL_files/polyfill.min.js"></script><script crossorigin="" type="text/javascript" src="./1. The GIL_files/lodash.min.js"></script><script crossorigin="" type="text/javascript" src="./1. The GIL_files/react.production.min.js"></script><script crossorigin="" type="text/javascript" src="./1. The GIL_files/react-dom.production.min.js"></script><script type="text/javascript">!function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="3.1.0";
+  var key = window.location.host === 'app.dataquest.io' ? 'BJhKYEXejzjqXq7xQDFI6N0M5W7HBAH5' : 'yPkme4oLIogTJ7xrH3SCEDVtcSz2J5Br';
+  analytics.load(key);
+  }}();</script><script src="./1. The GIL_files/pa-5cd96b34fed2bd0016000186.js" async=""></script><script type="text/javascript" src="./1. The GIL_files/app.1dcb74672053eeb54bd7.js"></script><script type="text/javascript" id="">(function(a,e,f,g,b,c,d){a.ProfitWellObject=b;a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)};a[b].l=1*new Date;c=e.createElement(f);d=e.getElementsByTagName(f)[0];c.async=1;c.src=g;d.parentNode.insertBefore(c,d)})(window,document,"script","https://dna8twue3dlxq.cloudfront.net/js/profitwell.js","profitwell");profitwell("auth_token","bd8a22377119e7044e07346a8c89a91f");profitwell("user_email","USER@EMAIL.COM");</script><script type="text/javascript" id="" charset="utf-8" src="./1. The GIL_files/b960428aed859499a86a27f8ce0a0a6bd2ea6c87.js"></script><iframe id="intercom-frame" style="position: absolute !important; opacity: 0 !important; width: 1px !important; height: 1px !important; top: 0 !important; left: 0 !important; border: none !important; display: block !important; z-index: -1 !important;" aria-hidden="true" tabindex="-1" src="./1. The GIL_files/saved_resource(2).html"></iframe><div id="intercom-css-container"><style data-emotion="intercom-global"></style></div><div id="intercom-container" class="intercom-namespace"><style>html.intercom-mobile-messenger-active,html.intercom-mobile-messenger-active > body,html.intercom-modal-open,#intercom-container-body{overflow:hidden !important;}html.intercom-mobile-messenger-active,html.intercom-mobile-messenger-active > body{position:static !important;}html.intercom-mobile-messenger-active > body{height:0 !important;margin:0 !important;}iframe#intercom-frame{position:absolute !important;opacity:0 !important;width:1px !important;height:1px !important;top:0 !important;left:0 !important;border:none !important;display:block !important;z-index:-1 !important;}</style><div class="intercom-app" aria-live="polite"><div id="intercom-modal-container"></div></div></div></body></html>

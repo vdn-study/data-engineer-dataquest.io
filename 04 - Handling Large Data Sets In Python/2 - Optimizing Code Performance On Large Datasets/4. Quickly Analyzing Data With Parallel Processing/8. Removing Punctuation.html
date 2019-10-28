@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<!-- saved from url=(0101)https://app.dataquest.io/m/171/quickly-analyzing-data-with-parallel-processing/8/removing-punctuation -->
+<html lang="en" class=" wf-merriweather-n7-active wf-merriweather-n3-active wf-industry-n3-active wf-industry-n2-active wf-ingra-n2-active wf-ingra-n4-active wf-active"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>.async-hide { opacity: 0 !important}</style><script type="text/javascript" async="" src="./8. Removing Punctuation_files/js"></script><script async="" src="./8. Removing Punctuation_files/profitwell.js"></script><script type="text/javascript" async="" src="./8. Removing Punctuation_files/analytics.js"></script><script src="./8. Removing Punctuation_files/1208964489120563" async=""></script><script src="./8. Removing Punctuation_files/identity.js" async=""></script><script type="text/javascript" async="" src="./8. Removing Punctuation_files/fbevents.js"></script><script type="text/javascript" async="" src="./8. Removing Punctuation_files/gtm.js"></script><script type="text/javascript" async="" src="./8. Removing Punctuation_files/insight.min.js"></script><script type="text/javascript" async="" src="./8. Removing Punctuation_files/qevents.js"></script><script type="text/javascript" async="" src="./8. Removing Punctuation_files/mf5oz4we"></script><script type="text/javascript" async="" src="./8. Removing Punctuation_files/fbds.js"></script><script type="text/javascript" async="" src="./8. Removing Punctuation_files/analytics.min.js"></script><script type="text/javascript" async="" src="./8. Removing Punctuation_files/recaptcha__vi.js"></script><script src="./8. Removing Punctuation_files/nmj4kuc.js" async=""></script><script>var optimize_container_ids = {}
+  var stage_or_prod_id = window.location.host === 'app.dataquest.io' ? 'GTM-PNQ6824' : 'GTM-KFF7W4B';
+  optimize_container_ids[stage_or_prod_id] = true;
+  (function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
+  h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
+  (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
+  })(window,document.documentElement,'async-hide','dataLayer',4000,
+  optimize_container_ids);</script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="fragment" content="!"><title idle-disabled="true">Processing Data With Concurrent.futures | Dataquest</title><meta name="description" content="Learn Python and R for data science. Learn by coding and working with data in your browser. Build your portfolio with projects and become a data scientist."><script>(function(d) {
+      var config = {
+        kitId: 'nmj4kuc',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);</script><script src="./8. Removing Punctuation_files/api.js" async="" defer="defer"></script><link rel="stylesheet" href="./8. Removing Punctuation_files/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous"><link href="./8. Removing Punctuation_files/css" rel="stylesheet"><link rel="stylesheet" href="./8. Removing Punctuation_files/icon"><style>.loader {
+      z-index: 1000;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: #f9f9fb;
+    }
+    .loader .top {
+      transition: all ease 0.25;
+      padding: 0 0 0 40px;
+      background-image: linear-gradient(90deg,#30394b,#4c5361);
+      height: 90px;
+      overflow: hidden;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+          -ms-flex-align: center;
+              align-items: center;
+    }
+    .loader .message {
+      font-family: "ingra", sans-serif;
+      font-size: 14px;
+      color: white;
+      margin-left: 20px;
+    }
+
+    .rocket {
+      width: 25px;
+      height: 25px;
+      background-size: contain;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAFiQAABYkBbWid+gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAATdEVYdFRpdGxlAExvZ28tT24tTGlnaHQVgXW8AAAEuUlEQVRYhb2YXYhVVRTHf+fOOIofjVYPLmdMmgqFRAO1PBGiDyGVRkZlOEQiQaZTaYp9oX1ASEUQOKYFKWMQRIEWWjmkMFlupXTCypeUCh2XmorTZKkzc08Pe92Z03Fk7jne23pZe6+z/mv92XufvdfewciRUymVqLpBACLh+VLFzJUqkKqbDPwMHFB1t5QqbkkIqroG4FugDrgJ2KPqFpUidnAlU6zqKoAPgYfM9DkQAHdZ/yOgXiTszprjSkfwNXrJrQZmA7OAN80213wyS+YRVHX3AlvwI7ZAJNyY+L4QWAdEwH0i4WdZ8mQaQVV3PdBk5DYkyQGIhOuBD8ynyTCppTILCFgBDAd+AZ5SdUOBV4G7gQqgGXgRWASEwI2GeSJtotRTbGSOAcOAe4AvgJ3A9ITrPuA2YCawDegARomEf6XJl2WK641cG7AdmGHkImA5sBC4AEwC5phPm2Hq0ybLQvAx0022fUy0/tci4Vsi4bv47QZgsvk0JbDlIajqcsAE635seqDpszHXP00PSvhOsBjlIQjUAlXWPmT6D9PjY8lvNn0i4VtlMcpG8AbTp2OLvQXotG/7VZ0DJgN54EsA8z2diFEWgoW97LeCQSQ8hN9C8vj1OBX/w7wiErbGsL8nYhQlaffByPTQuFEkfFvVteC3lArgK5FwbwI7OBGjLAQLa6pO1VWKhF0xkq1Aa18gVVdJ79Se6MvncpJ2igt/5wDSraU6w8RjFCVpCT4Sa49NgRt3mRj9StEEVd1oYH7MlOaMnBJrz7dYRUmaEVyG38cuWH+hqruqP5D5LLbuRYuxrBwEbzW9EX/wjwCWFIFbYr7t+PIrHqukBAsnwI/AWmsvVXXXXg5g35Zadx1wMBGrNATtCBPrHgFeAvbia8LNqm5gH5iBwGbz+R542bAAYveZ0hDEV8WFtdchEl4EHgROAXcAG/rAbLBvZ4AHRMIL9G4xRd+biyJoJdMe695vtiPAPPwRN0/Vva/qBqm6KlW3MfatXiQsHHNzTO8p9qaXZg1+Y7o+NqUtwA5rLwCO4ovT+Wbbhi//C68OD5t9V7FJ0xx1W4FVwNXAXFU3GHgeuC7mc00CMxs4qOpex49mNf4s3lps0lR3ElW3Dl/SR/h1CXAO2I0flZ/MNh6//m6nt7AoYNaLhEVfntIWC8/iL+a1QBewBl9WtSf8NgOoumHASvxeOABQ4Lk0CbPc6mYAbwCPioQH499qtPHpgKj7qDzZmMCMBTYBK0XC5rIStISBSPifuq5W19wZETQDRATTjsniXf1hipFMLwsiYTRa19Qdj12A8uRqeoPme9o12jhY9J2JWchlJjhK1y7JExyexL5PY6R69rU8uXzM3eXI/1CjjalfFTITzJGfac1ZBdtFqrbjq+UTAdFOgBptrMauqRHBtP+NYEQQJG0n5fGT7VSPaad6TJs0nALopqLHL0f+EkzZCPYl43R15XDOrqqmfcVxdZnI9CVZX7cK661nrZ1j6PSI4AWAKXy34wjsHsK57vP2uBARdF0apn/JOsWbgH+A9wq2gHwrvt7b/zdDDgAcluUd+LO4E/gkS67ML6w12jigTRo6+/M7ri4IcSN+lWfOZMnzLzfFicWWhq1kAAAAAElFTkSuQmCC");
+    }
+    .loader .rocket {
+      -webkit-animation: loading_anim linear 4s;
+              animation: loading_anim linear 4s;
+      -webkit-animation-iteration-count: infinite;
+              animation-iteration-count: infinite;
+    }
+
+    .dq_text {
+      width: 140px;
+      height: 15px;
+      margin: 10px 0 10px 10px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gQ3JlYXRlZCB3aXRoIElua3NjYXBlIChodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy8pIC0tPgoKPHN2ZwogICB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iCiAgIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiCiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIKICAgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICB2ZXJzaW9uPSIxLjEiCiAgIHdpZHRoPSI0NjUuMzU5OTkiCiAgIGhlaWdodD0iNDguMzQ0NzgiCiAgIGlkPSJzdmcyIj4KICA8dGl0bGUKICAgICBpZD0idGl0bGU4Ij5Mb2dvLU9uLURhcms8L3RpdGxlPgogIDxtZXRhZGF0YQogICAgIGlkPSJtZXRhZGF0YTMxIj4KICAgIDxyZGY6UkRGPgogICAgICA8Y2M6V29yawogICAgICAgICByZGY6YWJvdXQ9IiI+CiAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+CiAgICAgICAgPGRjOnR5cGUKICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPgogICAgICAgIDxkYzp0aXRsZT5Mb2dvLU9uLURhcms8L2RjOnRpdGxlPgogICAgICA8L2NjOldvcms+CiAgICA8L3JkZjpSREY+CiAgPC9tZXRhZGF0YT4KICA8ZGVmcwogICAgIGlkPSJkZWZzNCI+CiAgICA8c3R5bGUKICAgICAgIGlkPSJzdHlsZTYiIC8+CiAgPC9kZWZzPgogIDxwYXRoCiAgICAgZD0ibSAxNywwLjY2IGMgMTQuNjYsMCAyMywxMSAyMywyMy40IDAsMTIuNCAtOC4yLDIzLjYgLTIzLDIzLjYgbCAtMTcsMCAwLC00NyAxNywwIHogbSAtMC4xMywzOS44OCBjIDkuNzUsMCAxNS4zMywtNy41MyAxNS4zMywtMTYuNDEgMCwtOC44OCAtNS42MSwtMTYuNDEgLTE1LjI2LC0xNi40MSBsIC05LjE1LDAgMCwzMi44MSA5LjA4LDAgMCwwLjAxIHoiCiAgICAgaWQ9InN2Z18xIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDY0LjU5LDM4LjExIC00LjU3LDkuNzUgLTguMiwwIDAsLTEgMjEuNzcsLTQ2LjQgMy42MywwIDIxLjY1LDQ2LjQgMCwxIC04LjE0LDAgLTQuNjQsLTkuNzUgLTIxLjUsMCB6IG0gMi41NiwtNi41OSAxNi40OCwwIC04LjIsLTE4LjgzIC04LjI4LDE4LjgzIHoiCiAgICAgaWQ9InN2Z18yIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDEwNi44NSw3LjU1IDAsLTYuOTMgMzUsMCAwLDYuOTMgLTEzLjY5LDAgMCw0MC4xNSAtNy42NywwIDAsLTQwLjE1IC0xMy42NCwwIHoiCiAgICAgaWQ9InN2Z18zIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDE2Mi41MywzOC4xMSAtNC41Nyw5Ljc1IC04LjIsMCAwLC0xIDIxLjc5LC00Ni40IDMuNjMsMCAyMS42NSw0Ni40IDAsMSAtOC4xNCwwIC00LjY0LC05Ljc1IC0yMS41MiwwIHogbSAyLjU2LC02LjU5IDE2LjUsMCAtOC4yLC0xOC44MyAtOC4zLDE4LjgzIHoiCiAgICAgaWQ9InN2Z180IgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDI1Ni41OSw0OC4xNyAtNy4xMywwIC0yLjc0LC00LjIgYSAyNC4wOCwyNC4wOCAwIDAgMSAtMTQuMzIsNC4zNyBjIC0xMi45MSwwIC0yMy42NywtOS40OCAtMjMuNjcsLTI0LjIxIDAsLTE0LjQ2IDkuODIsLTI0LjA3IDI0LC0yNC4wNyAxMi43MSwwIDIzLjk0LDguNzQgMjMuOTQsMjQuMDcgMCw2LjE5IC0xLjY4LDExLjMgLTQuODQsMTUuMjYgbCA0Ljc2LDcuNTggMCwxLjIgeiBtIC0yMy44NywtNy4xMyBjIDguODEsMCAxNi4wNywtNS41OCAxNi4wNywtMTYuOTUgMCwtMTEgLTcuMjYsLTE2Ljc0IC0xNi4xNCwtMTYuNzQgLTguODgsMCAtMTYsNiAtMTYsMTYuNzQgMC4wMSwxMC45NiA3LjI3LDE2Ljk1IDE2LjA4LDE2Ljk1IGwgLTAuMDEsMCB6IgogICAgIGlkPSJzdmdfNSIKICAgICBzdHlsZT0iZmlsbDojZmZmZmZmIiAvPgogIDxwYXRoCiAgICAgZD0ibSAyNzUuMjMsMzEuNTkgMCwtMzEuMjcgNy44LDAgMCwzMS4wNyBjIDAsNi4xOSA0LjY0LDkuNjIgMTAuNjIsOS42MiA1Ljk4LDAgMTAuNDksLTMuNDMgMTAuNDksLTkuNjIgbCAwLC0zMS4wNyA3LjczLDAgMCwzMS4yNyBjIDAsMTAuNDkgLTguMiwxNi40MSAtMTguMjIsMTYuNDEgLTEwLjAyLDAgLTE4LjQyLC01LjkyIC0xOC40MiwtMTYuNDEgeiIKICAgICBpZD0ic3ZnXzYiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KICA8cGF0aAogICAgIGQ9Im0gMzYxLjg0LDcuNDggLTIwLjc4LDAgMCwxMi40OSAxOS42NCwwIDAsNi45MyAtMTkuNjQsMCAwLDEzLjY3IDIxLjE4LDAgMCw3LjEzIC0yOS4wNSwwIDAsLTQ3LjA4IDI4LjY1LDAgMCw2Ljg2IHoiCiAgICAgaWQ9InN2Z183IgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDM4Ni41MiwzNC4wNCBjIDAuMzQsNS4zMSA2LjEyLDcuMjYgMTEuMjMsNy4yNiA1LjExLDAgMTAuODksLTEuMjEgMTAuODksLTcuMDYgMCwtNi4xOSAtNi4zOSwtNi43OSAtMTEuODQsLTcuMzMgLTguNjEsLTAuNzQgLTE3LjE1LC0zLjUgLTE3LjE1LC0xMi45MSAwLC05LjY4IDguNTQsLTE0IDE3LjY5LC0xNCA4Ljk0LDAgMTcuNDIsNCAxNy42MiwxMy42NSBsIC03LjM3LDAgYyAtMC4zNCwtNSAtNS42NSwtNi42NiAtMTAuMjksLTYuNjYgLTQuMywwIC05Ljg5LDEuNDggLTkuODksNi43OSAwLDUuMzEgNS4zMSw2IDEwLjc2LDYuNzIgOS41NSwxLjA4IDE4LjI5LDMgMTguMjksMTMuNzkgMCwxMC4zNiAtOS43NSwxNCAtMTguNTYsMTQgLTkuMjEsMC4yIC0xOC44MywtNC4zNyAtMTksLTE0LjI2IGwgNy42NywwIC0wLjA1LDAuMDEgeiIKICAgICBpZD0ic3ZnXzgiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KICA8cGF0aAogICAgIGQ9Im0gNDMwLjM2LDcuNTUgMCwtNi45MyAzNSwwIDAsNi45MyAtMTMuNjgsMCAwLDQwLjE1IC03LjY3LDAgMCwtNDAuMTUgLTEzLjY1LDAgeiIKICAgICBpZD0ic3ZnXzkiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KPC9zdmc+Cg==");
+    }
+
+    @-webkit-keyframes loading_anim {
+      0% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+      }
+      50% {
+        -webkit-transition: translateY(-50%);
+        transition: translateY(-50%);
+      }
+      75%, 100% {
+        -webkit-transform: translateY(-500%);
+                transform: translateY(-500%);
+      }
+    }
+
+    @keyframes loading_anim {
+      0% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+      }
+      50% {
+        -webkit-transition: translateY(-50%);
+        transition: translateY(-50%);
+      }
+      75%, 100% {
+        -webkit-transform: translateY(-500%);
+                transform: translateY(-500%);
+      }
+    }
+    .ant-form-explain {
+      color: red;
+    }</style><link rel="apple-touch-icon" sizes="57x57" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-180x180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Dataquest"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#fff"><meta name="application-name" content="Dataquest"><link rel="icon" type="image/png" sizes="32x32" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon-16x16.png"><link rel="shortcut icon" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon.ico"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-320x460.png"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-640x920.png"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-640x1096.png"><link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-750x1294.png"><link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1182x2208.png"><link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1242x2148.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-748x1024.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-768x1004.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1496x2048.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1536x2008.png"><style type="text/css">.tk-merriweather{font-family:"merriweather",serif;}.tk-industry{font-family:"industry",sans-serif;}.tk-ingra{font-family:"ingra",sans-serif;}</style><style type="text/css">@font-face{font-family:tk-merriweather-n7;src:url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;}@font-face{font-family:tk-merriweather-n3;src:url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:tk-industry-n3;src:url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:tk-industry-n2;src:url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:tk-ingra-n2;src:url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:tk-ingra-n4;src:url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff2"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("opentype");font-weight:400;font-style:normal;}</style><style type="text/css">@font-face{font-family:merriweather;src:url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;}@font-face{font-family:merriweather;src:url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:industry;src:url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:industry;src:url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:ingra;src:url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:ingra;src:url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff2"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("opentype");font-weight:400;font-style:normal;}</style><link href="./8. Removing Punctuation_files/app.eb9c5672a70e0f34428c.css" rel="stylesheet"><script src="./8. Removing Punctuation_files/logger.min.js" async=""></script><script async="" src="./8. Removing Punctuation_files/modules-v55.js"></script><link rel="stylesheet" type="text/css" href="./8. Removing Punctuation_files/NotificationsInMenu.09808b64bac3460ae0f5.css"><script charset="utf-8" src="./8. Removing Punctuation_files/NotificationsInMenu.dfa67edc80a27ad52fd8.js"></script><script charset="utf-8" src="./8. Removing Punctuation_files/vendors_TheMission.0473137e870a7ce7e36f.js"></script><link rel="stylesheet" type="text/css" href="./8. Removing Punctuation_files/TheMission.40883b66c977c6c03337.css"><script charset="utf-8" src="./8. Removing Punctuation_files/TheMission.7c9223c5f27a15c4257a.js"></script><link rel="canonical" href="https://www.dataquest.io/m/171/quickly-analyzing-data-with-parallel-processing" data-react-helmet="true"><meta name="twitter:site" content="@dataquestio" data-react-helmet="true"><meta name="twitter:title" content="Processing Data With Concurrent.futures | Dataquest" data-react-helmet="true"><meta name="og:title" content="Processing Data With Concurrent.futures | Dataquest" data-react-helmet="true"><meta name="og:site_name" content="Dataquest" data-react-helmet="true"><meta name="fb:app_id" content="1068949113131184" data-react-helmet="true"><meta name="twitter:card" content="summary" data-react-helmet="true"><meta name="description" content="This interactive data engineering tutorial teaches you to use Python&#39;s current.futures library to work with large data efficiently." data-react-helmet="true"><meta name="twitter:description" content="This interactive data engineering tutorial teaches you to use Python&#39;s current.futures library to work with large data efficiently." data-react-helmet="true"><meta name="og:description" content="This interactive data engineering tutorial teaches you to use Python&#39;s current.futures library to work with large data efficiently." data-react-helmet="true"><meta name="og:url" content="https://www.dataquest.io/m/171/quickly-analyzing-data-with-parallel-processing" data-react-helmet="true"><script type="application/ld+json" data-react-helmet="true">{"@context":"http://schema.org","@type":"Organization","url":"https://www.dataquest.io","logo":"https://s3.amazonaws.com/dq-email/brand/dataquest_logo.svg"}</script><script charset="utf-8" src="./8. Removing Punctuation_files/vendors_MissionReference.51bc46f42d17cd685d03.js"></script><link rel="stylesheet" type="text/css" href="./8. Removing Punctuation_files/MissionReference.bf41c3640eb1463e2c57.css"><script charset="utf-8" src="./8. Removing Punctuation_files/MissionReference.5fec493ea89554ed5119.js"></script><link rel="stylesheet" type="text/css" href="./8. Removing Punctuation_files/vendors_DqEditor.9f679c74a1a04ab5ed6f.css"><script charset="utf-8" src="./8. Removing Punctuation_files/vendors_DqEditor.bb447024d4e2460dcbb7.js"></script><link rel="stylesheet" type="text/css" href="./8. Removing Punctuation_files/DqEditor.3197904b9ae6d3e264d6.css"><script async="" src="./8. Removing Punctuation_files/MathJax.js"></script><script charset="utf-8" src="./8. Removing Punctuation_files/DqEditor.ef8e247bfd1c12e85a07.js"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head><body><div id="MathJax_Message" style="display: none;"></div><div id="root" style="height: 100%"><div class="dq-min-h-screen"><div class="CoreLayout__root"><header data-test-selector="navigation" class="dq-shadow DqHeader__root_mission"><div class="DqHeader__inner_content"><div class="DqHeader__left_side OnboardingReveal__shown"><a class="DqHeader__back" href="https://app.dataquest.io/dashboard"><span class="dqicon dqicon-left DqHeader__icon"></span><div class="DqHeader__back_text">Dashboard</div></a></div><div class="DqHeader__middle"><div class="DqHeader__mission_title">Quickly Analyzing Data With Parallel Processing</div></div><div class="DqHeader__right_side OnboardingReveal__shown"><div class="MenuDropdown__menu_dashboard_redesign"><img src="./8. Removing Punctuation_files/vm-alert47089393eebec9aa0b46b292342712bc.svg" style="margin: 0px 12px;"></div><div title="Get Help" class="MenuDropdown__menu_dashboard_redesign"><div class="HelpScoutLauncher__body"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183);">help_outline</i></div></div><div class="MenuDropdown__menu_dashboard_redesign"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183); margin: 0px 8px;">notifications_none</i></div><div class="MenuDropdown__menu_dashboard_redesign"><div data-test-selector="user-menu" class="DqHeader__user_box"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183); margin: 0px 0px 0px 8px;">account_circle</i><i class="material-icons" style="color: rgb(146, 162, 183); font-size: 16px;">keyboard_arrow_down</i></div></div></div></div></header><div class="CoreLayout__view"><div class="MissionView__root" data-test-selector="MissionView"><div class="TheMission__root"><div class="SplitPane TheMission__split_pane vertical " style="display: flex; flex: 1 1 0%; height: 100%; position: absolute; outline: none; overflow: hidden; user-select: text; flex-direction: row; left: 0px; right: 0px;"><div class="Pane vertical Pane1  " style="flex: 0 0 auto; position: relative; outline: none; width: 50%;"><div class="TheMission__is_interactive"><div class="MissionInformation__light OnboardingReveal__shown"><div class="MissionTabs__root"><div class="OnboardingReveal__shown"><div class="MissionTabs__button_selected">Learn</div></div><div class="OnboardingReveal__shown"><div class="MissionTabs__button">Mission Reference</div></div></div><div class="MissionInformation__body"><div class="MissionLearn__light ScrollAccordion__root"><div class="ScrollAccordion__top_headers" style="width: 912px;"></div><div class="ScrollAccordion__body"><div class="ScrollAccordion__section"><div theme="light" class="ScrollAccordion__in_text SidePanelTitle__light" id="onboarding-tip-learn" style="opacity: 1;">Learn</div><iframe style="height: 100%; width: 100%; border: none; background: transparent; position: absolute; z-index: -1; top: 0px; left: 0px;" src="./8. Removing Punctuation_files/saved_resource.html"></iframe><div id="body" class="MissionLearn__section MissionMarkup__light"><div><p>You may have noticed two screens ago, the most common word was almost always something like <code>the</code>, or <code>I</code>.  Although these are very common words in the English language, they aren't particularly interesting words.  We'd like to find words that have some relevance to the specific movie.</p>
+<p>To fix this, we'll only consider words that are over <code>5</code> letters long.  This should filter out common but uninformative words.</p>
+<p>You may have also noticed that some of the most common words were punctuation, like <code>--</code>, due to how we defined words.  Let's use a regular expression or substitution to remove all of the non-alphanumeric characters.  We'll also lowercase the words, so that <code>Hey</code>&nbsp;and <code>hey</code> aren't seen as different.</p>
+<p>These operations will take more CPU operations than the last screen, so it's going to be worth it to profile the performance and see if we can optimize our code.</p></div></div></div><div class="ScrollAccordion__section"><div theme="light" class="ScrollAccordion__in_text SidePanelTitle__light" id="onboarding-tip-instructions" style="opacity: 1;">instructions</div><iframe style="height: 100%; width: 100%; border: none; background: transparent; position: absolute; z-index: -1; top: 0px; left: 0px;" src="./8. Removing Punctuation_files/saved_resource(1).html"></iframe><div id="body" class="MissionLearn__instructions MissionMarkup__light"><ul>
+<li>Modify your function from before to remove punctuation, and filter out long words:<ul>
+<li>Lowercase all of the words.</li>
+<li>Ignore words under <code>5</code> characters long.</li>
+<li>Remove any characters that aren't <code>a-z</code>, <code>A-Z</code>, <code>_</code>, or <code>0-9</code>, and replace them with a space (<code></code>).</li>
+</ul>
+</li>
+<li>Execute the code using a process pool with <code>2</code> workers.<ul>
+<li>Assign the result to <code>words</code>.</li>
+</ul>
+</li>
+<li>As before, find the common words, and assign to the <code>common_words</code> dictionary.</li>
+<li>Profile your code, and see if you can improve performance.  Is your answer executing in <code>O(n)</code> time?  Is your worker count correct?</li>
+</ul></div><div class="MissionLearn__section"><div theme="light" class="DqDropMenu__close"><div class="DqDropMenu__top" data-test-selector="GetHelpMenu"><div class="DqDropMenu__text">Get Help</div><div class="DqDropMenu__icon"><span class="dqicon dqicon-down undefined"></span></div></div><div class="DqDropMenu__options"><div class="DqDropMenu__option" data-test-selector="mission-help-get-hint">Get a hint</div><div class="DqDropMenu__option" title="[alt+a] to See the answer" data-test-selector="mission-help-show-answer">See the answer</div><div class="DqDropMenu__option">Message Us</div></div></div></div></div></div><div class="ScrollAccordion__bottom_headers" style="width: 912px;"></div></div></div></div></div></div><span class="Resizer vertical "></span><div class="Pane vertical Pane2  " style="flex: 1 1 0%; position: relative; outline: none;"><div class="TheMission__is_interactive"><div><div class="TaskPanels__root OnboardingReveal__shown"><div class="TaskPanels__dark"><div class="TaskPanels__editor_section"><div class="MissionEditorFiles__dark"><span class="meta MissionEditorFiles__file_active"><div title="[alt+t] to toggle open">script.py</div></span></div><div class="TaskPanels__editor_with_extra"><div class="dq_theme  DqEditor__root"><textarea autocomplete="off" style="display: none;">import concurrent.futures
+
+import os
+
+def most_common_word(filename):
+    # Fill in the function here
+    return ""
+
+results = []
+pool = concurrent.futures.ProcessPoolExecutor(max_workers=5)
+filenames = ["lines/{}".format(f) for f in os.listdir("lines")]
+words = pool.map(most_common_word, filenames)
+words = list(words)
+
+common_words = {}
+for i in range(len(lengths)):
+    common_words[filenames[i].replace("lines/", "")] = words[i]
+import os
+
+def most_common_word(filename):
+    with open(filename) as f:
+        data = f.read().lower()
+    import re
+    data = re.sub("\W+", " ", data)
+    words = data.split(" ")
+    words = [w for w in words if len(w) &gt;= 5]
+    from collections import Counter
+    count = Counter(words)
+    return count.most_common()[0][0]
+
+results = []
+pool = concurrent.futures.ProcessPoolExecutor(max_workers=2)
+filenames = ["lines/{}".format(f) for f in os.listdir("lines")]
+words = pool.map(most_common_word, filenames)
+words = list(words)
+
+common_words = {}
+for i in range(len(lengths)):
+    common_words[filenames[i].replace("lines/", "")] = words[i]</textarea><div class="CodeMirror cm-s-dq-dark CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 691.5px; left: 506.812px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 30px; margin-bottom: -15px; border-right-width: 15px; min-height: 721px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>x</pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors" style="visibility: hidden;"><div class="CodeMirror-cursor" style="left: 476.812px; top: 684px; height: 18px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation" style=""><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">import</span> <span class="cm-variable">concurrent</span>.<span class="cm-property">futures</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">2</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">3</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">import</span> <span class="cm-variable">os</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">4</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">5</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">def</span> <span class="cm-def">most_common_word</span>(<span class="cm-variable">filename</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">6</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-comment"># Fill in the function here</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">7</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">return</span> <span class="cm-string">""</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">8</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">9</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">results</span> <span class="cm-operator">=</span> []</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">10</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">pool</span> <span class="cm-operator">=</span> <span class="cm-variable">concurrent</span>.<span class="cm-property">futures</span>.<span class="cm-property">ProcessPoolExecutor</span>(<span class="cm-variable">max_workers</span><span class="cm-operator">=</span><span class="cm-number">5</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">11</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">filenames</span> <span class="cm-operator">=</span> [<span class="cm-string">"lines/{}"</span>.<span class="cm-property">format</span>(<span class="cm-variable">f</span>) <span class="cm-keyword">for</span> <span class="cm-variable">f</span> <span class="cm-keyword">in</span> <span class="cm-variable">os</span>.<span class="cm-property">listdir</span>(<span class="cm-string">"lines"</span>)]</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">12</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">words</span> <span class="cm-operator">=</span> <span class="cm-variable">pool</span>.<span class="cm-property">map</span>(<span class="cm-variable">most_common_word</span>, <span class="cm-variable">filenames</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">13</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">words</span> <span class="cm-operator">=</span> <span class="cm-builtin">list</span>(<span class="cm-variable">words</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">14</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">15</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">common_words</span> <span class="cm-operator">=</span> {}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">16</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">for</span> <span class="cm-variable">i</span> <span class="cm-keyword">in</span> <span class="cm-builtin">range</span>(<span class="cm-builtin">len</span>(<span class="cm-variable">lengths</span>)):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">17</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">common_words</span>[<span class="cm-variable">filenames</span>[<span class="cm-variable">i</span>].<span class="cm-property">replace</span>(<span class="cm-string">"lines/"</span>, <span class="cm-string">""</span>)] <span class="cm-operator">=</span> <span class="cm-variable">words</span>[<span class="cm-variable">i</span>]</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">18</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">import</span> <span class="cm-variable">os</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">19</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">20</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">def</span> <span class="cm-def">most_common_word</span>(<span class="cm-variable">filename</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">21</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">with</span> <span class="cm-builtin">open</span>(<span class="cm-variable">filename</span>) <span class="cm-keyword">as</span> <span class="cm-variable">f</span>:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">22</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">data</span> <span class="cm-operator">=</span> <span class="cm-variable">f</span>.<span class="cm-property">read</span>().<span class="cm-property">lower</span>()</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">23</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">import</span> <span class="cm-variable">re</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">24</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">data</span> <span class="cm-operator">=</span> <span class="cm-variable">re</span>.<span class="cm-property">sub</span>(<span class="cm-string">"\W+"</span>, <span class="cm-string">" "</span>, <span class="cm-variable">data</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">25</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">words</span> <span class="cm-operator">=</span> <span class="cm-variable">data</span>.<span class="cm-property">split</span>(<span class="cm-string">" "</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">26</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">words</span> <span class="cm-operator">=</span> [<span class="cm-variable">w</span> <span class="cm-keyword">for</span> <span class="cm-variable">w</span> <span class="cm-keyword">in</span> <span class="cm-variable">words</span> <span class="cm-keyword">if</span> <span class="cm-builtin">len</span>(<span class="cm-variable">w</span>) <span class="cm-operator">&gt;=</span> <span class="cm-number">5</span>]</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">27</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">from</span> <span class="cm-variable">collections</span> <span class="cm-keyword">import</span> <span class="cm-variable">Counter</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">28</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">count</span> <span class="cm-operator">=</span> <span class="cm-variable">Counter</span>(<span class="cm-variable">words</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">29</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">return</span> <span class="cm-variable">count</span>.<span class="cm-property">most_common</span>()[<span class="cm-number">0</span>][<span class="cm-number">0</span>]</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">30</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">31</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">results</span> <span class="cm-operator">=</span> []</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">32</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">pool</span> <span class="cm-operator">=</span> <span class="cm-variable">concurrent</span>.<span class="cm-property">futures</span>.<span class="cm-property">ProcessPoolExecutor</span>(<span class="cm-variable">max_workers</span><span class="cm-operator">=</span><span class="cm-number">2</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">33</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">filenames</span> <span class="cm-operator">=</span> [<span class="cm-string">"lines/{}"</span>.<span class="cm-property">format</span>(<span class="cm-variable">f</span>) <span class="cm-keyword">for</span> <span class="cm-variable">f</span> <span class="cm-keyword">in</span> <span class="cm-variable">os</span>.<span class="cm-property">listdir</span>(<span class="cm-string">"lines"</span>)]</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">34</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">words</span> <span class="cm-operator">=</span> <span class="cm-variable">pool</span>.<span class="cm-property">map</span>(<span class="cm-variable">most_common_word</span>, <span class="cm-variable">filenames</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">35</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">words</span> <span class="cm-operator">=</span> <span class="cm-builtin">list</span>(<span class="cm-variable">words</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">36</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">37</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">common_words</span> <span class="cm-operator">=</span> {}</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">38</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">for</span> <span class="cm-variable">i</span> <span class="cm-keyword">in</span> <span class="cm-builtin">range</span>(<span class="cm-builtin">len</span>(<span class="cm-variable">lengths</span>)):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">39</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">common_words</span>[<span class="cm-variable">filenames</span>[<span class="cm-variable">i</span>].<span class="cm-property">replace</span>(<span class="cm-string">"lines/"</span>, <span class="cm-string">""</span>)] <span class="cm-operator">=</span> <span class="cm-variable">words</span>[<span class="cm-variable">i</span>]</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 15px; width: 1px; border-bottom: 0px solid transparent; top: 721px;"></div><div class="CodeMirror-gutters" style="height: 736px; left: 0px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div></div></div></div></div><div class="TaskPanels__extra_lines"></div></div></div><div class="TaskPanels__outputs"><div class="MissionResultFormat__dark"><div class="MissionResultFormat__title">Variables</div><div id="var-7-lengths" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> lengths<span class="MissionVariableLine__type">list (&lt;class 'list'&gt;)</span></div><div class="MissionVariableLine__value">[(629,
+  " And second of all -- these people don't dream about being rich. They dream about being able to watch their kids swim in a pool without worrying they'll have to have a hysterectomy at age 20, like Rosa Diaz -- a client of ours -- or have their spine deteriorate like Stan Bloom. Another client of ours. So before you come back here with another lame-ass offer, I want you to think real hard about what your spine is worth, Mr. Buda -- or what you'd expect someone to pay you for your uterus, Miss Sanchez -- then you take out your calculator and multiply that number by a hundred. Anything less than that is a waste of our time.\n"),
+ (727,
+  " For the first time in my life, I stand before you naked... vulnerable... and in love. Love. A word matrimonial lawyers shy away from. Ironic isn't it -- that I have been frightened of this emotion which is, in a sense, the seed of my livelihood. But today, I am here to tell you: Love should cause us no fear. Love should cause us no shame. Love... is good. Let me ask you a question. When our clients come to us confused, angry, hurting because their flame of love is fluttering and threatens to die -- should we seek to extinguish that flame, so that we can sift through the smoldering wreckage for our paltry reward? Or should we seek to fan this precious flame -- this most precious flame -- back to loving, roaring life?\n"),
+ (644,
+  ' How many innocent victims would they let get sprayed across the windows before the city reversed its policy on hostage situations? And this was 1976. No C.N.N., no C.N.B.C., no M.T.V. No Internet. Fast forward to the present, same situation. Can you imagine the feeding frenzy of the modern media? In hours it would be the top story from Boston to Budapest. All caught in 150 millimeter zoom, computer enhanced, and color corrected. You would practically taste the brain matter. Six hostages die. Ten. Twelve. Twenty. Thirty. Relentless. One after another. All over a bus, a plane, and a couple of million dollars that were federally insured.\n'),
+ (733,
+  " You know... I think that you've gotten the wrong impression about me. I think in all fairness, I should explain to you what it is that I do. For instance, tomorrow morning I'll get up nice and early, take a walk down over to the bank and walk in and see you, and, uh... if you don't have my money for me, I'll crack your fuckin' head wide open in front of everybody in the the bank. And just about the time that I'm comin' out of jail, hopefully, you'll be comin' out of your coma. And guess what? I'll split your fuckin' head open again. Because I'm fuckin' stupid. I don't give a fuck about jail. That's my business. That's what I do. And we know what you do, don't we, Charlie? You fuck people out of money and get away with it.\n"),
+ (461,
+  " JOSEPH and Sandra, his wife. Joe holds two bags--one filled with cards and memorabilia, the other with clothes. What seems like a ZILLION PEOPLE are here when he walks in. Everyone CHEERS. BURT moves right behind him, all smiles. Joseph is thrilled--but somehow not the same. His face doesn't look bad, but one eye is a different color from the other, and he's had reconstructive surgery on his jaw. There is, of course, a scar, and he's lost a lot of weight.\n"),
+ (497,
+  " Somethin' about it just didn't add up. So last night I went back to the pier to do some investigating of my own. Turns out there are two boats named the Princess. Only, one just got back from two weeks at sea -- Sal Dominico's boat. It got me thinkin' -- if Chase really did know Carmen was on to him, how come he didn't tell Lucas, or Gamble, or Myerson? Why would he drive up to Pinecliff by himself? And why would you still have his briefcase? Answer me that, Danielle. If you have an answer.\n"),
+ (1125,
+  " The office is bare and ugly, the furniture naugahyde black. There's noise from an outer office, and people on phones, moving, talking. Tony and Nick sit on a couch stacking twenty dollar bills from the duffel bag and suitcase onto a coffee table. Two men in casual sports clothing sit opposite them in chairs, one of them -- Seidelbaum -- squaring the bills and passing them efficiently through a money-counting machine which clicks at rhythmic intervals throughout the scene. Seidelbaum's a small, fat 7th Avenue-type with a lot of rings on his fingers and sharp, porky eyes. The other guy -- Luis -- a dark Cuban, is long, lean and smooth with aquiline nose and dancing eyes. He drinks coffee, smiles a lot and bullshits -- two sordid guys who look the part. It's a tedious process counting a million five in twenties, it takes four/five hours; and throughout the desultory dialogue Tony, absorbed by the money, and Nick never stop the monotonous work of counting and stacking and noting the amounts. the large stacks on the table, move and talk gingerly although they appear casual and bored. They drink a lot of coffee.\n"),
+ (427,
+  " Yeah this is where society dumps its worst nightmares. Yeah the one your picking up-just thinking about him gives me the willies.  Yeah, a decade ago, Halloween night he murdered 16 people, maybe more-trying to get to his sister. Nearly got her too.  But his doctor, of all people, shot him six times.  Then he set him on fire.  Both of them nearly burned to death.  Yeah, I'll be glad to see this one gone. Oh yes in deedie.\n"),
+ (400,
+  " He doesn't know his letters, no -- but he knows the names of animals... he knows what roots to eat when you're clear out of food... He knows the difference between a possum and a coon just by lookin' at the tracks... more than most trappers know... and he can tell whether she'll rain or shine tomorrow by smelling the air tonight. There's a lot of things he doesn't know, I hope he'll never learn.\n"),
+ (1476,
+  ' Somebody help me! Please!! Paul continues with his futile efforts to pry off the top of the coffin. The sides, the top, the bottom -- all are too thoroughly reinforced by the force of what surrounds the coffin. Sand. It becomes clear to him that he is buried. He tries his best to calm himself, though he has trouble catching his breath. It takes him some time, but he eventually achieves some semblance of calm. Getting a good look at him for the first time, we see that Paul is somewhere around 37 years old. Unshaven and physically unremarkable, he embodies the blue-collar American everyman. He coughs. The minimal amount of oxygen in the coffin makes it hard for him to breathe. His eyes widen a bit upon seeing an exposed, rusty nail. He tries desperately to use the nail to cut through the old, frayed ropes that bind his hands. Doing so is no easy task. The incredibly tight quarters makes his every action nearly impossible. After a lengthy struggle, the rope snaps. Paul quickly frees his hands. A small victory. Very small. The heat is unbearable. Paul takes off his button-down shirt, leaving him in a T-shirt. His body battles against the walls and the ceiling of the coffin with every move he makes. He tosses his button-down shirt down by his feet. His undershirt is drenched through with sweat. Still trying to calm himself, but having little success in doing so, Paul looks around the coffin. His feet, though only his body-length away, seem miles from him.\n'),
+ (485,
+  ' ..the soldiers like to wager among themselves, what day will the German army enter Moscow? One thing is certain: much sooner than anyone thought. From here in Berlin, listeners in Britain, I can give some very definite news. There will be a bomber raid on London tonight, the fourteenth night in succession. Look out for bombs if you live in Carshalton or Croydon. There will be incendiary attacks if you live in Fulham and Hammersmith. And watch out in Kew; be alert in Walthamstow.\n'),
+ (371,
+  " For you pogues, this is a banshee. A small one. See, they like it when I bring fresh meat out here. And this clearcutting really stirs up the hornet's nest. So keep your head on a swivel. If it moves, shoot it. If you're not sure it's moving -- shoot it! If it looks like a bunch of flowers you want to take home to Sally Rottencrotch -- SHOOT IT! What're you gonna do?\n"),
+ (913,
+  " The scaffold is impregnable. Celts and their Chieftain guard the platform itself. The Sherriff's men surround the base. The executioner encircles Wulf's neck with the noose. SPARKS! Tuck ignites a fuse-cord leading to one of the barrels. A hand tightens the noose... Another grasps an arrow. The executioner's eyes glint through the slits. Nottingham intently watches Wulf. The Chieftain stands, impassive. Fingers close on a bowstring... the fuse-cord burns. Wulf steps to the trap, ready to plunge. His eyes close. An arrow flies... slices through the executioner's eye slit. The executioner falls. Little John celebrates... but the Chieftain leaps forward... releases the trap. Wulf's body plunges. The rope snaps tight. Little John yells. Fanny screams. A figure leaps onto the platform... the wounded soldier throws aside his crutch... Robin! Wulf dangles, strangling. His hands wrench at the choking cord.\n"),
+ (428,
+  " This is something no one has been privileged to see in almost seventy years. Very few people now alive can say that they have seen what you are about to see, Matthew. The Red Sox win a World Series. This is deeply, intensely personal. All the mistakes I've made, all the envy, fear and violence that's encased in this little envelope we call a person -- all washed away in the next few minutes. And your grandmother knows why.\n"),
+ (698,
+  " At that time, Trooper Barrigan, who I now understand to have been Francis Costello's informer in SIU, intercepted us in the lobby and shot Trooper William Costigan once in the head. At that time Barrigan retrieved Trooper Costigan's undercover weapon and shot Trooper Brown as he was approaching our location. I attempted to subdue Trooper Barrigan and in the ensuing struggle was struck several times with the Walther pistol. I was able to wrestle the weapon a\n[variable truncated]</div></div><div id="var-7-list" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> list<span class="MissionVariableLine__type">type (&lt;class 'type'&gt;)</span></div><div class="MissionVariableLine__value">list</div></div><div id="var-7-common_words" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> common_words<span class="MissionVariableLine__type">dict (&lt;class 'dict'&gt;)</span></div><div class="MissionVariableLine__value">{'aptpupil.txt': 'right',
+ 'fiveeasypieces.txt': 'there',
+ 'whoframedrogerrabbit.txt': 'eddie',
+ 'thebeach.txt': 'richard',
+ 'houseofthedamned.txt': 'aubrey',
+ 'perfectcreature.txt': 'brother',
+ 'hotelrwanda.txt': 'there',
+ 'thegrapesofwrath.txt': 'gonna',
+ 'pulpfiction.txt': 'fuckin',
+ 'autumninnewyork.txt': 'right',
+ 'troubleinparadise.txt': 'gaston',
+ 'orphan.txt': 'esther',
+ 'residentevil.txt': 'there',
+ 'next.txt': 'there',
+ 'aceventurapetdetective.txt': 'einhorn',
+ 'theverdict.txt': 'going',
+ 'happybirthdaywandajune.txt': 'there',
+ 'lakeplacid.txt': 'there',
+ 'theladykillers.txt': 'there',
+ 'semipro.txt': 'jackie',
+ 'thebrothersbloom.txt': 'stephen',
+ 'pearlharbor.txt': 'there',
+ 'outofsight.txt': 'there',
+ 'jasonx.txt': 'there',
+ 'lordofillusions.txt': 'swann',
+ 'theflintstones.txt': 'slate',
+ 'casablanca.txt': 'there',
+ 'windchill.txt': 'there',
+ 'deathatafuneral.txt': 'aaron',
+ 'killingzoe.txt': 'vault',
+ 'sideways.txt': 'miles',
+ 'thenextthreedays.txt': 'going',
+ 'analyzethis.txt': 'about',
+ 'thehaunting.txt': 'about',
+ 'elmariachi.txt': 'guitar',
+ 'datenight.txt': 'clara',
+ 'sleeplessinseattle.txt': 'going',
+ 'jurassicparkiii.txt': 'grant',
+ 'rushhour2.txt': 'there',
+ 'twilightnewmoon.txt': 'bella',
+ 'thebattleofalgiers.txt': 'casbah',
+ 'boogienights.txt': 'camera',
+ 'suspectzero.txt': 'about',
+ 'anofficerandagentleman.txt': 'about',
+ 'warmsprings.txt': 'franklin',
+ 'theadventuresoffordfairlane.txt': 'about',
+ 'highlanderendgame.txt': 'duncan',
+ 'evildeadiideadbydawn.txt': 'there',
+ 'napoleon.txt': 'would',
+ 'awakenings.txt': 'sayer',
+ 'austinpowersinternationalmanofmystery.txt': 'austin',
+ 'tinmen.txt': 'tilley',
+ 'clashofthetitans.txt': 'perseus',
+ 'lordofwar.txt': 'going',
+ 'kingkong.txt': 'denham',
+ 'hardrain.txt': 'gonna',
+ 'missionimpossibleii.txt': 'about',
+ 'threemenandababy.txt': 'michael',
+ 'funnypeople.txt': 'george',
+ 'thesearchers.txt': 'ethan',
+ 'excalibur.txt': 'merlin',
+ 'afewgoodmen.txt': 'santiago',
+ 'sugarspice.txt': 'diane',
+ 'catchmeifyoucan.txt': 'frank',
+ 'xmen.txt': 'there',
+ 'edwardscissorhands.txt': 'edward',
+ 'antz.txt': 'there',
+ 'theelephantman.txt': 'merrick',
+ 'theenglishpatient.txt': 'there',
+ 'cradle2thegrave.txt': 'stones',
+ 'slingblade.txt': 'about',
+ 'murderland.txt': 'about',
+ 'allthekingsmen.txt': 'willie',
+ 'wildthings.txt': 'kelly',
+ 'memento.txt': 'sammy',
+ 'alien.txt': 'there',
+ 'chasingamy.txt': 'about',
+ 'broadcastnews.txt': 'about',
+ 'thethinman.txt': 'wynant',
+ 'thebookofeli.txt': 'there',
+ 'thechroniclesofnarniathelionwitchandthewardrobe.txt': 'there',
+ 'gladiator.txt': 'father',
+ 'mygirl2.txt': 'about',
+ 'stirofechoes.txt': 'maggie',
+ 'marleyme.txt': 'marley',
+ 'babel.txt': 'going',
+ 'allabouteve.txt': 'about',
+ 'startrekivthevoyagehome.txt': 'admiral',
+ 'agnesofgod.txt': 'agnes',
+ 'strangersonatrain.txt': 'about',
+ 'cherryfalls.txt': 'about',
+ 'stateandmain.txt': 'about',
+ 'tristanandisolde.txt': 'tristan',
+ 'prettywoman.txt': 'vivian',
+ 'findingnemo.txt': 'there',
+ 'mantrouble.txt': 'harry',
+ 'elizabeththegoldenage.txt': 'queen',
+ 'themask.txt': 'stanley',
+ 'jaws.txt': 'there',
+ 'aharddaysnight.txt': 'right',
+ 'grossepointeblank.txt': 'there',
+ 'labattagliadialgeri.txt': 'casbah',
+ 'spacejacked.txt': 'going',
+ 'jayandsilentbobstrikeback.txt': 'about',
+ 'whiteangel.txt': 'ellen',
+ 'escapefromtheplanetoftheapes.txt': 'colonel',
+ 'sunsetblvd.txt': 'there',
+ 'meetjohndoe.txt': 'there',
+ 'heavymetal.txt': 'there',
+ 'avatar.txt': 'there',
+ 'extract.txt': 'about',
+ 'shocktreatment.txt': 'janet',
+ 'thehospital.txt': 'about',
+ 'bridesmaids.txt': 'annie',
+ 'supermanmanofsteel.txt': 'there',
+ 'g.txt': 'right',
+ 'mysterymen.txt': 'there',
+ 'dotherightthing.txt': 'mookie',
+ 'groundhogday.txt': 'there',
+ 'godfather.txt': 'family',
+ 'saltoftheearth.txt': 'there',
+ 'badsanta.txt': 'santa',
+ 'terminatorsalvation.txt': 'there',
+ 'rocky.txt': 'fight',
+ 'americanhistoryx.txt': 'fucking',
+ 'twilight.txt': 'bella',
+ 'thegoonies2.txt': 'there',
+ 'bottlerocket.txt': 'dignan',
+ 'hellboundhellraiserii.txt': 'kirsty',
+ 'jurassicpark.txt': 'there',
+ 'petsematary.txt': 'louis',
+ 'thelmalouise.txt': 'louise',
+ 'mulhollanddrive.txt': 'there',
+ 'beinghuman.txt': 'hector',
+ 'fantasticfour.txt': 'about',
+ 'neverbeenkissed.txt': 'josie',
+ 'hottubtimemachine.txt': 'looks',
+ 'therelic.txt': 'there',
+ 'tropicthunder.txt': 'speedman',
+ 'wonderboys.txt': 'james',
+ 'fearandloathinginlasvegas.txt': 'there',
+ 'ghostbusters2.txt': 'there',
+ 'newyorkminute.txt': 'parker',
+ 'theimaginariumofdoctorparnassus.txt': 'valentina',
+ 'littlenicky.txt': 'nicky',
+ 'onthewaterfront.txt': 'terry',
+ 'bamboozled.txt': 'mantan',
+ 'mobsters.txt': 'fuckin',
+ 'aseriousman.txt': 'larry',
+ 'thebodysnatcher.txt': 'macfarlane',
+ 'twoforthemoney.txt': 'brandon',
+ 'austinpowersthespywhoshaggedme.txt': 'austin',
+ 'theabyss.txt': 'there',
+ 'cryinggame.txt': 'jimmy',
+ 'quills.txt': 'madeleine',
+ 'amelia.txt': 'about',
+ 'obrotherwhereartthou3f.txt': 'gonna',
+ 'darkcity.txt': 'there',
+ 'forrestgump.txt': 'forrest',
+ 'publicenemies.txt': 'dillinger',
+ 'bluevelvet.txt': 'jeffrey',
+ 'theproducers.txt': 'bialystock',
+ 'charade.txt': 'lampert',
+ 'thedamnedunited.txt': 'clough',
+ 'nightbreed.txt': 'boone',
+ 'shampoo.txt': 'george',
+ 'coolhandluke.txt': 'gonna',
+ 'thebirds.txt': 'mitch',
+ 'tmnt.txt': 'there',
+ 'missiontomars.txt': 'there',
+ 'ithappenedonenight.txt': 'about',
+ 'vforvendetta.txt': 'there',
+ 'transatlanticmerrygoround.txt': 'brett',
+ 'slither.txt': 'grant',
+ 'americangraffiti.txt': 'right',
+ 'theotherboleyngirl.txt': 'would',
+ 'americangangster.txt': 'frank',
+ 'allaboutsteve.txt': 'steve',
+ 'oneflewoverthecuckoosnest.txt': 'mister',
+ 'glengarryglengross.txt': 'going',
+ 'kundun.txt': 'chinese',
+ 'sugarandspice.txt': 'diane',
+ 'knightmoves.txt': 'going',
+ 'blackrain.txt': 'charlie',
+ 'officespace.txt': 'right',
+ 'yearone.txt': 'there',
+ 'scarface.txt': 'manny',
+ 'fridaythe13thpartiii.txt': 'there',
+ 'starwarstheempirestrikesback.txt': 'there',
+ 'starwarsattackoftheclones.txt': 'anakin',
+ 'legion.txt': 'about',
+ 'confessionsofadangerousmind.txt': 'chuck',
+ 'dune.txt': 'spice',
+ 'hostage.txt': 'house',
+ 'goneinsixtyseconds.txt': 'there',
+ 'youvegotmail.txt': 'about',
+ 'scarymovie2.txt': 'there',
+ 'minorityreport.txt': 'precogs',
+ 'twelvemonkeys.txt': 'james',
+ 'trueromance.txt': 'about',
+ 'thewoodsman.txt': 'walter',
+ 'obsessed.txt': 'derek',
+ 'valkyrie.txt': 'colonel',
+ 'jawstherevenge.txt': 'going',
+ 'nursebetty.txt': 'betty',
+ 'thebachelorparty.txt': 'charlie',
+ 'whiteout.txt': 'there',
+ 'fightclub.txt': 'tyler',
+ 'galaxyquest.txt': 'commander',
+ 'catwoman.txt': 'patience',
+ 'piratesofthecaribbean.txt': 'there',
+ 'thepianist.txt': 'going',
+ 'whitechristmas.txt': 'going',
+ 'manintheironmask.txt': 'artagnan',
+ 'dogma.txt': 'about',
+ 'gandhi.txt': 'there',
+ 'fourrooms.txt': 'there',
+ 'queenofthedamned.txt': 'lestat',
+ 'getcarter.txt': 'right',
+ 'gonein60seconds.txt': 'there',
+ 'rushhour.txt': 'there',
+ 'senseandsensibility.txt': 'dashwood',
+ 'theshippingnews.txt': 'about',
+ 'jurassicparkthelostworld.txt': 'there',
+ 'made.txt': 'fucking',
+ 'cobb.txt': 'stump',
+ 'thecell.txt': 'about',
+ 'smoke.txt': 'there',
+ 'georgewashington.txt': 'general',
+ 'swingers.txt': 'about',
+ 'collateral.txt': 'there',
+ 'evencowgirlsgettheblues.txt': 'about',
+ 'maxpayne.txt': 'there',
+ 'inventingtheabbotts.txt': 'alice',
+ 'fatalinstinct.txt': 'right',
+ 'hollowman.txt': 'sebastian',
+ 'thebournesupremacy.txt': 'bourne',
+ 'escapefromnewyork.txt': 'snake',
+ 'theproducer.txt': 'bialystock',
+ 'theprogram.txt': 'about',
+ 'copycat.txt': 'about',
+ 'whatwomenwant.txt': 'scene',
+ 'rememberme.txt': 'tyler',
+ 'aloneinthedark.txt': 'there',
+ 'starwarsanewhope.txt': 'there',
+ 'snowfallingoncedars.txt': 'there',
+ 'neuromancer.txt': 'there',
+ 'highlanderiiithesorcerer.txt': 'would',
+ 'donniedarko.txt': 'donnie',
+ 'thereader.txt': 'there',
+ 'magnolia.txt': 'there',
+ 'theploughmanslunch.txt': 'there',
+ 'thekingdom.txt': 'there',
+ 'ramblingrose.txt': 'buddy',
+ 'anightmareonelmstreet4thedreammaster.txt': 'freddy',
+ 'thecooler.txt': 'bernie',
+ 'independenceday.txt': 'there',
+ 'chillfactor.txt': 'truck',
+ 'sounder.txt': 'daddy',
+ 'heist.txt': 'gonna',
+ 'illdoanything.txt': 'about',
+ 'monkeybone.txt': 'there',
+ 'basquiat.txt': 'about',
+ 'kalifornia.txt': 'there',
+ 'starwarsepisodevireturnofthejedi.txt': 'artoo',
+ 'startrekiiithesearchforspock.txt': 'genesis',
+ 'leon.txt': 'mathilda',
+ 'bladetrinity.txt': 'there',
+ 'minisfirsttime.txt': 'about',
+ 'iamnumberfour.txt': 'henri',
+ 'thedevilanddanielwebster.txt': 'jabez',
+ 'mrs.txt': 'queen',
+ 'labyrinth.txt': 'freddie',
+ 'thesting.txt': 'there',
+ 'solaris.txt': 'think',
+ 'thehorsewhisperer.txt': 'about',
+ 'thewizardofoz.txt': 'dorothy',
+ 'legallyblonde.txt': 'about',
+ 'redwhiteblackblue.txt': 'there',
+ 'themagictoyshop.txt': 'there',
+ 'starwarsreturnofthejedi.txt': 'artoo',
+ 'thesurferking.txt': 'robbie',
+ 'deathtosmoochy.txt': 'smoochy',
+ 'threekings.txt': 'about',
+ 'thetourist.txt': 'pearce',
+ 'indianajonesandthetempleofdoom.txt': 'jones',
+ 'abucketofblood.txt': 'walter',
+ 'anastasia.txt': 'anastasia',
+ 'kungfupanda.txt': 'master',
+ 'beloved.txt': 'there',
+ 'shrek.txt': 'shrek',
+ 'laboroflove.txt': 'maurice',
+ 'plasticman.txt': 'argon',
+ 'kramervskramer.txt': 'kramer',
+ 'lovebasketball.txt': 'about',
+ 'defiance.txt': 'tuvia',
+ 'howtotrainyourdragon.txt': 'hiccup',
+ 'jaws3d.txt': 'there',
+ 'thestuntman.txt': 'about',
+ 'thecuriouscaseofbenjaminbutton.txt': 'there',
+ 'snatch.txt': 'fuckin',
+ 'thenightmarebeforechristmas.txt': 'halloween',
+ 'scream.txt': 'think',
+ 'thebiglebowski.txt': 'fucking',
+ 'highfidelity.txt': 'about',
+ 'thefrenchconnection.txt': 'there',
+ 'thegreenmile.txt': 'about',
+ 'eagleeye.txt': 'jerry',
+ 'bones.txt': 'there',
+ 'jennifersbody.txt': 'needy',
+ 'predator.txt': 'dillon',
+ '.txt': 'anymore',
+ 'jfk.txt': 'oswald',
+ 'detroitrockcity.txt': 'gonna',
+ 'frankenstein.txt': 'victor',
+ 'deception.txt': 'jonathan',
+ 'precious.txt': 'precious',
+ 'interviewwiththevampire.txt': 'louis',
+ 'thereplacements.txt': 's\n[variable truncated]</div></div><div id="var-7-pool" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> pool<span class="MissionVariableLine__type">ProcessPoolExecutor (&lt;class 'concurrent.futures.process.ProcessPoolExecutor'&gt;)</span></div><div class="MissionVariableLine__value">&lt;concurrent.futures.process.ProcessPoolExecutor at 0x7f605cf7ba90&gt;</div></div><div id="var-7-range" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> range<span class="MissionVariableLine__type">type (&lt;class 'type'&gt;)</span></div><div class="MissionVariableLine__value">range</div></div><div id="var-7-results" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> results<span class="MissionVariableLine__type">list (&lt;class 'list'&gt;)</span></div><div class="MissionVariableLine__value">[]</div></div><div id="var-7-Counter" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> Counter<span class="MissionVariableLine__type">type (&lt;class 'type'&gt;)</span></div><div class="MissionVariableLine__value">collections.Counter</div></div><div id="var-7-filenames" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> filenames<span class="MissionVariableLine__type">list (&lt;class 'list'&gt;)</span></div><div class="MissionVariableLine__value">['lines/erinbrockovich.txt',
+ 'lines/intolerablecruelty.txt',
+ 'lines/swordfish.txt',
+ 'lines/casino.txt',
+ 'lines/weownthenight.txt',
+ 'lines/go.txt',
+ 'lines/scarface.txt',
+ 'lines/halloween4thereturnofmichaelmyers.txt',
+ 'lines/roughshod.txt',
+ 'lines/buried.txt',
+ 'lines/hopeandglory.txt',
+ 'lines/avatar.txt',
+ 'lines/robinhoodprinceofthieves.txt',
+ 'lines/game6.txt',
+ 'lines/thedeparted.txt',
+ 'lines/mygirl2.txt',
+ 'lines/lonestar.txt',
+ 'lines/stepmom.txt',
+ 'lines/sugarspice.txt',
+ 'lines/thecrowcityofangels.txt',
+ 'lines/thegraduate.txt',
+ 'lines/kingkong.txt',
+ 'lines/twilight.txt',
+ 'lines/allthepresidentsmen.txt',
+ 'lines/fourfeathers.txt',
+ 'lines/allaboutsteve.txt',
+ 'lines/grossepointeblank.txt',
+ 'lines/manhunt.txt',
+ 'lines/life.txt',
+ 'lines/theverdict.txt',
+ 'lines/thebigwhite.txt',
+ 'lines/ferrisbuellersdayoff.txt',
+ 'lines/catchmeifyoucan.txt',
+ 'lines/escapefromnewyork.txt',
+ 'lines/thekingofcomedy.txt',
+ 'lines/startrek.txt',
+ 'lines/heavenlycreatures.txt',
+ 'lines/capote.txt',
+ 'lines/sleeplessinseattle.txt',
+ 'lines/clashofthetitans.txt',
+ 'lines/themiracleworker.txt',
+ 'lines/pineappleexpress.txt',
+ 'lines/rushhour2.txt',
+ 'lines/leavinglasvegas.txt',
+ 'lines/thebattleofalgiers.txt',
+ 'lines/smoke.txt',
+ 'lines/ragingbull.txt',
+ 'lines/rocky.txt',
+ 'lines/frankenstein.txt',
+ 'lines/arcticblue.txt',
+ 'lines/moon.txt',
+ 'lines/afterschoolspecial.txt',
+ 'lines/disturbia.txt',
+ 'lines/halloweeniiiseasonofthewitch.txt',
+ 'lines/jasongoestohellthefinalfriday.txt',
+ 'lines/maxpayne.txt',
+ 'lines/thesiege.txt',
+ 'lines/theladykillers.txt',
+ 'lines/mumford.txt',
+ 'lines/rocknrolla.txt',
+ 'lines/rachelgettingmarried.txt',
+ 'lines/forrestgump.txt',
+ 'lines/thebodysnatcher.txt',
+ 'lines/transformersthemovie.txt',
+ 'lines/theploughmanslunch.txt',
+ 'lines/startrekfirstcontact.txt',
+ 'lines/edtv.txt',
+ 'lines/hellboundhellraiserii.txt',
+ 'lines/newyorkminute.txt',
+ 'lines/minorityreport.txt',
+ 'lines/thequeen.txt',
+ 'lines/obrotherwhereartthou.txt',
+ 'lines/nixon.txt',
+ 'lines/edwardscissorhands.txt',
+ 'lines/harvey.txt',
+ 'lines/publicenemies.txt',
+ 'lines/malcolmx.txt',
+ 'lines/thedaytheearthstoodstill.txt',
+ 'lines/elizabeththegoldenage.txt',
+ 'lines/suckerthevampire.txt',
+ 'lines/prettywoman.txt',
+ 'lines/somethingsgottagive.txt',
+ 'lines/aharddaysnight.txt',
+ 'lines/boondocksaints2allsaintsday.txt',
+ 'lines/kateleopold.txt',
+ 'lines/thelaststation.txt',
+ 'lines/detroitrockcity.txt',
+ 'lines/wallstreet.txt',
+ 'lines/bridesmaids.txt',
+ 'lines/alienvs.txt',
+ 'lines/someonetowatchoverme.txt',
+ 'lines/tron.txt',
+ 'lines/godfatherpartii.txt',
+ 'lines/petulia.txt',
+ 'lines/silenceofthelambs.txt',
+ 'lines/jurassicpark.txt',
+ 'lines/petsematary.txt',
+ 'lines/outofsight.txt',
+ 'lines/pointbreak.txt',
+ 'lines/sexuallife.txt',
+ 'lines/theprogram.txt',
+ 'lines/8mm.txt',
+ 'lines/neverbeenkissed.txt',
+ 'lines/thematrix.txt',
+ 'lines/pearlharbor.txt',
+ 'lines/highlanderiiithesorcerer.txt',
+ 'lines/minisfirsttime.txt',
+ 'lines/bonnieandclyde.txt',
+ 'lines/swingers.txt',
+ 'lines/waroftheworlds.txt',
+ 'lines/casablanca.txt',
+ 'lines/frances.txt',
+ 'lines/bladerunner.txt',
+ 'lines/bringingoutthedead.txt',
+ 'lines/transatlanticmerrygoround.txt',
+ 'lines/theassignment.txt',
+ 'lines/obsessed.txt',
+ 'lines/nuovocinemaparadiso.txt',
+ 'lines/allabouteve.txt',
+ 'lines/pitchblack.txt',
+ 'lines/kafka.txt',
+ 'lines/thewoodsman.txt',
+ 'lines/deathatafuneral.txt',
+ 'lines/mightymorphinpowerrangersthemovie.txt',
+ 'lines/aliens.txt',
+ 'lines/hackers.txt',
+ 'lines/georgewashington.txt',
+ 'lines/thehaunting.txt',
+ 'lines/mrsbrown.txt',
+ 'lines/takinglives.txt',
+ 'lines/ghostship.txt',
+ 'lines/jurassicparkiii.txt',
+ 'lines/illdoanything.txt',
+ 'lines/barrylyndon.txt',
+ 'lines/thejacket.txt',
+ 'lines/aliennation.txt',
+ 'lines/fightclub.txt',
+ 'lines/batmanreturns.txt',
+ 'lines/realgenius.txt',
+ 'lines/signs.txt',
+ 'lines/chaos.txt',
+ 'lines/ramblingrose.txt',
+ 'lines/g.txt',
+ 'lines/threekings.txt',
+ 'lines/stationwest.txt',
+ 'lines/shocktreatment.txt',
+ 'lines/thechroniclesofnarniathelionwitchandthewardrobe.txt',
+ 'lines/startrekinsurrection.txt',
+ 'lines/afewgoodmen.txt',
+ 'lines/schindlerslist.txt',
+ 'lines/theatomicsubmarine.txt',
+ 'lines/ghost.txt',
+ 'lines/thelastflight.txt',
+ 'lines/wildwildwest.txt',
+ 'lines/starman.txt',
+ 'lines/obrotherwhereartthou3f.txt',
+ 'lines/tincup.txt',
+ 'lines/fromdusktilldawn.txt',
+ 'lines/aclockworkorange.txt',
+ 'lines/stateandmain.txt',
+ 'lines/theisland.txt',
+ 'lines/laboroflove.txt',
+ 'lines/lovebasketball.txt',
+ 'lines/gangsofnewyork.txt',
+ 'lines/mobsters.txt',
+ 'lines/residentevil.txt',
+ 'lines/terminator2judgmentdayomittedscenes.txt',
+ 'lines/basquiat.txt',
+ 'lines/2001aspaceodyssey.txt',
+ 'lines/marty.txt',
+ 'lines/glengarryglengross.txt',
+ 'lines/murderland.txt',
+ 'lines/antitrust.txt',
+ 'lines/thefrenchconnection.txt',
+ 'lines/walkingtall.txt',
+ 'lines/queenofthedamned.txt',
+ 'lines/slither.txt',
+ 'lines/officespace.txt',
+ 'lines/fivefeethighandrising.txt',
+ 'lines/americanhistoryx.txt',
+ 'lines/threekingsspoilsofwar.txt',
+ 'lines/thewhiteribbon.txt',
+ 'lines/easternpromises.txt',
+ 'lines/hancock.txt',
+ 'lines/startrekivthevoyagehome.txt',
+ 'lines/smokeyandthebandit.txt',
+ 'lines/hollowman.txt',
+ 'lines/musicoftheheart.txt',
+ 'lines/braveheart.txt',
+ 'lines/affliction.txt',
+ 'lines/catwoman.txt',
+ 'lines/s.txt',
+ 'lines/fasttimesatridgemonthigh.txt',
+ 'lines/nursebetty.txt',
+ 'lines/gingersnaps.txt',
+ 'lines/grossepointblank.txt',
+ 'lines/mrdeedsgoestotown.txt',
+ 'lines/sugarandspice.txt',
+ 'lines/gattaca.txt',
+ 'lines/metro.txt',
+ 'lines/thehitchhikersguidetothegalaxy.txt',
+ 'lines/theusualsuspects.txt',
+ 'lines/redplanet.txt',
+ 'lines/houseof1000corpses.txt',
+ 'lines/thunderheart.txt',
+ 'lines/dumbanddumber.txt',
+ 'lines/lordofwar.txt',
+ 'lines/thecell.txt',
+ 'lines/withnailandi.txt',
+ 'lines/truebeliever.txt',
+ 'lines/arcade.txt',
+ 'lines/donniebrasco.txt',
+ 'lines/baddayatblackrock.txt',
+ 'lines/thekingsspeech.txt',
+ 'lines/iloveyouphillipmorris.txt',
+ 'lines/cliffhanger.txt',
+ 'lines/lawabidingcitizen.txt',
+ 'lines/thepiano.txt',
+ 'lines/cruelintentions.txt',
+ 'lines/youvegotmail.txt',
+ 'lines/whitesquall.txt',
+ 'lines/uturn.txt',
+ 'lines/witness.txt',
+ 'lines/thenightofthehunter.txt',
+ 'lines/theflintstones.txt',
+ 'lines/halloweenh2020yearslater.txt',
+ 'lines/hellraiserhellseeker.txt',
+ 'lines/philadelphia.txt',
+ 'lines/starwarsreturnofthejedi.txt',
+ 'lines/awakenings.txt',
+ 'lines/neuromancer.txt',
+ 'lines/theincredibles.txt',
+ 'lines/rearwindow.txt',
+ 'lines/brokenembraces.txt',
+ 'lines/slingblade.txt',
+ 'lines/valkyrie.txt',
+ 'lines/startrekiiithesearchforspock.txt',
+ 'lines/thesaint.txt',
+ 'lines/cinemaparadiso.txt',
+ 'lines/truelies.txt',
+ 'lines/thecurse.txt',
+ 'lines/absolutepower.txt',
+ 'lines/confessionsofadangerousmind.txt',
+ 'lines/thesixthsense.txt',
+ 'lines/donniedarko.txt',
+ 'lines/hiderinthehouse.txt',
+ 'lines/lostsouls.txt',
+ 'lines/itscomplicated.txt',
+ 'lines/losthorizon.txt',
+ 'lines/nextfriday.txt',
+ 'lines/americanpsycho.txt',
+ 'lines/theworldisnotenough.txt',
+ 'lines/happybirthdaywandajune.txt',
+ 'lines/perfectcreature.txt',
+ 'lines/thedeerhunter.txt',
+ 'lines/totalrecall.txt',
+ 'lines/badlieutenant.txt',
+ 'lines/spareme.txt',
+ 'lines/alien.txt',
+ 'lines/mariachiel.txt',
+ 'lines/cradle2thegrave.txt',
+ 'lines/bean.txt',
+ 'lines/lordofillusions.txt',
+ 'lines/revolutionaryroad.txt',
+ 'lines/margotatthewedding.txt',
+ 'lines/nottinghill.txt',
+ 'lines/sideways.txt',
+ 'lines/thegame.txt',
+ 'lines/logansrun.txt',
+ 'lines/legend.txt',
+ 'lines/confidence.txt',
+ 'lines/fantasticvoyage.txt',
+ 'lines/iwalkedwithazombie.txt',
+ 'lines/gonein60seconds.txt',
+ 'lines/goodfellas.txt',
+ 'lines/johnq.txt',
+ 'lines/autumninnewyork.txt',
+ 'lines/themask.txt',
+ 'lines/mysterymen.txt',
+ 'lines/highlander.txt',
+ 'lines/sweetsmellofsuccess.txt',
+ 'lines/thecincinnatikid.txt',
+ 'lines/getshorty.txt',
+ 'lines/heathers.txt',
+ 'lines/iamsam.txt',
+ 'lines/darkcity.txt',
+ 'lines/theseventhvictim.txt',
+ 'lines/glengarryglenross.txt',
+ 'lines/theproducer.txt',
+ 'lines/bluevelvet.txt',
+ 'lines/whenastrangercalls.txt',
+ 'lines/snatch.txt',
+ 'lines/bodyofevidence.txt',
+ 'lines/labyrinth.txt',
+ 'lines/deeprising.txt',
+ 'lines/l.txt',
+ 'lines/thelostboys.txt',
+ 'lines/mirrors.txt',
+ 'lines/legrandbleu.txt',
+ 'lines/extract.txt',
+ 'lines/peepingtom.txt',
+ 'lines/hostage.txt',
+ 'lines/meetjohndoe.txt',
+ 'lines/nickoftime.txt',
+ 'lines/theabyss.txt',
+ 'lines/thereader.txt',
+ 'lines/superbad.txt',
+ 'lines/nashville.txt',
+ 'lines/collateraldamage.txt',
+ 'lines/returnoftheapes.txt',
+ 'lines/ninotchka.txt',
+ 'lines/fracture.txt',
+ 'lines/thebookofeli.txt',
+ 'lines/memento.txt',
+ 'lines/lockstockandtwosmokingbarrels.txt',
+ 'lines/whataboutbob3f.txt',
+ 'lines/theimaginariumofdoctorparnassus.txt',
+ 'lines/tallinthesaddle.txt',
+ 'lines/birthdaygirl.txt',
+ 'lines/fridaythe13th.txt',
+ 'lines/aseriousman.txt',
+ 'lines/dragmetohell.txt',
+ 'lines/lordoftheringsthetwotowers.txt',
+ 'lines/killingzoe.txt',
+ 'lines/deathtosmoochy.txt',
+ 'lines/piratesofthecaribbeandeadmanschest.txt',
+ 'lines/fantasticfour.txt',
+ 'lines/xxx.txt',
+ 'lines/walle.txt',
+ 'lines/frozen.txt',
+ 'lines/americanoutlaws.txt',
+ 'lines/therelic.txt',
+ 'lines/newsies.txt',
+ 'lines/solaris.txt',
+ 'lines/aceventurapetdetective.txt',
+ 'lines/fantasticmrfox.txt',
+ 'lines/abovethelaw.txt',
+ 'lines/elmariachi.txt',
+ 'lines/ghostbustersii.txt',
+ 'lines/custody.txt',
+ 'lines/klute.txt',
+ 'lines/burnafterreading.txt',
+ 'lines/themanchuriancandidate.txt',
+ 'lines/thestuntman.txt',
+ 'lines/thecuriouscaseofbenjaminbutton.txt',
+ 'lines/themummy.txt',
+ 'lines/runawaybride.txt',
+ 'lines/thegetaway.txt',
+ 'lines/theroadwarrior.txt',
+ 'lines/bookofshadowsblairwitch2.txt',
+ 'lines/ghostrider.txt',
+ 'lines/montypythonandtheholygrail.txt',
+ 'lines/mulhollanddrive.txt',
+ 'lines/takingsides.txt',
+ 'lines/themagictoyshop.txt',
+ 'lines/twinpeaks.txt',
+ 'lines/thelastboyscout.txt',
+ 'lines/humannature.txt',
+ 'lines/stirofechoes.txt',
+ 'lines/airplaneiithesequel.txt',
+ 'li\n[variable truncated]</div></div><div id="var-7-i" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> i<span class="MissionVariableLine__type">int (&lt;class 'int'&gt;)</span></div><div class="MissionVariableLine__value">1057</div></div></div></div></div><div class="EditorActionsAndFeedback__root"><div class="EditorActionsAndFeedback__actions"><div class="MissionCodeActions__root OnboardingReveal__shown"><button title="Run your code [shift+enter]" id="onboarding-tip-run" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark"><span class="DqButton__text">Run Code</span></button><button title="Check your code [alt+enter]" id="onboarding-tip-run" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__green DqButton__on_dark" style="margin-left: 24px;"><span class="DqButton__text">Submit Answer</span></button><div class="MissionCodeActions__rest_buttons OnboardingReveal__shown"><button title="Restore to initial code [alt+r]" class="MissionCodeActions__reset DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__no_text DqButton__white DqButton__on_dark DqButton__hollow DqButton__borderless"><span class="dqicon dqicon-recycle DqButton__icon"></span></button><div class="MissionCodeActions__spacer"></div><button title="Open Console [alt+t]" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark DqButton__hollow"><span class="DqButton__text">Open Console</span></button></div></div></div></div></div></div></div></div></div><div class="MissionFooter__root OnboardingReveal__shown"><div class="MissionFooter__title_side"><span class="dqicon dqicon-bars MissionFooter__more"></span><div class="MissionFooter__title">8. Removing Punctuation</div></div><div class="MissionFooter__center"><button title="[alt+b] Back a Screen" class="MissionFooter__nav_button DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark DqButton__hollow"><span class="DqButton__text">back</span></button><div>8 / 11</div><button title="[alt+n] Next Screen" class="MissionFooter__nav_button DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark DqButton__hollow"><span class="DqButton__text">Next</span></button></div><div class="MissionFooter__right_side"></div></div></div></div></div></div></div></div><script crossorigin="" type="text/javascript" src="./8. Removing Punctuation_files/polyfill.min.js"></script><script crossorigin="" type="text/javascript" src="./8. Removing Punctuation_files/lodash.min.js"></script><script crossorigin="" type="text/javascript" src="./8. Removing Punctuation_files/react.production.min.js"></script><script crossorigin="" type="text/javascript" src="./8. Removing Punctuation_files/react-dom.production.min.js"></script><script type="text/javascript">!function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="3.1.0";
+  var key = window.location.host === 'app.dataquest.io' ? 'BJhKYEXejzjqXq7xQDFI6N0M5W7HBAH5' : 'yPkme4oLIogTJ7xrH3SCEDVtcSz2J5Br';
+  analytics.load(key);
+  }}();</script><script src="./8. Removing Punctuation_files/pa-5cd96b34fed2bd0016000186.js" async=""></script><script type="text/javascript" src="./8. Removing Punctuation_files/app.1dcb74672053eeb54bd7.js"></script><script type="text/javascript" id="">(function(a,e,f,g,b,c,d){a.ProfitWellObject=b;a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)};a[b].l=1*new Date;c=e.createElement(f);d=e.getElementsByTagName(f)[0];c.async=1;c.src=g;d.parentNode.insertBefore(c,d)})(window,document,"script","https://dna8twue3dlxq.cloudfront.net/js/profitwell.js","profitwell");profitwell("auth_token","bd8a22377119e7044e07346a8c89a91f");profitwell("user_email","USER@EMAIL.COM");</script><script type="text/javascript" id="" charset="utf-8" src="./8. Removing Punctuation_files/b960428aed859499a86a27f8ce0a0a6bd2ea6c87.js"></script><iframe id="intercom-frame" style="position: absolute !important; opacity: 0 !important; width: 1px !important; height: 1px !important; top: 0 !important; left: 0 !important; border: none !important; display: block !important; z-index: -1 !important;" aria-hidden="true" tabindex="-1" src="./8. Removing Punctuation_files/saved_resource(2).html"></iframe><div id="intercom-css-container"><style data-emotion="intercom-global"></style></div><div id="intercom-container" class="intercom-namespace"><style>html.intercom-mobile-messenger-active,html.intercom-mobile-messenger-active > body,html.intercom-modal-open,#intercom-container-body{overflow:hidden !important;}html.intercom-mobile-messenger-active,html.intercom-mobile-messenger-active > body{position:static !important;}html.intercom-mobile-messenger-active > body{height:0 !important;margin:0 !important;}iframe#intercom-frame{position:absolute !important;opacity:0 !important;width:1px !important;height:1px !important;top:0 !important;left:0 !important;border:none !important;display:block !important;z-index:-1 !important;}</style><div class="intercom-app" aria-live="polite"><div id="intercom-modal-container"></div></div></div></body></html>
