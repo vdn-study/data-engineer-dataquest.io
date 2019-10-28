@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<!-- saved from url=(0086)https://app.dataquest.io/m/173/effectively-using-arrays-and-lists/8/resizing-the-array -->
+<html lang="en" class=" wf-merriweather-n7-active wf-merriweather-n3-active wf-industry-n3-active wf-industry-n2-active wf-ingra-n2-active wf-ingra-n4-active wf-active"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style>.async-hide { opacity: 0 !important}</style><script type="text/javascript" async="" src="./8. Resizing The Array_files/main.2.1.182fcb38.js"></script><script type="text/javascript" async="" src="./8. Resizing The Array_files/loader.2.1.js"></script><script async="" src="./8. Resizing The Array_files/profitwell.js"></script><script type="text/javascript" async="" src="./8. Resizing The Array_files/js"></script><script type="text/javascript" async="" src="./8. Resizing The Array_files/analytics.js"></script><script src="./8. Resizing The Array_files/1208964489120563" async=""></script><script src="./8. Resizing The Array_files/identity.js" async=""></script><script type="text/javascript" async="" src="./8. Resizing The Array_files/fbevents.js"></script><script type="text/javascript" async="" src="./8. Resizing The Array_files/gtm.js"></script><script type="text/javascript" async="" src="./8. Resizing The Array_files/insight.min.js"></script><script type="text/javascript" async="" src="./8. Resizing The Array_files/qevents.js"></script><script type="text/javascript" async="" src="./8. Resizing The Array_files/mf5oz4we"></script><script type="text/javascript" async="" src="./8. Resizing The Array_files/fbds.js"></script><script type="text/javascript" async="" src="./8. Resizing The Array_files/analytics.min.js"></script><script type="text/javascript" async="" src="./8. Resizing The Array_files/recaptcha__vi.js"></script><script src="./8. Resizing The Array_files/nmj4kuc.js" async=""></script><script>var optimize_container_ids = {}
+  var stage_or_prod_id = window.location.host === 'app.dataquest.io' ? 'GTM-PNQ6824' : 'GTM-KFF7W4B';
+  optimize_container_ids[stage_or_prod_id] = true;
+  (function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
+  h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
+  (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
+  })(window,document.documentElement,'async-hide','dataLayer',4000,
+  optimize_container_ids);</script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="fragment" content="!"><title idle-disabled="true">Processing Data With Arrays And Lists In Python | Dataquest</title><meta name="description" content="Learn Python and R for data science. Learn by coding and working with data in your browser. Build your portfolio with projects and become a data scientist."><script>(function(d) {
+      var config = {
+        kitId: 'nmj4kuc',
+        scriptTimeout: 3000,
+        async: true
+      },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+    })(document);</script><script src="./8. Resizing The Array_files/api.js" async="" defer="defer"></script><link rel="stylesheet" href="./8. Resizing The Array_files/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous"><link href="./8. Resizing The Array_files/css" rel="stylesheet"><link rel="stylesheet" href="./8. Resizing The Array_files/icon"><style>.loader {
+      z-index: 1000;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: #f9f9fb;
+    }
+    .loader .top {
+      transition: all ease 0.25;
+      padding: 0 0 0 40px;
+      background-image: linear-gradient(90deg,#30394b,#4c5361);
+      height: 90px;
+      overflow: hidden;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+          -ms-flex-align: center;
+              align-items: center;
+    }
+    .loader .message {
+      font-family: "ingra", sans-serif;
+      font-size: 14px;
+      color: white;
+      margin-left: 20px;
+    }
+
+    .rocket {
+      width: 25px;
+      height: 25px;
+      background-size: contain;
+      background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAFiQAABYkBbWid+gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAATdEVYdFRpdGxlAExvZ28tT24tTGlnaHQVgXW8AAAEuUlEQVRYhb2YXYhVVRTHf+fOOIofjVYPLmdMmgqFRAO1PBGiDyGVRkZlOEQiQaZTaYp9oX1ASEUQOKYFKWMQRIEWWjmkMFlupXTCypeUCh2XmorTZKkzc08Pe92Z03Fk7jne23pZe6+z/mv92XufvdfewciRUymVqLpBACLh+VLFzJUqkKqbDPwMHFB1t5QqbkkIqroG4FugDrgJ2KPqFpUidnAlU6zqKoAPgYfM9DkQAHdZ/yOgXiTszprjSkfwNXrJrQZmA7OAN80213wyS+YRVHX3AlvwI7ZAJNyY+L4QWAdEwH0i4WdZ8mQaQVV3PdBk5DYkyQGIhOuBD8ynyTCppTILCFgBDAd+AZ5SdUOBV4G7gQqgGXgRWASEwI2GeSJtotRTbGSOAcOAe4AvgJ3A9ITrPuA2YCawDegARomEf6XJl2WK641cG7AdmGHkImA5sBC4AEwC5phPm2Hq0ybLQvAx0022fUy0/tci4Vsi4bv47QZgsvk0JbDlIajqcsAE635seqDpszHXP00PSvhOsBjlIQjUAlXWPmT6D9PjY8lvNn0i4VtlMcpG8AbTp2OLvQXotG/7VZ0DJgN54EsA8z2diFEWgoW97LeCQSQ8hN9C8vj1OBX/w7wiErbGsL8nYhQlaffByPTQuFEkfFvVteC3lArgK5FwbwI7OBGjLAQLa6pO1VWKhF0xkq1Aa18gVVdJ79Se6MvncpJ2igt/5wDSraU6w8RjFCVpCT4Sa49NgRt3mRj9StEEVd1oYH7MlOaMnBJrz7dYRUmaEVyG38cuWH+hqruqP5D5LLbuRYuxrBwEbzW9EX/wjwCWFIFbYr7t+PIrHqukBAsnwI/AWmsvVXXXXg5g35Zadx1wMBGrNATtCBPrHgFeAvbia8LNqm5gH5iBwGbz+R542bAAYveZ0hDEV8WFtdchEl4EHgROAXcAG/rAbLBvZ4AHRMIL9G4xRd+biyJoJdMe695vtiPAPPwRN0/Vva/qBqm6KlW3MfatXiQsHHNzTO8p9qaXZg1+Y7o+NqUtwA5rLwCO4ovT+Wbbhi//C68OD5t9V7FJ0xx1W4FVwNXAXFU3GHgeuC7mc00CMxs4qOpex49mNf4s3lps0lR3ElW3Dl/SR/h1CXAO2I0flZ/MNh6//m6nt7AoYNaLhEVfntIWC8/iL+a1QBewBl9WtSf8NgOoumHASvxeOABQ4Lk0CbPc6mYAbwCPioQH499qtPHpgKj7qDzZmMCMBTYBK0XC5rIStISBSPifuq5W19wZETQDRATTjsniXf1hipFMLwsiYTRa19Qdj12A8uRqeoPme9o12jhY9J2JWchlJjhK1y7JExyexL5PY6R69rU8uXzM3eXI/1CjjalfFTITzJGfac1ZBdtFqrbjq+UTAdFOgBptrMauqRHBtP+NYEQQJG0n5fGT7VSPaad6TJs0nALopqLHL0f+EkzZCPYl43R15XDOrqqmfcVxdZnI9CVZX7cK661nrZ1j6PSI4AWAKXy34wjsHsK57vP2uBARdF0apn/JOsWbgH+A9wq2gHwrvt7b/zdDDgAcluUd+LO4E/gkS67ML6w12jigTRo6+/M7ri4IcSN+lWfOZMnzLzfFicWWhq1kAAAAAElFTkSuQmCC");
+    }
+    .loader .rocket {
+      -webkit-animation: loading_anim linear 4s;
+              animation: loading_anim linear 4s;
+      -webkit-animation-iteration-count: infinite;
+              animation-iteration-count: infinite;
+    }
+
+    .dq_text {
+      width: 140px;
+      height: 15px;
+      margin: 10px 0 10px 10px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gQ3JlYXRlZCB3aXRoIElua3NjYXBlIChodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy8pIC0tPgoKPHN2ZwogICB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iCiAgIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiCiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIKICAgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIgogICB2ZXJzaW9uPSIxLjEiCiAgIHdpZHRoPSI0NjUuMzU5OTkiCiAgIGhlaWdodD0iNDguMzQ0NzgiCiAgIGlkPSJzdmcyIj4KICA8dGl0bGUKICAgICBpZD0idGl0bGU4Ij5Mb2dvLU9uLURhcms8L3RpdGxlPgogIDxtZXRhZGF0YQogICAgIGlkPSJtZXRhZGF0YTMxIj4KICAgIDxyZGY6UkRGPgogICAgICA8Y2M6V29yawogICAgICAgICByZGY6YWJvdXQ9IiI+CiAgICAgICAgPGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+CiAgICAgICAgPGRjOnR5cGUKICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPgogICAgICAgIDxkYzp0aXRsZT5Mb2dvLU9uLURhcms8L2RjOnRpdGxlPgogICAgICA8L2NjOldvcms+CiAgICA8L3JkZjpSREY+CiAgPC9tZXRhZGF0YT4KICA8ZGVmcwogICAgIGlkPSJkZWZzNCI+CiAgICA8c3R5bGUKICAgICAgIGlkPSJzdHlsZTYiIC8+CiAgPC9kZWZzPgogIDxwYXRoCiAgICAgZD0ibSAxNywwLjY2IGMgMTQuNjYsMCAyMywxMSAyMywyMy40IDAsMTIuNCAtOC4yLDIzLjYgLTIzLDIzLjYgbCAtMTcsMCAwLC00NyAxNywwIHogbSAtMC4xMywzOS44OCBjIDkuNzUsMCAxNS4zMywtNy41MyAxNS4zMywtMTYuNDEgMCwtOC44OCAtNS42MSwtMTYuNDEgLTE1LjI2LC0xNi40MSBsIC05LjE1LDAgMCwzMi44MSA5LjA4LDAgMCwwLjAxIHoiCiAgICAgaWQ9InN2Z18xIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDY0LjU5LDM4LjExIC00LjU3LDkuNzUgLTguMiwwIDAsLTEgMjEuNzcsLTQ2LjQgMy42MywwIDIxLjY1LDQ2LjQgMCwxIC04LjE0LDAgLTQuNjQsLTkuNzUgLTIxLjUsMCB6IG0gMi41NiwtNi41OSAxNi40OCwwIC04LjIsLTE4LjgzIC04LjI4LDE4LjgzIHoiCiAgICAgaWQ9InN2Z18yIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDEwNi44NSw3LjU1IDAsLTYuOTMgMzUsMCAwLDYuOTMgLTEzLjY5LDAgMCw0MC4xNSAtNy42NywwIDAsLTQwLjE1IC0xMy42NCwwIHoiCiAgICAgaWQ9InN2Z18zIgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDE2Mi41MywzOC4xMSAtNC41Nyw5Ljc1IC04LjIsMCAwLC0xIDIxLjc5LC00Ni40IDMuNjMsMCAyMS42NSw0Ni40IDAsMSAtOC4xNCwwIC00LjY0LC05Ljc1IC0yMS41MiwwIHogbSAyLjU2LC02LjU5IDE2LjUsMCAtOC4yLC0xOC44MyAtOC4zLDE4LjgzIHoiCiAgICAgaWQ9InN2Z180IgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDI1Ni41OSw0OC4xNyAtNy4xMywwIC0yLjc0LC00LjIgYSAyNC4wOCwyNC4wOCAwIDAgMSAtMTQuMzIsNC4zNyBjIC0xMi45MSwwIC0yMy42NywtOS40OCAtMjMuNjcsLTI0LjIxIDAsLTE0LjQ2IDkuODIsLTI0LjA3IDI0LC0yNC4wNyAxMi43MSwwIDIzLjk0LDguNzQgMjMuOTQsMjQuMDcgMCw2LjE5IC0xLjY4LDExLjMgLTQuODQsMTUuMjYgbCA0Ljc2LDcuNTggMCwxLjIgeiBtIC0yMy44NywtNy4xMyBjIDguODEsMCAxNi4wNywtNS41OCAxNi4wNywtMTYuOTUgMCwtMTEgLTcuMjYsLTE2Ljc0IC0xNi4xNCwtMTYuNzQgLTguODgsMCAtMTYsNiAtMTYsMTYuNzQgMC4wMSwxMC45NiA3LjI3LDE2Ljk1IDE2LjA4LDE2Ljk1IGwgLTAuMDEsMCB6IgogICAgIGlkPSJzdmdfNSIKICAgICBzdHlsZT0iZmlsbDojZmZmZmZmIiAvPgogIDxwYXRoCiAgICAgZD0ibSAyNzUuMjMsMzEuNTkgMCwtMzEuMjcgNy44LDAgMCwzMS4wNyBjIDAsNi4xOSA0LjY0LDkuNjIgMTAuNjIsOS42MiA1Ljk4LDAgMTAuNDksLTMuNDMgMTAuNDksLTkuNjIgbCAwLC0zMS4wNyA3LjczLDAgMCwzMS4yNyBjIDAsMTAuNDkgLTguMiwxNi40MSAtMTguMjIsMTYuNDEgLTEwLjAyLDAgLTE4LjQyLC01LjkyIC0xOC40MiwtMTYuNDEgeiIKICAgICBpZD0ic3ZnXzYiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KICA8cGF0aAogICAgIGQ9Im0gMzYxLjg0LDcuNDggLTIwLjc4LDAgMCwxMi40OSAxOS42NCwwIDAsNi45MyAtMTkuNjQsMCAwLDEzLjY3IDIxLjE4LDAgMCw3LjEzIC0yOS4wNSwwIDAsLTQ3LjA4IDI4LjY1LDAgMCw2Ljg2IHoiCiAgICAgaWQ9InN2Z183IgogICAgIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgPHBhdGgKICAgICBkPSJtIDM4Ni41MiwzNC4wNCBjIDAuMzQsNS4zMSA2LjEyLDcuMjYgMTEuMjMsNy4yNiA1LjExLDAgMTAuODksLTEuMjEgMTAuODksLTcuMDYgMCwtNi4xOSAtNi4zOSwtNi43OSAtMTEuODQsLTcuMzMgLTguNjEsLTAuNzQgLTE3LjE1LC0zLjUgLTE3LjE1LC0xMi45MSAwLC05LjY4IDguNTQsLTE0IDE3LjY5LC0xNCA4Ljk0LDAgMTcuNDIsNCAxNy42MiwxMy42NSBsIC03LjM3LDAgYyAtMC4zNCwtNSAtNS42NSwtNi42NiAtMTAuMjksLTYuNjYgLTQuMywwIC05Ljg5LDEuNDggLTkuODksNi43OSAwLDUuMzEgNS4zMSw2IDEwLjc2LDYuNzIgOS41NSwxLjA4IDE4LjI5LDMgMTguMjksMTMuNzkgMCwxMC4zNiAtOS43NSwxNCAtMTguNTYsMTQgLTkuMjEsMC4yIC0xOC44MywtNC4zNyAtMTksLTE0LjI2IGwgNy42NywwIC0wLjA1LDAuMDEgeiIKICAgICBpZD0ic3ZnXzgiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KICA8cGF0aAogICAgIGQ9Im0gNDMwLjM2LDcuNTUgMCwtNi45MyAzNSwwIDAsNi45MyAtMTMuNjgsMCAwLDQwLjE1IC03LjY3LDAgMCwtNDAuMTUgLTEzLjY1LDAgeiIKICAgICBpZD0ic3ZnXzkiCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgLz4KPC9zdmc+Cg==");
+    }
+
+    @-webkit-keyframes loading_anim {
+      0% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+      }
+      50% {
+        -webkit-transition: translateY(-50%);
+        transition: translateY(-50%);
+      }
+      75%, 100% {
+        -webkit-transform: translateY(-500%);
+                transform: translateY(-500%);
+      }
+    }
+
+    @keyframes loading_anim {
+      0% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+      }
+      50% {
+        -webkit-transition: translateY(-50%);
+        transition: translateY(-50%);
+      }
+      75%, 100% {
+        -webkit-transform: translateY(-500%);
+                transform: translateY(-500%);
+      }
+    }
+    .ant-form-explain {
+      color: red;
+    }</style><link rel="apple-touch-icon" sizes="57x57" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-icon-180x180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Dataquest"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#fff"><meta name="application-name" content="Dataquest"><link rel="icon" type="image/png" sizes="32x32" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon-16x16.png"><link rel="shortcut icon" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/favicon.ico"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-320x460.png"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-640x920.png"><link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-640x1096.png"><link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-750x1294.png"><link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 3)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1182x2208.png"><link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 3)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1242x2148.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-748x1024.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 1)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-768x1004.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1496x2048.png"><link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)" href="https://app.dataquest.io/icons-0de704297f9f471310abdd90188e8daf/apple-touch-startup-image-1536x2008.png"><link href="./8. Resizing The Array_files/app.eb9c5672a70e0f34428c.css" rel="stylesheet"><style type="text/css">.tk-merriweather{font-family:"merriweather",serif;}.tk-industry{font-family:"industry",sans-serif;}.tk-ingra{font-family:"ingra",sans-serif;}</style><style type="text/css">@font-face{font-family:tk-merriweather-n7;src:url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;}@font-face{font-family:tk-merriweather-n3;src:url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:tk-industry-n3;src:url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:tk-industry-n2;src:url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:tk-ingra-n2;src:url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:tk-ingra-n4;src:url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff2"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("opentype");font-weight:400;font-style:normal;}</style><style type="text/css">@font-face{font-family:merriweather;src:url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff2"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff"),url(https://use.typekit.net/af/dacbbb/000000000000000000014a3f/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("opentype");font-weight:700;font-style:normal;}@font-face{font-family:merriweather;src:url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/c19086/000000000000000000014a3b/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:industry;src:url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),url(https://use.typekit.net/af/a52963/00000000000000003b9adf50/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");font-weight:300;font-style:normal;}@font-face{font-family:industry;src:url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/9f132f/00000000000000003b9adf4e/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:ingra;src:url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff2"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("woff"),url(https://use.typekit.net/af/92b39d/00000000000000003b9acd66/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n2&v=3) format("opentype");font-weight:200;font-style:normal;}@font-face{font-family:ingra;src:url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff2"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff"),url(https://use.typekit.net/af/583f09/00000000000000003b9acd68/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("opentype");font-weight:400;font-style:normal;}</style><script src="./8. Resizing The Array_files/logger.min.js" async=""></script><script async="" src="./8. Resizing The Array_files/modules-v55.js"></script><link rel="stylesheet" type="text/css" href="./8. Resizing The Array_files/NotificationsInMenu.09808b64bac3460ae0f5.css"><script charset="utf-8" src="./8. Resizing The Array_files/NotificationsInMenu.dfa67edc80a27ad52fd8.js"></script><script charset="utf-8" src="./8. Resizing The Array_files/vendors_TheMission.0473137e870a7ce7e36f.js"></script><link rel="stylesheet" type="text/css" href="./8. Resizing The Array_files/TheMission.40883b66c977c6c03337.css"><script charset="utf-8" src="./8. Resizing The Array_files/TheMission.7c9223c5f27a15c4257a.js"></script><script charset="utf-8" src="./8. Resizing The Array_files/vendors_MissionReference.51bc46f42d17cd685d03.js"></script><link rel="stylesheet" type="text/css" href="./8. Resizing The Array_files/MissionReference.bf41c3640eb1463e2c57.css"><script charset="utf-8" src="./8. Resizing The Array_files/MissionReference.5fec493ea89554ed5119.js"></script><link rel="stylesheet" type="text/css" href="./8. Resizing The Array_files/vendors_DqEditor.9f679c74a1a04ab5ed6f.css"><script charset="utf-8" src="./8. Resizing The Array_files/vendors_DqEditor.bb447024d4e2460dcbb7.js"></script><link rel="stylesheet" type="text/css" href="./8. Resizing The Array_files/DqEditor.3197904b9ae6d3e264d6.css"><script async="" src="./8. Resizing The Array_files/MathJax.js"></script><script charset="utf-8" src="./8. Resizing The Array_files/DqEditor.ef8e247bfd1c12e85a07.js"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><script async="" src="./8. Resizing The Array_files/saved_resource"></script><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style data-emotion=""></style><style id="beacon-stylesheet" type="text/css">#beacon-container{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5}#beacon-container,#beacon-container *{-webkit-box-sizing:border-box;box-sizing:border-box}#beacon-container *{-webkit-overflow-scrolling:touch;-webkit-tap-highlight-color:rgba(0,0,0,0)}#BeaconContainer-root.is-mobile{--BlueConfigGlobalFontSize:14px}@media (min-width:330px){#BeaconContainer-root.is-mobile{--BlueConfigGlobalFontSize:15px}}@media (min-width:410px){#BeaconContainer-root.is-mobile{--BlueConfigGlobalFontSize:16px}}#BeaconContainer-root.is-mobile input,#BeaconContainer-root.is-mobile select,#BeaconContainer-root.is-mobile textarea{font-size:16px!important}#beacon-container a{color:_color(link,base);text-decoration:none}#beacon-container a:hover{color:_color(link,hover)}#beacon-container a.disabled{color:_color(text,muted);cursor:not-allowed}#beacon-container a.disabled:hover{color:_color(text,muted);text-decoration:none}#beacon-container-body{margin:0;overflow:hidden}</style><script charset="utf-8" src="./8. Resizing The Array_files/vendors_pdf_maker.80604c779b1a021415e7.js"></script><script charset="utf-8" src="./8. Resizing The Array_files/vendors_PercentageRing_ProfileView.06bbca7c0f5a300012d7.js"></script><script charset="utf-8" src="./8. Resizing The Array_files/PercentageRing.db1bd5eed129fd93853d.js"></script><link rel="canonical" href="https://www.dataquest.io/m/173/effectively-using-arrays-and-lists" data-react-helmet="true"><meta name="twitter:site" content="@dataquestio" data-react-helmet="true"><meta name="twitter:title" content="Processing Data With Arrays And Lists In Python | Dataquest" data-react-helmet="true"><meta name="og:title" content="Processing Data With Arrays And Lists In Python | Dataquest" data-react-helmet="true"><meta name="og:site_name" content="Dataquest" data-react-helmet="true"><meta name="fb:app_id" content="1068949113131184" data-react-helmet="true"><meta name="twitter:card" content="summary" data-react-helmet="true"><meta name="description" content="This interactive data engineering tutorial teaches you to use arrays and lists to speed up your computations while working with stock data in Python." data-react-helmet="true"><meta name="twitter:description" content="This interactive data engineering tutorial teaches you to use arrays and lists to speed up your computations while working with stock data in Python." data-react-helmet="true"><meta name="og:description" content="This interactive data engineering tutorial teaches you to use arrays and lists to speed up your computations while working with stock data in Python." data-react-helmet="true"><meta name="og:url" content="https://www.dataquest.io/m/173/effectively-using-arrays-and-lists" data-react-helmet="true"><script type="application/ld+json" data-react-helmet="true">{"@context":"http://schema.org","@type":"Organization","url":"https://www.dataquest.io","logo":"https://s3.amazonaws.com/dq-email/brand/dataquest_logo.svg"}</script></head><body><div id="MathJax_Message" style="display: none;"></div><div id="root" style="height: 100%"><div class="dq-min-h-screen"><div class="CoreLayout__root"><header data-test-selector="navigation" class="dq-shadow DqHeader__root_mission"><div class="DqHeader__inner_content"><div class="DqHeader__left_side OnboardingReveal__shown"><a class="DqHeader__back" href="https://app.dataquest.io/dashboard"><span class="dqicon dqicon-left DqHeader__icon"></span><div class="DqHeader__back_text">Dashboard</div></a></div><div class="DqHeader__middle"><div class="DqHeader__mission_title">Effectively Using Arrays And Lists</div></div><div class="DqHeader__right_side OnboardingReveal__shown"><div class="MenuDropdown__menu_dashboard_redesign"><img src="./8. Resizing The Array_files/vm-okba9fec3bf2205e0374a027b855856dce.svg" style="margin: 0px 12px;"></div><div title="Get Help" class="MenuDropdown__menu_dashboard_redesign"><div class="HelpScoutLauncher__body"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183);">help_outline</i></div></div><div class="MenuDropdown__menu_dashboard_redesign"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183); margin: 0px 8px;">notifications_none</i></div><div class="MenuDropdown__menu_dashboard_redesign"><div data-test-selector="user-menu" class="DqHeader__user_box"><i class="material-icons" style="width: 24px; color: rgb(146, 162, 183); margin: 0px 0px 0px 8px;">account_circle</i><i class="material-icons" style="color: rgb(146, 162, 183); font-size: 16px;">keyboard_arrow_down</i></div></div></div></div></header><div class="CoreLayout__view"><div class="MissionView__root" data-test-selector="MissionView"><div class="TheMission__root"><div class="SplitPane TheMission__split_pane vertical " style="display: flex; flex: 1 1 0%; height: 100%; position: absolute; outline: none; overflow: hidden; user-select: text; flex-direction: row; left: 0px; right: 0px;"><div class="Pane vertical Pane1  " style="flex: 0 0 auto; position: relative; outline: none; width: 50%;"><div class="TheMission__is_interactive"><div class="MissionInformation__light OnboardingReveal__shown"><div class="MissionTabs__root"><div class="OnboardingReveal__shown"><div class="MissionTabs__button_selected">Learn</div></div><div class="OnboardingReveal__shown"><div class="MissionTabs__button">Mission Reference</div></div></div><div class="MissionInformation__body"><div class="MissionLearn__light ScrollAccordion__root"><div class="ScrollAccordion__top_headers" style="width: 912px;"><div id="onboarding-tip-learn" theme="light" class="ScrollAccordion__in_header SidePanelTitle__light">Learn</div><div id="onboarding-tip-instructions" theme="light" class="ScrollAccordion__in_header SidePanelTitle__light">instructions</div><div theme="light" class="ScrollAccordion__in_header SidePanelTitle__light">The Answer</div></div><div class="ScrollAccordion__body"><div class="ScrollAccordion__section"><div theme="light" class="ScrollAccordion__in_text SidePanelTitle__light" style="opacity: 0;">Learn</div><iframe style="height: 100%; width: 100%; border: none; background: transparent; position: absolute; z-index: -1; top: 0px; left: 0px;" src="./8. Resizing The Array_files/saved_resource.html"></iframe><div id="body" class="MissionLearn__section MissionMarkup__light"><div><p>In the last screen, we implemented an array that allowed for elements to be viewed and changed.  However, what happens if we want to add an element to the array?  This is where the <a target="_blank" href="https://docs.python.org/3/tutorial/datastructures.html">insert()</a> method of a list comes in handy.  The <code>insert</code> method allows someone to add an element at any position, like this:</p>
+</div><div class="dq_theme MissionMarkup__light-code DqEditor__root"><textarea autocomplete="off" style="display: none;">list = [1,2,3]
+list.insert(1,5) # list is now [1,5,2,3]</textarea><div class="CodeMirror cm-s-dq-light CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 7.5px; left: 4px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: -15px; border-right-width: 15px; min-height: 55px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 4px; top: 0px; height: 18px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation"><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-builtin">list</span> <span class="cm-operator">=</span> [<span class="cm-number">1</span>,<span class="cm-number">2</span>,<span class="cm-number">3</span>]</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-builtin">list</span>.<span class="cm-property">insert</span>(<span class="cm-number">1</span>,<span class="cm-number">5</span>) <span class="cm-comment"># list is now [1,5,2,3]</span></span></pre></div></div></div></div></div><div style="position: absolute; height: 15px; width: 1px; border-bottom: 0px solid transparent; top: 55px;"></div><div class="CodeMirror-gutters" style="display: none; height: 70px;"></div></div></div></div><div>
+<p>After implementing a way to insert into our array, we can implement the <a target="_blank" href="https://docs.python.org/3/reference/datamodel.html#object.__len__"><strong>len</strong></a> method, then implement appending like this:</p>
+</div><div class="dq_theme MissionMarkup__light-code DqEditor__root"><textarea autocomplete="off" style="display: none;">def append(self, value):
+    self.insert(len(self), value)</textarea><div class="CodeMirror cm-s-dq-light CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 7.5px; left: 4px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 0px; margin-bottom: -15px; border-right-width: 15px; min-height: 55px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 4px; top: 0px; height: 18px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation"><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">def</span> <span class="cm-def">append</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">value</span>):</span></pre><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">insert</span>(<span class="cm-builtin">len</span>(<span class="cm-variable-2">self</span>), <span class="cm-variable">value</span>)</span></pre></div></div></div></div></div><div style="position: absolute; height: 15px; width: 1px; border-bottom: 0px solid transparent; top: 55px;"></div><div class="CodeMirror-gutters" style="display: none; height: 70px;"></div></div></div></div><div>
+<p>To allow for insertion into an array, we'll need to figure out a way to:</p>
+<ul>
+<li>Create a new array with one more element than the current array.</li>
+<li>Loop across the old array and copy elements into the new array.<ul>
+<li>When we hit the index that we want to insert the new element into, insert it, then keep going.</li>
+</ul>
+</li>
+</ul>
+<p>Here's a diagram:</p>
+<p><img alt="List insertion" src="./8. Resizing The Array_files/list_insertion.svg"></p></div></div></div><div class="ScrollAccordion__section"><div theme="light" class="ScrollAccordion__in_text SidePanelTitle__light" style="opacity: 0;">instructions</div><iframe style="height: 100%; width: 100%; border: none; background: transparent; position: absolute; z-index: -1; top: 0px; left: 0px;" src="./8. Resizing The Array_files/saved_resource(1).html"></iframe><div id="body" class="MissionLearn__instructions MissionMarkup__light"><ul>
+<li>Implement a method in the <code>Array</code> class called <code>insert</code>.  It should:<ul>
+<li>Take in a position to insert in, then a number to insert.</li>
+<li>Create an array one element larger than the old array.</li>
+<li>Increment <code>self.size</code>.</li>
+<li>Loop across each element in <code>self.array</code>, and copy it into the same position in the new array.<ul>
+<li>If the position we're inserting into is the same we're copying into, then copy the new element, then the old element.</li>
+<li>Keep track of the position we're copying from, and the position we're copying into, because the insertion will make them different.</li>
+</ul>
+</li>
+<li>If we're inserting at the end of the array (position to insert == <code>self.size</code>), then add the value to the end of the new array.</li>
+<li>Replace <code>self.array</code> with the new array.</li>
+</ul>
+</li>
+<li>Implement the <code>__len__</code> method on the <code>Array</code> class that returns the size of the array.</li>
+<li>Implement an <code>append</code> method on the <code>Array</code> class.</li>
+<li>Instatiate an instance of <code>Array</code> called <code>prices</code>, with size <code>0</code>.</li>
+<li>Append the first <code>100</code> prices from <code>prices.csv</code> to <code>prices</code>.</li>
+<li>Insert <code>646.921081</code> into position <code>50</code> in <code>prices</code>.</li>
+</ul></div><div class="MissionLearn__section"><div theme="light" class="DqDropMenu__close"><div class="DqDropMenu__top" data-test-selector="GetHelpMenu"><div class="DqDropMenu__text">Get Help</div><div class="DqDropMenu__icon"><span class="dqicon dqicon-down undefined"></span></div></div><div class="DqDropMenu__options"><div class="DqDropMenu__option" data-test-selector="mission-help-get-hint">Get a hint</div><div class="DqDropMenu__option" title="[alt+a] to See the answer" data-test-selector="mission-help-show-answer">See the answer</div><div class="DqDropMenu__option">Message Us</div></div></div></div></div><div class="ScrollAccordion__section"><div theme="light" class="ScrollAccordion__in_text SidePanelTitle__light" style="opacity: 0;">The Answer</div><iframe style="height: 100%; width: 100%; border: none; background: transparent; position: absolute; z-index: -1; top: 0px; left: 0px;" src="./8. Resizing The Array_files/saved_resource(2).html"></iframe><div class="dq_theme MissionLearn__solution DqEditor__root"><textarea autocomplete="off" style="display: none;">class Array():
+    def __init__(self, size):
+        self.array = np.zeros(size, dtype=np.float64)
+        self.size = size
+    
+    def __getitem__(self, key):
+        return self.array[key]
+    
+    def __setitem__(self, key, value):
+        self.array[key] = value
+class Array():
+    def __init__(self, size):
+        self.array = np.zeros(size, dtype=np.float64)
+        self.size = size
+    
+    def __getitem__(self, key):
+        return self.array[key]
+    
+    def __setitem__(self, key, value):
+        self.array[key] = value
+    
+    def insert(self, position, value):
+        new_array = np.zeros(self.size + 1, dtype=np.float64)
+        new_pos = 0
+        for i, item in enumerate(self.array):
+            if i == position:
+                new_array[new_pos] = value
+                new_pos += 1
+            new_array[new_pos] = item
+            new_pos += 1
+        if position == (self.size):
+            new_array[new_pos] = value
+        self.size += 1
+        self.array = new_array
+    
+    def __len__(self):
+        return self.size
+    
+    def append(self, value):
+        self.insert(self.size, value)
+
+prices = Array(0)
+
+for price in all_prices[:100]:
+    prices.append(price)
+
+prices.insert(50, 646.921081)</textarea><div class="CodeMirror cm-s-dq-light CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 835.5px; left: 251.625px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 30px; margin-bottom: -15px; border-right-width: 15px; min-height: 865px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>x</pre></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"><div class="CodeMirror-selected" style="position: absolute; left: 4px; top: 0px; width: 810px; height: 18px;"></div><div class="CodeMirror-selected" style="position: absolute; left: 4px; top: 828px; width: 217.625px; height: 18px;"></div><div class="CodeMirror-selected" style="position: absolute; left: 4px; top: 18px; width: 810px; height: 810px;"></div></div><div class="CodeMirror-cursors" style="visibility: hidden;"></div><div class="CodeMirror-code" role="presentation" style=""><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">class</span> <span class="cm-def">Array</span>():</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">2</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">__init__</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">size</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">3</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">array</span> <span class="cm-operator">=</span> <span class="cm-variable">np</span>.<span class="cm-property">zeros</span>(<span class="cm-variable">size</span>, <span class="cm-variable">dtype</span><span class="cm-operator">=</span><span class="cm-variable">np</span>.<span class="cm-property">float64</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">4</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">size</span> <span class="cm-operator">=</span> <span class="cm-variable">size</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">5</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">6</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">__getitem__</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">key</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">7</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">return</span> <span class="cm-variable-2">self</span>.<span class="cm-property">array</span>[<span class="cm-variable">key</span>]</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">8</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">9</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">__setitem__</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">key</span>, <span class="cm-variable">value</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">10</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">array</span>[<span class="cm-variable">key</span>] <span class="cm-operator">=</span> <span class="cm-variable">value</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">11</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">class</span> <span class="cm-def">Array</span>():</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">12</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">__init__</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">size</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">13</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">array</span> <span class="cm-operator">=</span> <span class="cm-variable">np</span>.<span class="cm-property">zeros</span>(<span class="cm-variable">size</span>, <span class="cm-variable">dtype</span><span class="cm-operator">=</span><span class="cm-variable">np</span>.<span class="cm-property">float64</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">14</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">size</span> <span class="cm-operator">=</span> <span class="cm-variable">size</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">15</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">16</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">__getitem__</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">key</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">17</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">return</span> <span class="cm-variable-2">self</span>.<span class="cm-property">array</span>[<span class="cm-variable">key</span>]</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">18</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">19</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">__setitem__</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">key</span>, <span class="cm-variable">value</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">20</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">array</span>[<span class="cm-variable">key</span>] <span class="cm-operator">=</span> <span class="cm-variable">value</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">21</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">22</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">insert</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">position</span>, <span class="cm-variable">value</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">23</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">new_array</span> <span class="cm-operator">=</span> <span class="cm-variable">np</span>.<span class="cm-property">zeros</span>(<span class="cm-variable-2">self</span>.<span class="cm-property">size</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>, <span class="cm-variable">dtype</span><span class="cm-operator">=</span><span class="cm-variable">np</span>.<span class="cm-property">float64</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">24</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">new_pos</span> <span class="cm-operator">=</span> <span class="cm-number">0</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">25</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">for</span> <span class="cm-variable">i</span>, <span class="cm-variable">item</span> <span class="cm-keyword">in</span> <span class="cm-builtin">enumerate</span>(<span class="cm-variable-2">self</span>.<span class="cm-property">array</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">26</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">if</span> <span class="cm-variable">i</span> <span class="cm-operator">==</span> <span class="cm-variable">position</span>:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">27</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">new_array</span>[<span class="cm-variable">new_pos</span>] <span class="cm-operator">=</span> <span class="cm-variable">value</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">28</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">new_pos</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">29</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">new_array</span>[<span class="cm-variable">new_pos</span>] <span class="cm-operator">=</span> <span class="cm-variable">item</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">30</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">new_pos</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">31</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">if</span> <span class="cm-variable">position</span> <span class="cm-operator">==</span> (<span class="cm-variable-2">self</span>.<span class="cm-property">size</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">32</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">new_array</span>[<span class="cm-variable">new_pos</span>] <span class="cm-operator">=</span> <span class="cm-variable">value</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">33</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">size</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">34</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">array</span> <span class="cm-operator">=</span> <span class="cm-variable">new_array</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">35</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">36</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">__len__</span>(<span class="cm-variable-2">self</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">37</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">return</span> <span class="cm-variable-2">self</span>.<span class="cm-property">size</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">38</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">39</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">append</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">value</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">40</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">insert</span>(<span class="cm-variable-2">self</span>.<span class="cm-property">size</span>, <span class="cm-variable">value</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">41</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">42</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">prices</span> <span class="cm-operator">=</span> <span class="cm-variable">Array</span>(<span class="cm-number">0</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">43</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">44</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">for</span> <span class="cm-variable">price</span> <span class="cm-keyword">in</span> <span class="cm-variable">all_prices</span>[:<span class="cm-number">100</span>]:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">45</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">prices</span>.<span class="cm-property">append</span>(<span class="cm-variable">price</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">46</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">47</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">prices</span>.<span class="cm-property">insert</span>(<span class="cm-number">50</span>, <span class="cm-number">646.921081</span>)</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 15px; width: 1px; border-bottom: 0px solid transparent; top: 865px;"></div><div class="CodeMirror-gutters" style="height: 880px; left: 0px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div></div></div></div></div></div></div><div class="ScrollAccordion__bottom_headers" style="width: 912px;"></div></div></div></div></div></div><span class="Resizer vertical "></span><div class="Pane vertical Pane2  " style="flex: 1 1 0%; position: relative; outline: none;"><div class="TheMission__is_interactive"><div><div class="TaskPanels__root OnboardingReveal__shown"><div class="TaskPanels__dark"><div class="TaskPanels__editor_section"><div class="MissionEditorFiles__dark"><span class="meta MissionEditorFiles__file_active"><div title="[alt+t] to toggle open">script.py</div></span><span class="meta MissionEditorFiles__file"><div title="/dataquest/user/download_data.py">download_data.py</div></span><span class="meta MissionEditorFiles__file"><div title="/dataquest/user/prices.csv">prices.csv</div></span></div><div class="TaskPanels__editor_with_extra"><div class="dq_theme  DqEditor__root"><textarea autocomplete="off" style="display: none;">class Array():
+    def __init__(self, size):
+        self.array = np.zeros(size, dtype=np.float64)
+        self.size = size
+    
+    def __getitem__(self, key):
+        return self.array[key]
+    
+    def __setitem__(self, key, value):
+        self.array[key] = value
+class Array():
+    def __init__(self, size):
+        self.array = np.zeros(size, dtype=np.float64)
+        self.size = size
+    
+    def __getitem__(self, key):
+        return self.array[key]
+    
+    def __setitem__(self, key, value):
+        self.array[key] = value
+    
+    def insert(self, position, value):
+        new_array = np.zeros(self.size + 1, dtype=np.float64)
+        new_pos = 0
+        for i, item in enumerate(self.array):
+            if i == position:
+                new_array[new_pos] = value
+                new_pos += 1
+            new_array[new_pos] = item
+            new_pos += 1
+        if position == (self.size):
+            new_array[new_pos] = value
+        self.size += 1
+        self.array = new_array
+    
+    def __len__(self):
+        return self.size
+    
+    def append(self, value):
+        self.insert(self.size, value)
+
+prices = Array(0)
+
+for price in all_prices[:100]:
+    prices.append(price)
+
+prices.insert(50, 646.921081)</textarea><div class="CodeMirror cm-s-dq-dark CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 349.5px; left: 206.609px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" cm-not-content="true" style="bottom: 0px;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 30px; margin-bottom: -15px; border-right-width: 15px; min-height: 865px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>x</pre><div class="CodeMirror-linenumber CodeMirror-gutter-elt"><div>30</div></div></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors" style="visibility: hidden;"><div class="CodeMirror-cursor" style="left: 176.609px; top: 342px; height: 18px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation" style=""><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">class</span> <span class="cm-def">Array</span>():</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">2</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">__init__</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">size</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">3</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">array</span> <span class="cm-operator">=</span> <span class="cm-variable">np</span>.<span class="cm-property">zeros</span>(<span class="cm-variable">size</span>, <span class="cm-variable">dtype</span><span class="cm-operator">=</span><span class="cm-variable">np</span>.<span class="cm-property">float64</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">4</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">size</span> <span class="cm-operator">=</span> <span class="cm-variable">size</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">5</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">6</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">__getitem__</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">key</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">7</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">return</span> <span class="cm-variable-2">self</span>.<span class="cm-property">array</span>[<span class="cm-variable">key</span>]</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">8</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">9</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">__setitem__</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">key</span>, <span class="cm-variable">value</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">10</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">array</span>[<span class="cm-variable">key</span>] <span class="cm-operator">=</span> <span class="cm-variable">value</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">11</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">class</span> <span class="cm-def">Array</span>():</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">12</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">__init__</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">size</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">13</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">array</span> <span class="cm-operator">=</span> <span class="cm-variable">np</span>.<span class="cm-property">zeros</span>(<span class="cm-variable">size</span>, <span class="cm-variable">dtype</span><span class="cm-operator">=</span><span class="cm-variable">np</span>.<span class="cm-property">float64</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">14</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">size</span> <span class="cm-operator">=</span> <span class="cm-variable">size</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">15</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">16</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">__getitem__</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">key</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">17</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">return</span> <span class="cm-variable-2">self</span>.<span class="cm-property">array</span>[<span class="cm-variable">key</span>]</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">18</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">19</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">__setitem__</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">key</span>, <span class="cm-variable">value</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">20</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">array</span>[<span class="cm-variable">key</span>] <span class="cm-operator">=</span> <span class="cm-variable">value</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">21</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">22</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">insert</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">position</span>, <span class="cm-variable">value</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">23</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">new_array</span> <span class="cm-operator">=</span> <span class="cm-variable">np</span>.<span class="cm-property">zeros</span>(<span class="cm-variable-2">self</span>.<span class="cm-property">size</span> <span class="cm-operator">+</span> <span class="cm-number">1</span>, <span class="cm-variable">dtype</span><span class="cm-operator">=</span><span class="cm-variable">np</span>.<span class="cm-property">float64</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">24</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">new_pos</span> <span class="cm-operator">=</span> <span class="cm-number">0</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">25</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">for</span> <span class="cm-variable">i</span>, <span class="cm-variable">item</span> <span class="cm-keyword">in</span> <span class="cm-builtin">enumerate</span>(<span class="cm-variable-2">self</span>.<span class="cm-property">array</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">26</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">if</span> <span class="cm-variable">i</span> <span class="cm-operator">==</span> <span class="cm-variable">position</span>:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">27</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">new_array</span>[<span class="cm-variable">new_pos</span>] <span class="cm-operator">=</span> <span class="cm-variable">value</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">28</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">new_pos</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">29</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">new_array</span>[<span class="cm-variable">new_pos</span>] <span class="cm-operator">=</span> <span class="cm-variable">item</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">30</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">new_pos</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">31</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">if</span> <span class="cm-variable">position</span> <span class="cm-operator">==</span> (<span class="cm-variable-2">self</span>.<span class="cm-property">size</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">32</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">new_array</span>[<span class="cm-variable">new_pos</span>] <span class="cm-operator">=</span> <span class="cm-variable">value</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">33</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">size</span> <span class="cm-operator">+=</span> <span class="cm-number">1</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">34</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">array</span> <span class="cm-operator">=</span> <span class="cm-variable">new_array</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">35</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">36</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">__len__</span>(<span class="cm-variable-2">self</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">37</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">return</span> <span class="cm-variable-2">self</span>.<span class="cm-property">size</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">38</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">39</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">def</span> <span class="cm-def">append</span>(<span class="cm-variable-2">self</span>, <span class="cm-variable">value</span>):</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">40</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable-2">self</span>.<span class="cm-property">insert</span>(<span class="cm-variable-2">self</span>.<span class="cm-property">size</span>, <span class="cm-variable">value</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">41</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">42</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">prices</span> <span class="cm-operator">=</span> <span class="cm-variable">Array</span>(<span class="cm-number">0</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">43</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">44</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">for</span> <span class="cm-variable">price</span> <span class="cm-keyword">in</span> <span class="cm-variable">all_prices</span>[:<span class="cm-number">100</span>]:</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">45</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">prices</span>.<span class="cm-property">append</span>(<span class="cm-variable">price</span>)</span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">46</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">47</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">prices</span>.<span class="cm-property">insert</span>(<span class="cm-number">50</span>, <span class="cm-number">646.921081</span>)</span></pre></div></div></div></div></div></div><div style="position: absolute; height: 15px; width: 1px; border-bottom: 0px solid transparent; top: 865px;"></div><div class="CodeMirror-gutters" style="height: 880px; left: 0px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div></div></div></div></div><div class="TaskPanels__extra_lines"></div></div></div><div class="TaskPanels__outputs"><div class="MissionResultFormat__dark"><div class="MissionResultFormat__title">Variables</div><div id="var-7-i" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> i<span class="MissionVariableLine__type">int (&lt;class 'int'&gt;)</span></div><div class="MissionVariableLine__value">9</div></div><div id="var-7-all_prices" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-down undefined"></span> all_prices<span class="MissionVariableLine__type">list (&lt;class 'list'&gt;)</span></div><div class="MissionVariableLine__value">[665.411118,
+ 668.281154,
+ 659.011109,
+ 650.021102,
+ 622.461047,
+ 623.141078,
+ 625.961061,
+ 629.641069,
+ 624.991068,
+ 628.581079,
+ 632.911098,
+ 639.571112,
+ 585.990995,
+ 585.520977,
+ 580.931014,
+ 569.490997,
+ 568.100977,
+ 579.980993,
+ 577.691005,
+ 580.110995,
+ 580.83097,
+ 585.110998,
+ 596.331016,
+ 609.091029,
+ 606.771021,
+ 609.85107,
+ 611.461028,
+ 605.911058,
+ 612.201036,
+ 609.761073,
+ 605.561056,
+ 606.521064,
+ 604.641054,
+ 614.001035,
+ 607.941041,
+ 606.111023,
+ 609.901062,
+ 609.311028,
+ 618.391032,
+ 618.251043,
+ 622.401069,
+ 621.251082,
+ 614.251053,
+ 604.961036,
+ 606.80104,
+ 607.141056,
+ 600.251057,
+ 605.151016,
+ 617.781087,
+ 615.991074,
+ 621.131066,
+ 625.041059,
+ 633.981075,
+ 633.491085,
+ 639.981091,
+ 646.051131,
+ 642.591122,
+ 649.331085,
+ 647.021125,
+ 655.761114,
+ 648.411083,
+ 641.241108,
+ 646.921081,
+ 642.621081,
+ 635.151095,
+ 632.321064,
+ 630.841109,
+ 626.861091,
+ 635.961067,
+ 651.011129,
+ 624.601061,
+ 606.071018,
+ 609.571032,
+ 607.451052,
+ 599.301036,
+ 596.061026,
+ 597.60102,
+ 601.271042,
+ 609.721068,
+ 615.471065,
+ 614.981076,
+ 604.851067,
+ 604.431041,
+ 607.261072,
+ 611.021029,
+ 596.971042,
+ 607.551034,
+ 612.79107,
+ 609.151067,
+ 613.661081,
+ 605.231027,
+ 604.001029,
+ 611.111026,
+ 628.93108,
+ 623.051081,
+ 600.401031,
+ 614.111065,
+ 600.801024,
+ 609.461063,
+ 603.661013,
+ 591.53104,
+ 594.341038,
+ 588.230992,
+ 580.86099,
+ 570.981,
+ 578.590973,
+ 570.410999,
+ 580.570966,
+ 578.230986,
+ 580.451011,
+ 568.50097,
+ 565.100939,
+ 561.090963,
+ 559.050931,
+ 564.510966,
+ 570.850997,
+ 581.530973,
+ 577.511011,
+ 565.210969,
+ 571.480976,
+ 560.700956,
+ 564.680974,
+ 569.300956,
+ 564.310939,
+ 580.07099,
+ 580.470983,
+ 587.830999,
+ 595.921037,
+ 585.981009,
+ 586.011028,
+ 581.700981,
+ 571.190952,
+ 570.480963,
+ 576.520984,
+ 574.921012,
+ 576.730997,
+ 580.761007,
+ 593.060987,
+ 610.821064,
+ 615.511071,
+ 607.571068,
+ 607.991033,
+ 613.361071,
+ 634.961116,
+ 632.301092,
+ 632.971076,
+ 632.681113,
+ 628.751087,
+ 641.331105,
+ 642.821108,
+ 640.541105,
+ 642.231074,
+ 642.35109,
+ 642.001088,
+ 660.011122,
+ 668.661175,
+ 667.541146,
+ 672.871179,
+ 677.141159,
+ 675.541188,
+ 669.511153,
+ 677.181165,
+ 676.801144,
+ 678.631162,
+ 669.221129,
+ 677.25119,
+ 688.011176,
+ 681.681192,
+ 685.091148,
+ 681.041167,
+ 680.721185,
+ 699.401202,
+ 706.151212,
+ 700.771188,
+ 692.19116,
+ 690.881212,
+ 706.041182,
+ 709.681246,
+ 709.981194,
+ 718.281246,
+ 727.501238,
+ 728.121231,
+ 733.991244,
+ 749.38126,
+ 749.161261,
+ 753.461322,
+ 756.501305,
+ 754.501279,
+ 761.781285,
+ 756.991295,
+ 762.501321,
+ 768.051291,
+ 767.651298,
+ 757.841272,
+ 744.091294,
+ 744.561251,
+ 751.481269,
+ 744.751292,
+ 740.981287,
+ 744.7013,
+ 755.491306,
+ 695.001219,
+ 681.791161,
+ 678.671167,
+ 680.35115,
+ 677.301181,
+ 677.761151,
+ 675.151181,
+ 680.301158,
+ 687.59115,
+ 687.921179,
+ 682.961182,
+ 681.721197,
+ 667.12112,
+ 652.291119,
+ 663.031133,
+ 665.901169,
+ 659.051115,
+ 652.551123,
+ 647.261096,
+ 647.181085,
+ 668.21113,
+ 669.971123,
+ 665.87115,
+ 667.971158,
+ 661.151123,
+ 670.711131,
+ 683.67117,
+ 691.891211,
+ 698.37117,
+ 695.251176,
+ 691.031187,
+ 687.821196,
+ 691.13117,
+ 684.211152,
+ 685.421178,
+ 696.881167,
+ 697.561198,
+ 702.701189,
+ 701.961181,
+ 720.781248,
+ 721.07121,
+ 720.111264,
+ 722.361247,
+ 715.631209,
+ 709.501191,
+ 708.871213,
+ 706.2912,
+ 700.011208,
+ 707.38121,
+ 723.25123,
+ 723.671256,
+ 737.971262,
+ 734.751286,
+ 733.301227,
+ 738.121237,
+ 741.481263,
+ 739.99126,
+ 723.25123,
+ 724.931273,
+ 715.191211,
+ 711.321223,
+ 704.511235,
+ 702.871197,
+ 741.501296,
+ 754.211317,
+ 753.671274,
+ 750.731274,
+ 753.681322,
+ 753.831296,
+ 755.691272,
+ 775.601349,
+ 759.021279,
+ 765.741331,
+ 770.171333,
+ 773.951324,
+ 785.371369,
+ 782.421322,
+ 780.701335,
+ 782.861321,
+ 787.82138,
+ 792.891346,
+ 806.851398,
+ 792.461334,
+ 795.531336,
+ 799.711381,
+ 790.771365,
+ 790.13134,
+ 799.781345,
+ 801.201384,
+ 806.191401,
+ 821.501406,
+ 838.601424,
+ 831.381396,
+ 832.601408,
+ 831.521445,
+ 834.821433,
+ 827.611391,
+ 825.311416,
+ 821.541411,
+ 814.301411,
+ 807.791372,
+ 811.321406,
+ 814.71139,
+ 811.261367,
+ 810.311407,
+ 809.641362,
+ 812.421402,
+ 802.661367,
+ 794.191369,
+ 801.191398,
+ 813.041394,
+ 806.201387,
+ 795.071366,
+ 783.051362,
+ 774.851354,
+ 777.651304,
+ 790.181331,
+ 790.391345,
+ 790.051329,
+ 781.931333,
+ 793.37135,
+ 782.561372,
+ 765.911339,
+ 799.871342,
+ 800.111374,
+ 807.901403,
+ 813.451373,
+ 809.101381,
+ 801.421383,
+ 819.061382,
+ 824.571408,
+ 820.431429,
+ 829.611416,
+ 845.721469,
+ 861.551483,
+ 857.231449,
+ 873.631526,
+ 871.481464,
+ 880.2315,
+ 877.531533,
+ 887.101527,
+ 915.89158,
+ 903.871576,
+ 909.181575,
+ 908.531564,
+ 906.971536,
+ 889.421534,
+ 882.79154,
+ 873.321468,
+ 881.271518,
+ 868.311479,
+ 870.761489,
+ 871.221521,
+ 867.63151,
+ 859.101473,
+ 859.701493,
+ 864.641457,
+ 879.731524,
+ 890.22152,
+ 879.811535,
+ 871.981501,
+ 877.001476,
+ 875.041517,
+ 886.251549,
+ 900.621519,
+ 900.681558,
+ 884.741513,
+ 880.931503,
+ 869.791496,
+ 866.201484,
+ 873.651498,
+ 877.071501,
+ 880.371488,
+ 887.88154,
+ 882.311537,
+ 886.431543,
+ 893.491549,
+ 905.091527,
+ 905.241563,
+ 905.991557,
+ 920.241572,
+ 923.001578,
+ 924.691608,
+ 919.611594,
+ 918.551603,
+ 910.681564,
+ 896.601557,
+ 910.701536,
+ 903.801551,
+ 902.901521,
+ 887.701547,
+ 885.351519,
+ 882.271531,
+ 890.921523,
+ 887.751538,
+ 904.221578,
+ 906.571544,
+ 905.00153,
+ 896.571537,
+ 890.651532,
+ 892.661544,
+ 890.4115,
+ 885.511541,
+ 881.251485,
+ 869.811468,
+ 859.661487,
+ 856.911467,
+ 865.651456,
+ 865.421471,
+ 869.331464,
+ 873.711475,
+ 870.211522,
+ 866.391464,
+ 850.151471,
+ 848.551438,
+ 855.431451,
+ 846.901475,
+ 860.381462,
+ 871.6315,
+ 879.561517,
+ 879.581489,
+ 888.051548,
+ 888.67154,
+ 896.191517,
+ 893.061537,
+ 889.071533,
+ 887.761524,
+ 886.1115,
+ 903.321548,
+ 898.391569,
+ 903.111535,
+ 886.501507,
+ 886.841522,
+ 877.231523,
+ 878.171497,
+ 876.391532,
+ 875.911528,
+ 887.001544,
+ 887.991509,
+ 876.091522,
+ 872.351475,
+ 865.741514,
+ 853.671458,
+ 855.861463,
+ 868.241516,
+ 871.991487,
+ 876.111494,
+ 882.011527,
+ 898.031521,
+ 888.791495,
+ 1011.411708,
+ 1003.301698,
+ 1007.001739,
+ 1031.411782,
+ 1025.551754,
+ 1015.201747,
+ 1015.001719,
+ 1036.241716,
+ 1030.421755,
+ 1030.581776,
+ 1027.041757,
+ 1026.111769,
+ 1021.521745,
+ 1022.751743,
+ 1007.951699,
+ 1016.031752,
+ 1010.59175,
+ 1011.781743,
+ 1032.471772,
+ 1035.231717,
+ 1033.561782,
+ 1031.551709,
+ 1025.201753,
+ 1022.311744,
+ 1034.071744,
+ 1031.891724,
+ 1045.931848,
+ 1058.411823,
+ 1063.111877,
+ 1059.591768,
+ 1054.481857,
+ 1053.261845,
+ 1058.181837,
+ 1057.341785,
+ 1069.871873,
+ 1078.141905,
+ 1084.661869,
+ 1077.291806,
+ 1069.961809,
+ 1060.791808,
+ 1072.981881,
+ 1069.861826,
+ 1084.751805,
+ 1086.221897,
+ 1100.621886,
+ 1115.101886,
+ 1111.841904,
+ 1117.461899,
+ 1118.401934,
+ 1109.461919,
+ 1120.711956,
+ 1113.121955,
+ 1105.001897,
+ 1117.321972,
+ 1138.861917,
+ 1141.231977,
+ 1130.241944,
+ 1130.181906,
+ 1122.981911,
+ 1149.402027,
+ 1148.622013,
+ 1156.221939,
+ 1150.53198,
+ 1163.702033,
+ 1165.022028,
+ 1160.102036,
+ 1123.831888,
+ 1101.23183,
+ 1123.01193,
+ 1106.921912,
+ 1135.391922,
+ 1180.971997,
+ 1133.431963,
+ 1138.161914,
+ 1143.201984,
+ 1159.961986,
+ 1177.441963,
+ 1172.93195,
+ 1190.182065,
+ 1186.691975,
+ 1199.902094,
+ 1202.802088,
+ 1210.88208,
+ 1202.342118,
+ 1204.112036,
+ 1203.792115,
+ 1212.512071,
+ 1220.002089,
+ 1220.172036,
+ 1219.212151,
+ 1215.652097,
+ 1202.692058,
+ 1214.912028,
+ 1218.262068,
+ 1219.612082,
+ 1214.792073,
+ 1211.572035,
+ 1199.99203,
+ 1207.302054,
+ 1189.062036,
+ 1172.80207,
+ 1192.102079,
+ 1211.262039,
+ 1199.252083,
+ 1197.161999,
+ 1183.041986,
+ 1157.931941,
+ 1158.722002,
+ 1131.971918,
+ 558.462551,
+ 559.992565,
+ 556.972503,
+ 567.162558,
+ 567.002574,
+ 569.742571,
+ 543.14246,
+ 538.152456,
+ 554.902495,
+ 564.142557,
+ 540.952433,
+ 530.602392,
+ 532.522392,
+ 536.442444,
+ 556.54249,
+ 536.1024,
+ 528.622414,
+ 534.812425,
+ 526.942391,
+ 525.162363,
+ 516.182352,
+ 517.152359,
+ 527.70241,
+ 526.662388,
+ 531.352435,
+ 527.932411,
+ 527.812392,
+ 515.14233,
+ 509.962321,
+ 511.002313,
+ 518.732375,
+ 529.922427,
+ 533.092437,
+ 526.652412,
+ 519.982324,
+ 520.632362,
+ 528.862391,
+ 529.772418,
+ 538.942465,
+ 545.062459,
+ 552.702492,
+ 565.952575,
+ 561.682564,
+ 560.082534,
+ 559.892559,
+ 553.932488,
+ 544.94244,
+ 544.662436,
+ 553.902499,
+ 556.332503,
+ 562.122552,
+ 560.552511,
+ 558.842499,
+ 551.352476,
+ 551.762475,
+ 544.282488,
+ 543.012465,
+ 553.372481,
+ 554.902495,
+ 556.362492,
+ 564.952579,
+ 564.622572,
+ 578.652627,
+ 576.002598,
+ 577.242632,
+ 575.282606,
+ 582.672624,
+ 582.33766,
+ 584.732656,
+ 582.252649,
+ 571.092587,
+ 576.08259,
+ 571.102563,
+ 579.182645,
+ 584.872627,
+ 584.782659,
+ 582.662648,
+ 573.732579,
+ 595.082696,
+ 589.472645,
+ 594.742713,
+ 595.982686,
+ 593.352671,
+ 589.022681,
+ 590.602697,
+ 585.612633,
+ 587.42265,
+ 571.602592,
+ 566.072533,
+ 573.152619,
+ 565.072537,
+ 566.376589,
+ 563.362525,
+ 568.772565,
+ 567.882551,
+ 562.732562,
+ 574.782577,
+ 574.652582,
+ 573.482626,
+ 582.162619,
+ 586.862643,
+ 584.492618,
+ 583.372664,
+ 582.562642,
+ 580.202654,
+ 577.862619,
+ 571.002557,
+ 569.202577,
+ 571.602592,
+ 577.332601,
+ 577.942611,
+ 581.982621,
+ 586.082672,
+ 589.722659,
+ 581.012615,
+ 583.102636,
+ 581.352659,
+ 575.622589,
+ 573.102616,
+ 579.95264,
+ 584.772622,
+ 589.272695,
+ 596.082692,
+ 587.372648,
+ 581.132634,
+ 587.992634,
+ 575.062581,
+ 577.1026,
+ 576.362594,
+ 577.36259,
+ 568.272597,
+ 570.082554,
+ 575.282606,
+ 577.352614,
+ 563.742534,
+ 572.502582,
+ 560.882518,
+ 544.492476,
+ 533.212394,
+ 537.942408,
+ 530.032409,
+ 524.512387,
+ 511.172305,
+ 520.842349,
+ 526.542369,
+ 532.712427,
+ 543.982471,
+ 539.782415,
+ 540.772435,
+ 548.902458,
+ 549.33247,
+ 550.312514,
+ 559.082538,
+ 555.222525,
+ 554.112486,
+ 545.922484,
+ 542.042458,
+ 541.012473,
+ 547.492463,
+ 550.292501,
+ 547.312465,
+ 545.38249,
+ 544.402446,
+ 536.512399,
+ 535.032449,
+ 536.992415,
+ 534.832438,
+ 537.502419,
+ 539.272471,
+ 541.082428,
+ 540.372473,
+ 541.832471,
+ 533.802391,
+ 533.752389,
+ 531.322384,
+ 537.312445,
+ 525.262369,
+ 526.982357,
+ 533.37244,
+ 526.062353,
+ 528.34241,
+ 518.662359,
+ 513.802351,
+ 495.392242,
+ 504.892295,
+ 511.102319,
+ 516.352313,
+ 524.872383,
+ 530.592416,
+ 528.772422,
+ 534.032392,
+ 530.332426,
+ 530.422394,
+ 526.402397,
+ 524.812404,
+ 513.872306,
+ 501.962262,
+ 501.102268,
+ 502.682285,
+ 496.172244,
+ 492.552239,
+ 496.182251,
+ 500.872267,
+ 501.792271,
+ 508.082288,
+ 506.902294,
+ 518.042373,\n[variable truncated]</div></div><div id="var-7-price" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-right undefined"></span> price</div></div><div id="var-7-enumerate" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-right undefined"></span> enumerate</div></div><div id="var-7-prices" class="code "><div class="MissionVariableLine__button"><span class="dqicon dqicon-caret-right undefined"></span> prices</div></div></div></div></div><div class="EditorActionsAndFeedback__root"><div class="EditorActionsAndFeedback__feedback" style="bottom: 100%; opacity: 1;"><div class="MissionRunFeedback__root"><div class="MissionRunFeedback__success"><span class="dqicon dqicon-pass MissionRunFeedback__pass_circle"></span><span>Nice Work!</span></div><button class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__white DqButton__borderless"><span class="DqButton__text">Next Screen</span><span class="dqicon dqicon-right DqButton__icon"></span></button><div class="MissionRunFeedback__close_spacer"><div class="OnboardingReveal__shown"><button class="MissionRunFeedback__close_button DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__no_text DqButton__white DqButton__hollow"><span class="dqicon dqicon-fail DqButton__icon"></span></button></div></div></div></div><div class="EditorActionsAndFeedback__actions"><div class="MissionCodeActions__root OnboardingReveal__shown"><button title="Run your code [shift+enter]" id="onboarding-tip-run" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark"><span class="DqButton__text">Run Code</span></button><button title="Check your code [alt+enter]" id="onboarding-tip-run" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__green DqButton__on_dark" style="margin-left: 24px;"><span class="DqButton__text">Submit Answer</span></button><div class="MissionCodeActions__rest_buttons OnboardingReveal__shown"><button title="Restore to initial code [alt+r]" class="MissionCodeActions__reset DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__no_text DqButton__white DqButton__on_dark DqButton__hollow DqButton__borderless"><span class="dqicon dqicon-recycle DqButton__icon"></span></button><div class="MissionCodeActions__spacer"></div><button title="Open Console [alt+t]" class="DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark DqButton__hollow"><span class="DqButton__text">Open Console</span></button></div></div></div></div></div></div></div></div></div><div class="MissionFooter__root OnboardingReveal__shown"><div class="MissionFooter__title_side"><span class="dqicon dqicon-bars MissionFooter__more"></span><div class="MissionFooter__title">8. Resizing The Array</div></div><div class="MissionFooter__center"><button title="[alt+b] Back a Screen" class="MissionFooter__nav_button DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark DqButton__hollow"><span class="DqButton__text">back</span></button><div>8 / 16</div><button title="[alt+n] Next Screen" class="MissionFooter__nav_button DqButton__main DqButton__capitalize DqButton__consistent_font DqButton__short DqButton__white DqButton__on_dark DqButton__hollow"><span class="DqButton__text">Next</span></button></div><div class="MissionFooter__right_side"></div></div></div></div></div></div></div></div><script crossorigin="" type="text/javascript" src="./8. Resizing The Array_files/polyfill.min.js"></script><script crossorigin="" type="text/javascript" src="./8. Resizing The Array_files/lodash.min.js"></script><script crossorigin="" type="text/javascript" src="./8. Resizing The Array_files/react.production.min.js"></script><script crossorigin="" type="text/javascript" src="./8. Resizing The Array_files/react-dom.production.min.js"></script><script type="text/javascript">!function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="3.1.0";
+  var key = window.location.host === 'app.dataquest.io' ? 'BJhKYEXejzjqXq7xQDFI6N0M5W7HBAH5' : 'yPkme4oLIogTJ7xrH3SCEDVtcSz2J5Br';
+  analytics.load(key);
+  }}();</script><script src="./8. Resizing The Array_files/pa-5cd96b34fed2bd0016000186.js" async=""></script><script type="text/javascript" src="./8. Resizing The Array_files/app.1dcb74672053eeb54bd7.js"></script><script type="text/javascript" id="">(function(a,e,f,g,b,c,d){a.ProfitWellObject=b;a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)};a[b].l=1*new Date;c=e.createElement(f);d=e.getElementsByTagName(f)[0];c.async=1;c.src=g;d.parentNode.insertBefore(c,d)})(window,document,"script","https://dna8twue3dlxq.cloudfront.net/js/profitwell.js","profitwell");profitwell("auth_token","bd8a22377119e7044e07346a8c89a91f");profitwell("user_email","USER@EMAIL.COM");</script><script type="text/javascript" id="" charset="utf-8" src="./8. Resizing The Array_files/b960428aed859499a86a27f8ce0a0a6bd2ea6c87.js"></script><iframe id="intercom-frame" style="position: absolute !important; opacity: 0 !important; width: 1px !important; height: 1px !important; top: 0 !important; left: 0 !important; border: none !important; display: block !important; z-index: -1 !important;" aria-hidden="true" tabindex="-1" src="./8. Resizing The Array_files/saved_resource(3).html"></iframe><div id="intercom-css-container"><style data-emotion="intercom-global"></style></div><div id="intercom-container" class="intercom-namespace"><style>html.intercom-mobile-messenger-active,html.intercom-mobile-messenger-active > body,html.intercom-modal-open,#intercom-container-body{overflow:hidden !important;}html.intercom-mobile-messenger-active,html.intercom-mobile-messenger-active > body{position:static !important;}html.intercom-mobile-messenger-active > body{height:0 !important;margin:0 !important;}iframe#intercom-frame{position:absolute !important;opacity:0 !important;width:1px !important;height:1px !important;top:0 !important;left:0 !important;border:none !important;display:block !important;z-index:-1 !important;}</style><div class="intercom-app" aria-live="polite"><div id="intercom-modal-container"></div></div></div><div id="beacon-container"><div data-reactroot="" class="Beacon"><div class="css-k7cd9d e1i7t89x0"></div><div class="BeaconContainer is-configDisplayRight is-manual css-1kzkca e1swzdlb0" data-css-with-delay="false"><button data-cy="beacon-close-button" class="c-BeaconCloseButton is-rendered css-5h58m2 e10lzuie0"><span class="c-BeaconCloseButton__label css-5th59a e10lzuie1"><span data-cy-component="Text" data-cy="Text" data-blue-ppap="blue" class="c-Text is-span is-13 is-default css-iimg26">Close</span></span><span aria-hidden="true" data-cy-component="Icon" data-cy="Icon" data-blue-ppap="blue" class="c-Icon is-noInteract is-iconName-cross-small is-24 c-BeaconCloseButton__iconClose css-1kxsy1g" data-icon-name="cross-small"><span class="c-Icon__icon" title="cross-small"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M13.414 12l2.293-2.293a.999.999 0 10-1.414-1.414L12 10.586 9.707 8.293a.999.999 0 10-1.414 1.414L10.586 12l-2.293 2.293a.999.999 0 101.414 1.414L12 13.414l2.293 2.293a.997.997 0 001.414 0 .999.999 0 000-1.414L13.414 12z"></path></svg></span><span class="c-VisuallyHidden css-1rt3v4g">cross-small</span></span></button></div><!-- react-empty: 10 --><span></span><!-- react-empty: 12 --><span></span></div></div></body></html>
